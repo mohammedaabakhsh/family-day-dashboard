@@ -123,6 +123,37 @@ body::after{content:'';position:fixed;bottom:-200px;left:-200px;width:500px;heig
 .upload-sub{font-size:13px;color:var(--muted)}
 ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--card2);border-radius:3px}
 
+/* ===== LIGHT MODE ===== */
+body.light{--bg:#f1f5f9;--card:#ffffff;--card2:#eef2f7;--text:#1e293b;--muted:#64748b;--border:rgba(0,0,0,0.08)}
+body.light::before{background:radial-gradient(circle,rgba(0,212,170,0.05) 0%,transparent 70%)}
+body.light::after{background:radial-gradient(circle,rgba(108,99,255,0.05) 0%,transparent 70%)}
+body.light .header{background:rgba(241,245,249,0.95)}
+body.light .age-bar-track,body.light .month-bar-track{background:rgba(0,0,0,0.07)}
+body.light .kpi-value,body.light .donut-center .value,body.light .gender-pct,body.light .compare-stat-value,body.light .ad-stat-value,body.light .logo-text h1{color:#1e293b}
+body.light .tab.active{background:#fff;color:#1e293b;border-color:rgba(0,0,0,0.1)}
+body.light .data-table td{color:#334155}
+body.light .upload-zone{border-color:rgba(0,0,0,0.12)}
+body.light .donut svg circle:first-child{stroke:#eef2f7}
+/* ===== BUTTONS: TOGGLE & PRINT ===== */
+.mode-toggle,.print-btn{background:var(--card2);border:1px solid var(--border);border-radius:20px;padding:6px 14px;font-size:13px;cursor:pointer;font-family:'Tajawal',sans-serif;color:var(--text);transition:all 0.2s}
+.print-btn:hover{border-color:var(--accent);color:var(--accent)}
+.mode-toggle:hover{border-color:var(--accent4);color:var(--accent4)}
+/* ===== MULTI ALERTS ===== */
+.alerts-wrap{margin:16px 32px 0;display:flex;flex-direction:column;gap:8px}
+.alerts-wrap .alert-banner{margin:0}
+.alert-banner.warn{background:rgba(255,209,102,0.08);border-color:rgba(255,209,102,0.25)}
+.alert-banner.warn strong{color:var(--accent3)}
+.alert-banner.ok{background:rgba(0,212,170,0.08);border-color:rgba(0,212,170,0.25)}
+.alert-banner.ok strong{color:var(--accent)}
+/* ===== PRINT ===== */
+@media print{
+  body{background:#fff!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .header-right,.alerts-wrap,.tabs{display:none!important}
+  .header{position:static!important;background:#fff!important;border-bottom:2px solid #eee}
+  .section{display:block!important}
+  .content{padding:0 16px!important}
+  .kpi-card,.chart-card,.ad-card{break-inside:avoid;border:1px solid #eee!important}
+}
 /* ===== RESPONSIVE ===== */
 @media (max-width:1024px){
   .kpi-grid-5{grid-template-columns:repeat(3,1fr)}
@@ -195,15 +226,15 @@ body::after{content:'';position:fixed;bottom:-200px;left:-200px;width:500px;heig
       <button class="year-btn" onclick="setYear(2023,this)">2023</button>
       <button class="year-btn" onclick="setYear(2024,this)">2024</button>
       <button class="year-btn active" onclick="setYear(2025,this)">2025</button>
+      <button class="year-btn" onclick="setYear(2026,this)">2026</button>
     </div>
     <div class="live-dot">تحديث تلقائي</div>
+    <button class="print-btn" onclick="window.print()">🖨️ طباعة</button>
+    <button class="mode-toggle" onclick="toggleMode(this)">☀️ فاتح</button>
   </div>
 </div>
 
-<div class="alert-banner">
-  <span>🔔</span>
-  <span><strong>تنبيه ذكي:</strong> إعلان "عرض رمضان" صرف 900 ريال بدون نتائج — يُنصح بإيقافه فوراً</span>
-</div>
+<div class="alerts-wrap" id="alertsWrap"></div>
 
 <div class="tabs">
   <div class="tab active" onclick="showTab('instagram',this)">📸 Instagram</div>
@@ -458,7 +489,7 @@ body::after{content:'';position:fixed;bottom:-200px;left:-200px;width:500px;heig
 </div>
 
 <script>
-const yearData={2023:{followers:'62K',views:'480K',engage:'3.1%',reach:'28K',badge:'+14% سنوياً',sub:'متابعون جدد شهرياً — 2023',bars:[400,520,680,800,750,900,1100,1200,980,1300,1400,1600]},2024:{followers:'82K',views:'780K',engage:'3.9%',reach:'42K',badge:'+18% سنوياً',sub:'متابعون جدد شهرياً — 2024',bars:[800,900,1100,1400,1300,1600,1800,2100,1700,2200,2500,2800]},2025:{followers:'104K',views:'1.2M',engage:'4.8%',reach:'58K',badge:'+22% سنوياً',sub:'متابعون جدد شهرياً — 2025',bars:[1200,1400,1800,2100,1900,2400,2800,3100,2600,3400,3800,4200]}};
+const yearData={2023:{followers:'62K',views:'480K',engage:'3.1%',reach:'28K',badge:'+14% سنوياً',sub:'متابعون جدد شهرياً — 2023',bars:[400,520,680,800,750,900,1100,1200,980,1300,1400,1600]},2024:{followers:'82K',views:'780K',engage:'3.9%',reach:'42K',badge:'+18% سنوياً',sub:'متابعون جدد شهرياً — 2024',bars:[800,900,1100,1400,1300,1600,1800,2100,1700,2200,2500,2800]},2025:{followers:'104K',views:'1.2M',engage:'4.8%',reach:'58K',badge:'+22% سنوياً',sub:'متابعون جدد شهرياً — 2025',bars:[1200,1400,1800,2100,1900,2400,2800,3100,2600,3400,3800,4200]},2026:{followers:'130K',views:'1.8M',engage:'5.4%',reach:'74K',badge:'🟡 جزئي — يناير إلى مارس',sub:'متابعون جدد — 2026 (يناير–مارس)',bars:[2200,2600,2900,0,0,0,0,0,0,0,0,0]}};
 const months=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
 const monthlySpend=[800,900,1100,1400,1300,1600,1800,2100,1700,2200,0,0];
 
@@ -467,9 +498,11 @@ function setYear(y,el){document.querySelectorAll('.year-btn').forEach(b=>b.class
 function buildFollowersChart(values){
   const container=document.getElementById('followersChart');
   container.innerHTML='';
+  const active=values.map((v,i)=>({v,i})).filter(x=>x.v>0);
+  if(!active.length)return;
   const VW=600,VH=180,PT=18,PB=28,PL=15,PR=15;
-  const cW=VW-PL-PR,cH=VH-PT-PB,max=Math.max(...values),n=values.length;
-  const pts=values.map((v,i)=>({x:PL+(i/(n-1))*cW,y:PT+(1-v/max)*cH}));
+  const cW=VW-PL-PR,cH=VH-PT-PB,max=Math.max(...active.map(x=>x.v)),n=active.length;
+  const pts=active.map((x,j)=>({x:PL+(j/Math.max(n-1,1))*cW,y:PT+(1-x.v/max)*cH,mi:x.i,v:x.v}));
   function curve(p){let d=`M${p[0].x},${p[0].y}`;for(let i=0;i<p.length-1;i++){const mx=(p[i].x+p[i+1].x)/2;d+=` C${mx},${p[i].y} ${mx},${p[i+1].y} ${p[i+1].x},${p[i+1].y}`}return d}
   const lp=curve(pts);
   const ap=`${lp} L${pts[n-1].x},${VH-PB} L${pts[0].x},${VH-PB} Z`;
@@ -479,10 +512,20 @@ function buildFollowersChart(values){
   svg.setAttribute('viewBox',`0 0 ${VW} ${VH}`);
   svg.setAttribute('width','100%');svg.setAttribute('height','100%');
   svg.setAttribute('class','line-chart-svg');
-  svg.innerHTML=`<defs><linearGradient id="lcGrad" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="#00d4aa" stop-opacity="0.3"/><stop offset="100%" stop-color="#00d4aa" stop-opacity="0"/></linearGradient></defs><path class="lc-area" d="${ap}"/><path class="lc-line" d="${lp}"/>${pts.map((p,i)=>`<circle class="lc-dot" cx="${p.x}" cy="${p.y}" r="4" data-i="${i}"/><text class="lc-label" x="${p.x}" y="${VH-8}">${months[i].slice(0,3)}</text>`).join('')}`;
-  svg.querySelectorAll('.lc-dot').forEach(d=>{const i=+d.getAttribute('data-i');d.addEventListener('mouseenter',()=>{tip.textContent=`${months[i]}: ${values[i].toLocaleString()} متابع جديد`;tip.style.opacity='1'});d.addEventListener('mousemove',e=>{const r=container.getBoundingClientRect();let l=e.clientX-r.left+12,t=e.clientY-r.top-38;if(t<0)t=4;tip.style.left=l+'px';tip.style.top=t+'px'});d.addEventListener('mouseleave',()=>{tip.style.opacity='0'})});
+  svg.innerHTML=`<defs><linearGradient id="lcGrad" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="#00d4aa" stop-opacity="0.3"/><stop offset="100%" stop-color="#00d4aa" stop-opacity="0"/></linearGradient></defs><path class="lc-area" d="${ap}"/><path class="lc-line" d="${lp}"/>${pts.map((p,j)=>`<circle class="lc-dot" cx="${p.x}" cy="${p.y}" r="4" data-j="${j}"/><text class="lc-label" x="${p.x}" y="${VH-8}">${months[p.mi].slice(0,3)}</text>`).join('')}`;
+  svg.querySelectorAll('.lc-dot').forEach(d=>{const j=+d.getAttribute('data-j');const p=pts[j];d.addEventListener('mouseenter',()=>{tip.textContent=`${months[p.mi]}: ${p.v.toLocaleString()} متابع جديد`;tip.style.opacity='1'});d.addEventListener('mousemove',e=>{const r=container.getBoundingClientRect();let l=e.clientX-r.left+12,t=e.clientY-r.top-38;if(t<0)t=4;tip.style.left=l+'px';tip.style.top=t+'px'});d.addEventListener('mouseleave',()=>{tip.style.opacity='0'})});
   container.appendChild(svg);
 }
+
+function toggleMode(btn){document.body.classList.toggle('light');btn.textContent=document.body.classList.contains('light')?'🌙 داكن':'☀️ فاتح'}
+
+const alertRules=[
+  {type:'red',icon:'🔔',cond:()=>true,msg:'<strong>تنبيه ذكي:</strong> إعلان "عرض رمضان" صرف 900 ريال بدون نتائج — يُنصح بإيقافه فوراً'},
+  {type:'warn',icon:'⚠️',cond:()=>14700>12000,msg:'<strong>الميزانية:</strong> إجمالي الصرف 14,700 ريال — تجاوز الحد المقترح 12,000 ريال'},
+  {type:'warn',icon:'⚠️',cond:()=>32.8>30,msg:'<strong>سناب:</strong> تكلفة النتيجة 32.8 ريال هي الأعلى — فكّر في تقليل ميزانيته'},
+  {type:'ok',icon:'✅',cond:()=>true,msg:'<strong>ممتاز:</strong> TikTok يعطي أرخص تكلفة نتيجة (23.6 ريال) — استمر فيه'},
+];
+function buildAlerts(){const w=document.getElementById('alertsWrap');if(!w)return;w.innerHTML=alertRules.filter(r=>r.cond()).map(r=>`<div class="alert-banner${r.type==='warn'?' warn':r.type==='ok'?' ok':''}"><span>${r.icon}</span><span>${r.msg}</span></div>`).join('')}
 
 function buildMonthlyBars(){const max=Math.max(...monthlySpend.filter(v=>v>0));const container=document.getElementById('monthlyBars');container.innerHTML='';months.forEach((m,i)=>{if(monthlySpend[i]===0)return;const pct=(monthlySpend[i]/max)*100;container.innerHTML+=`<div class="month-row"><div class="month-label">${m}</div><div class="month-bar-track"><div class="month-bar-fill" style="width:${pct}%"></div></div><div class="month-val">${monthlySpend[i].toLocaleString()} ر</div></div>`})}
 
@@ -492,6 +535,7 @@ function setPlatform(p,el){document.querySelectorAll('.ptab').forEach(t=>t.class
 
 buildFollowersChart(yearData[2025].bars);
 buildMonthlyBars();
+buildAlerts();
 </script>
 </body>
 </html>
