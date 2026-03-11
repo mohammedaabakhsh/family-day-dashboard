@@ -154,6 +154,25 @@ body.light .donut svg circle:first-child{stroke:#eef2f7}
   .content{padding:0 16px!important}
   .kpi-card,.chart-card,.ad-card{break-inside:avoid;border:1px solid #eee!important}
 }
+/* ===== MONTH COMPARE ===== */
+.cmp-selectors{display:flex;align-items:flex-end;gap:16px;padding:24px 0 8px;flex-wrap:wrap}
+.cmp-picker{flex:1;min-width:160px}
+.cmp-picker-label{display:block;font-size:12px;color:var(--muted);margin-bottom:8px;font-family:'Tajawal',sans-serif}
+.cmp-select{width:100%;background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:10px 14px;font-size:14px;color:var(--text);font-family:'Tajawal',sans-serif;cursor:pointer;outline:none;appearance:none;transition:border-color 0.2s}
+.cmp-select:focus{border-color:var(--accent)}
+.cmp-vs{font-size:22px;font-weight:900;color:var(--muted);padding-bottom:10px;flex-shrink:0}
+.cmp-table{width:100%;background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;border-collapse:collapse}
+.cmp-table th{padding:14px 20px;font-size:13px;font-weight:700;color:white;text-align:center;background:var(--card2);border-bottom:1px solid var(--border)}
+.cmp-table th.cmp-th-label{color:var(--muted);font-weight:500;font-size:12px}
+.cmp-table td{padding:14px 20px;font-size:15px;font-weight:700;text-align:center;border-bottom:1px solid var(--border)}
+.cmp-table tr:last-child td{border-bottom:none}
+.cmp-table tr:hover td{background:rgba(255,255,255,0.02)}
+.cmp-td-label{font-size:13px!important;font-weight:500!important;color:var(--muted)!important;background:var(--card2)}
+.cmp-better{color:var(--accent)!important}
+.cmp-worse{color:var(--accent2)!important}
+.cmp-diff{display:block;font-size:11px;font-weight:400;color:var(--muted);margin-top:3px}
+.cmp-diff.up{color:var(--accent)}.cmp-diff.down{color:var(--accent2)}
+.cmp-winner{background:rgba(0,212,170,0.04)}
 /* ===== RESPONSIVE ===== */
 @media (max-width:1024px){
   .kpi-grid-5{grid-template-columns:repeat(3,1fr)}
@@ -242,6 +261,7 @@ body.light .donut svg circle:first-child{stroke:#eef2f7}
   <div class="tab" onclick="showTab('audience',this)">👥 الجمهور</div>
   <div class="tab" onclick="showTab('finance',this)">💰 المالية</div>
   <div class="tab" onclick="showTab('content',this)">🎬 المحتوى</div>
+  <div class="tab" onclick="showTab('monthcompare',this)">📊 مقارنة الأشهر</div>
 </div>
 
 <div class="content">
@@ -486,6 +506,22 @@ body.light .donut svg circle:first-child{stroke:#eef2f7}
   </div>
 </div>
 
+<!-- MONTH COMPARE -->
+<div id="monthcompare" class="section">
+  <div class="cmp-selectors">
+    <div class="cmp-picker">
+      <label class="cmp-picker-label">الشهر الأول</label>
+      <select id="month1" class="cmp-select" onchange="buildComparison()"></select>
+    </div>
+    <div class="cmp-vs">VS</div>
+    <div class="cmp-picker">
+      <label class="cmp-picker-label">الشهر الثاني</label>
+      <select id="month2" class="cmp-select" onchange="buildComparison()"></select>
+    </div>
+  </div>
+  <div id="compareResult" style="margin-top:16px"></div>
+</div>
+
 </div>
 
 <script>
@@ -533,9 +569,72 @@ function showTab(id,el){document.querySelectorAll('.section').forEach(s=>s.class
 
 function setPlatform(p,el){document.querySelectorAll('.ptab').forEach(t=>t.classList.remove('active'));el.classList.add('active');document.getElementById('ads-meta').style.display=p==='meta'?'block':'none';document.getElementById('ads-tiktok').style.display=p==='tiktok'?'block':'none';document.getElementById('ads-snap').style.display=p==='snap'?'block':'none'}
 
+// ===== MONTHLY COMPARISON DATA (2025) =====
+const monthlyData={
+  followers:[1200,1400,1800,2100,1900,2400,2800,3100,2600,3400,3800,4200],
+  reach:    [28000,31000,38000,44000,41000,52000,58000,63000,54000,68000,74000,80000],
+  engage:   [4.1,4.2,4.5,4.7,4.4,4.8,5.0,5.1,4.9,5.2,5.3,5.5],
+  spend:    [800,900,1100,1400,1300,1600,1800,2100,1700,2200,0,0],
+  results:  [28,32,42,55,48,62,70,82,65,89,0,0]
+};
+
+const cmpMetrics=[
+  {label:'متابعون جدد',    key:'followers', higherBetter:true,  fmt:v=>v.toLocaleString()},
+  {label:'الوصول',         key:'reach',     higherBetter:true,  fmt:v=>(v/1000).toFixed(0)+'K'},
+  {label:'معدل التفاعل',   key:'engage',    higherBetter:true,  fmt:v=>v+'%'},
+  {label:'الصرف الإعلاني', key:'spend',     higherBetter:false, fmt:v=>v?v.toLocaleString()+' ر':'—'},
+  {label:'نتائج الإعلانات',key:'results',   higherBetter:true,  fmt:v=>v||'—'},
+];
+
+function initCompare(){
+  ['month1','month2'].forEach((id,idx)=>{
+    const sel=document.getElementById(id);
+    months.forEach((m,i)=>{
+      const opt=document.createElement('option');
+      opt.value=i;opt.textContent=m;
+      if((idx===0&&i===0)||(idx===1&&i===1))opt.selected=true;
+      sel.appendChild(opt);
+    });
+  });
+  buildComparison();
+}
+
+function buildComparison(){
+  const m1=+document.getElementById('month1').value;
+  const m2=+document.getElementById('month2').value;
+  let html=`<table class="cmp-table">
+    <thead><tr>
+      <th>${months[m1]}</th>
+      <th class="cmp-th-label">المقياس</th>
+      <th>${months[m2]}</th>
+    </tr></thead><tbody>`;
+  cmpMetrics.forEach(({label,key,higherBetter,fmt})=>{
+    const v1=monthlyData[key][m1], v2=monthlyData[key][m2];
+    const valid=v1>0&&v2>0;
+    let c1='',c2='',diff='';
+    if(valid){
+      const pct=Math.round(((v2-v1)/v1)*100);
+      const m2better=higherBetter?v2>v1:v2<v1;
+      c1=v1===v2?'':(m2better?'cmp-worse':'cmp-better');
+      c2=v1===v2?'':(m2better?'cmp-better':'cmp-worse');
+      const sign=pct>0?'+':'';
+      diff=`<span class="cmp-diff ${pct>0?'up':'down'}">${sign}${pct}%</span>`;
+    }
+    const rowCls=c2==='cmp-better'?'cmp-winner':'';
+    html+=`<tr class="${rowCls}">
+      <td class="${c1}">${fmt(v1)}</td>
+      <td class="cmp-td-label">${label}</td>
+      <td class="${c2}">${fmt(v2)}${diff}</td>
+    </tr>`;
+  });
+  html+='</tbody></table>';
+  document.getElementById('compareResult').innerHTML=html;
+}
+
 buildFollowersChart(yearData[2025].bars);
 buildMonthlyBars();
 buildAlerts();
+initCompare();
 </script>
 </body>
 </html>
