@@ -53,11 +53,15 @@ body::after{content:'';position:fixed;bottom:-200px;left:-200px;width:500px;heig
 .card-subtitle{font-size:12px;color:var(--muted);margin-top:3px}
 .badge{background:rgba(0,212,170,0.1);color:var(--accent);border:1px solid rgba(0,212,170,0.2);border-radius:20px;padding:4px 12px;font-size:12px}
 .badge-yellow{background:rgba(255,209,102,0.1);color:var(--accent3);border-color:rgba(255,209,102,0.2)}
-.bar-chart{display:flex;align-items:flex-end;gap:8px;height:160px}
-.bar-group{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;height:100%;justify-content:flex-end}
-.bar{width:100%;border-radius:6px 6px 0 0;cursor:pointer;transition:opacity 0.2s}
-.bar:hover{opacity:0.75}
+.bar-chart{display:block;width:100%;height:180px;position:relative}
 .bar-label{font-size:11px;color:var(--muted)}
+.line-chart-svg{width:100%;height:100%;overflow:visible}
+.line-chart-svg .lc-area{fill:url(#lcGrad);opacity:0.5}
+.line-chart-svg .lc-line{fill:none;stroke:#00d4aa;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.line-chart-svg .lc-dot{fill:#00d4aa;stroke:var(--card);stroke-width:2;cursor:pointer;transition:r 0.15s}
+.line-chart-svg .lc-dot:hover{r:6}
+.line-chart-svg .lc-label{fill:var(--muted);font-size:10px;font-family:'Tajawal',sans-serif;text-anchor:middle}
+.lc-tooltip{position:absolute;background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:6px 10px;font-size:12px;color:white;pointer-events:none;opacity:0;transition:opacity 0.15s;white-space:nowrap;font-family:'Tajawal',sans-serif}
 .donut-wrap{display:flex;flex-direction:column;align-items:center;gap:20px}
 .donut{position:relative;width:140px;height:140px}
 .donut svg{transform:rotate(-90deg)}
@@ -460,7 +464,25 @@ const monthlySpend=[800,900,1100,1400,1300,1600,1800,2100,1700,2200,0,0];
 
 function setYear(y,el){document.querySelectorAll('.year-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');const d=yearData[y];document.getElementById('ig-followers').textContent=d.followers;document.getElementById('ig-views').textContent=d.views;document.getElementById('ig-engage').textContent=d.engage;document.getElementById('ig-reach').textContent=d.reach;document.getElementById('ig-growth-badge').textContent=d.badge;document.getElementById('ig-chart-sub').textContent=d.sub;buildFollowersChart(d.bars)}
 
-function buildFollowersChart(values){const chart=document.getElementById('followersChart');const max=Math.max(...values);chart.innerHTML='';months.forEach((m,i)=>{const pct=(values[i]/max)*100;const color=i>=6?'#00d4aa':'#6c63ff';chart.innerHTML+=`<div class="bar-group"><div class="bar" style="height:${pct}%;background:${color};opacity:0.85" title="${values[i].toLocaleString()} متابع جديد"></div><div class="bar-label">${m.slice(0,3)}</div></div>`})}
+function buildFollowersChart(values){
+  const container=document.getElementById('followersChart');
+  container.innerHTML='';
+  const VW=600,VH=180,PT=18,PB=28,PL=15,PR=15;
+  const cW=VW-PL-PR,cH=VH-PT-PB,max=Math.max(...values),n=values.length;
+  const pts=values.map((v,i)=>({x:PL+(i/(n-1))*cW,y:PT+(1-v/max)*cH}));
+  function curve(p){let d=`M${p[0].x},${p[0].y}`;for(let i=0;i<p.length-1;i++){const mx=(p[i].x+p[i+1].x)/2;d+=` C${mx},${p[i].y} ${mx},${p[i+1].y} ${p[i+1].x},${p[i+1].y}`}return d}
+  const lp=curve(pts);
+  const ap=`${lp} L${pts[n-1].x},${VH-PB} L${pts[0].x},${VH-PB} Z`;
+  const tip=document.createElement('div');tip.className='lc-tooltip';container.appendChild(tip);
+  const ns='http://www.w3.org/2000/svg';
+  const svg=document.createElementNS(ns,'svg');
+  svg.setAttribute('viewBox',`0 0 ${VW} ${VH}`);
+  svg.setAttribute('width','100%');svg.setAttribute('height','100%');
+  svg.setAttribute('class','line-chart-svg');
+  svg.innerHTML=`<defs><linearGradient id="lcGrad" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="#00d4aa" stop-opacity="0.3"/><stop offset="100%" stop-color="#00d4aa" stop-opacity="0"/></linearGradient></defs><path class="lc-area" d="${ap}"/><path class="lc-line" d="${lp}"/>${pts.map((p,i)=>`<circle class="lc-dot" cx="${p.x}" cy="${p.y}" r="4" data-i="${i}"/><text class="lc-label" x="${p.x}" y="${VH-8}">${months[i].slice(0,3)}</text>`).join('')}`;
+  svg.querySelectorAll('.lc-dot').forEach(d=>{const i=+d.getAttribute('data-i');d.addEventListener('mouseenter',()=>{tip.textContent=`${months[i]}: ${values[i].toLocaleString()} متابع جديد`;tip.style.opacity='1'});d.addEventListener('mousemove',e=>{const r=container.getBoundingClientRect();let l=e.clientX-r.left+12,t=e.clientY-r.top-38;if(t<0)t=4;tip.style.left=l+'px';tip.style.top=t+'px'});d.addEventListener('mouseleave',()=>{tip.style.opacity='0'})});
+  container.appendChild(svg);
+}
 
 function buildMonthlyBars(){const max=Math.max(...monthlySpend.filter(v=>v>0));const container=document.getElementById('monthlyBars');container.innerHTML='';months.forEach((m,i)=>{if(monthlySpend[i]===0)return;const pct=(monthlySpend[i]/max)*100;container.innerHTML+=`<div class="month-row"><div class="month-label">${m}</div><div class="month-bar-track"><div class="month-bar-fill" style="width:${pct}%"></div></div><div class="month-val">${monthlySpend[i].toLocaleString()} ر</div></div>`})}
 
