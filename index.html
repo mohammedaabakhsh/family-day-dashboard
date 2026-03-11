@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>داشبورد منتجع يوم العائلة</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0e1a;--card:#111827;--card2:#1a2235;--accent:#00d4aa;--accent2:#ff6b6b;--accent3:#ffd166;--accent4:#6c63ff;--pink:#ff6b9d;--text:#e2e8f0;--muted:#64748b;--border:rgba(255,255,255,0.06)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;top:-200px;right:-200px;width:600px;height:600px;background:radial-gradient(circle,rgba(0,212,170,0.08) 0%,transparent 70%);pointer-events:none}
+body::after{content:'';position:fixed;bottom:-200px;left:-200px;width:500px;height:500px;background:radial-gradient(circle,rgba(108,99,255,0.07) 0%,transparent 70%);pointer-events:none}
+.header{padding:20px 32px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);backdrop-filter:blur(10px);position:sticky;top:0;background:rgba(10,14,26,0.9);z-index:100}
+.logo{display:flex;align-items:center;gap:12px}
+.logo-icon{width:42px;height:42px;background:linear-gradient(135deg,var(--accent),var(--accent4));border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px}
+.logo-text h1{font-size:17px;font-weight:700;color:white}
+.logo-text p{font-size:12px;color:var(--muted)}
+.header-right{display:flex;align-items:center;gap:12px}
+.year-filter{display:flex;gap:6px}
+.year-btn{background:var(--card2);border:1px solid var(--border);border-radius:20px;padding:6px 16px;font-size:13px;color:var(--muted);cursor:pointer;font-family:'Tajawal',sans-serif;transition:all 0.2s}
+.year-btn.active{background:var(--accent);color:#000;border-color:var(--accent);font-weight:700}
+.year-btn:hover:not(.active){color:var(--text);border-color:rgba(255,255,255,0.15)}
+.live-dot{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--accent)}
+.live-dot::before{content:'';width:8px;height:8px;background:var(--accent);border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(1.3)}}
+.alert-banner{margin:16px 32px 0;background:rgba(255,107,107,0.08);border:1px solid rgba(255,107,107,0.25);border-radius:12px;padding:12px 18px;display:flex;align-items:center;gap:10px;font-size:13px}
+.alert-banner strong{color:var(--accent2)}
+.tabs{display:flex;gap:4px;padding:20px 32px 0;overflow-x:auto}
+.tab{padding:10px 20px;border-radius:10px 10px 0 0;font-size:14px;font-weight:500;cursor:pointer;color:var(--muted);border:1px solid transparent;border-bottom:none;transition:all 0.2s;white-space:nowrap;font-family:'Tajawal',sans-serif}
+.tab.active{background:var(--card);color:white;border-color:var(--border)}
+.tab:hover:not(.active){color:var(--text)}
+.content{padding:0 32px 40px}
+.section{display:none}
+.section.active{display:block}
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;padding:24px 0 20px}
+.kpi-grid-5{grid-template-columns:repeat(5,1fr)}
+.kpi-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;position:relative;overflow:hidden;transition:transform 0.2s,border-color 0.2s;animation:fadeUp 0.5s ease both}
+.kpi-card:hover{transform:translateY(-2px);border-color:rgba(255,255,255,0.12)}
+.kpi-card::before{content:'';position:absolute;top:0;right:0;width:80px;height:80px;border-radius:0 16px 0 80px;opacity:0.1}
+.kpi-card:nth-child(1)::before{background:var(--accent)}.kpi-card:nth-child(2)::before{background:var(--accent4)}.kpi-card:nth-child(3)::before{background:var(--accent3)}.kpi-card:nth-child(4)::before{background:var(--accent2)}.kpi-card:nth-child(5)::before{background:var(--pink)}
+.kpi-card:nth-child(1){animation-delay:0.1s}.kpi-card:nth-child(2){animation-delay:0.2s}.kpi-card:nth-child(3){animation-delay:0.3s}.kpi-card:nth-child(4){animation-delay:0.4s}.kpi-card:nth-child(5){animation-delay:0.5s}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.kpi-label{font-size:13px;color:var(--muted);margin-bottom:10px}
+.kpi-value{font-size:28px;font-weight:900;color:white;line-height:1;margin-bottom:8px}
+.kpi-change{font-size:12px;display:flex;align-items:center;gap:4px}
+.kpi-change.up{color:var(--accent)}.kpi-change.down{color:var(--accent2)}.kpi-change.neutral{color:var(--muted)}
+.charts-row{display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-bottom:16px}
+.charts-row-equal{grid-template-columns:1fr 1fr}
+.chart-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;animation:fadeUp 0.5s ease 0.3s both}
+.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.card-title{font-size:15px;font-weight:700;color:white}
+.card-subtitle{font-size:12px;color:var(--muted);margin-top:3px}
+.badge{background:rgba(0,212,170,0.1);color:var(--accent);border:1px solid rgba(0,212,170,0.2);border-radius:20px;padding:4px 12px;font-size:12px}
+.badge-yellow{background:rgba(255,209,102,0.1);color:var(--accent3);border-color:rgba(255,209,102,0.2)}
+.bar-chart{display:flex;align-items:flex-end;gap:8px;height:160px}
+.bar-group{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;height:100%;justify-content:flex-end}
+.bar{width:100%;border-radius:6px 6px 0 0;cursor:pointer;transition:opacity 0.2s}
+.bar:hover{opacity:0.75}
+.bar-label{font-size:11px;color:var(--muted)}
+.donut-wrap{display:flex;flex-direction:column;align-items:center;gap:20px}
+.donut{position:relative;width:140px;height:140px}
+.donut svg{transform:rotate(-90deg)}
+.donut-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
+.donut-center .value{font-size:22px;font-weight:900;color:white}
+.donut-center .sublabel{font-size:11px;color:var(--muted)}
+.legend{width:100%;display:flex;flex-direction:column;gap:10px}
+.legend-item{display:flex;align-items:center;justify-content:space-between}
+.legend-left{display:flex;align-items:center;gap:8px;font-size:13px}
+.legend-dot{width:10px;height:10px;border-radius:50%}
+.legend-pct{font-size:13px;font-weight:700;color:white}
+.data-table{width:100%;border-collapse:collapse}
+.data-table th{font-size:12px;color:var(--muted);font-weight:500;padding:8px 12px;text-align:right;border-bottom:1px solid var(--border)}
+.data-table td{padding:12px;font-size:13px;border-bottom:1px solid var(--border)}
+.data-table tr:last-child td{border-bottom:none}
+.data-table tr:hover td{background:rgba(255,255,255,0.02)}
+.rank{font-weight:900;color:var(--muted);font-size:14px}
+.status{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600}
+.status.green{background:rgba(0,212,170,0.1);color:var(--accent)}.status.red{background:rgba(255,107,107,0.1);color:var(--accent2)}.status.yellow{background:rgba(255,209,102,0.1);color:var(--accent3)}
+.age-bars{display:flex;flex-direction:column;gap:12px}
+.age-row{display:flex;align-items:center;gap:12px}
+.age-label{font-size:13px;color:var(--muted);width:50px;flex-shrink:0}
+.age-bar-track{flex:1;height:8px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden}
+.age-bar-fill{height:100%;border-radius:4px}
+.age-pct{font-size:13px;font-weight:700;color:white;width:35px;text-align:left;flex-shrink:0}
+.gender-row{display:flex;gap:12px;margin-top:8px}
+.gender-card{flex:1;background:var(--card2);border-radius:12px;padding:16px;text-align:center}
+.gender-icon{font-size:28px;margin-bottom:8px}
+.gender-pct{font-size:24px;font-weight:900;color:white}
+.gender-label{font-size:12px;color:var(--muted);margin-top:4px}
+.ads-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;padding:20px 0}
+.ad-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;animation:fadeUp 0.5s ease both;transition:border-color 0.2s}
+.ad-card:hover{border-color:rgba(255,255,255,0.12)}
+.ad-name{font-size:14px;font-weight:700;color:white;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between}
+.ad-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ad-stat{background:var(--card2);border-radius:10px;padding:12px}
+.ad-stat-label{font-size:11px;color:var(--muted);margin-bottom:4px}
+.ad-stat-value{font-size:16px;font-weight:700;color:white}
+.platform-tabs{display:flex;gap:8px;margin-bottom:20px;padding-top:20px}
+.ptab{padding:7px 18px;border-radius:20px;font-size:13px;cursor:pointer;border:1px solid var(--border);color:var(--muted);font-family:'Tajawal',sans-serif;transition:all 0.2s}
+.ptab.active{border-color:var(--accent);color:var(--accent);background:rgba(0,212,170,0.08)}
+.month-bars{display:flex;flex-direction:column;gap:10px}
+.month-row{display:flex;align-items:center;gap:12px}
+.month-label{font-size:13px;color:var(--muted);width:60px;flex-shrink:0;text-align:right}
+.month-bar-track{flex:1;height:10px;background:rgba(255,255,255,0.06);border-radius:5px;overflow:hidden}
+.month-bar-fill{height:100%;border-radius:5px;background:linear-gradient(90deg,var(--accent4),var(--accent))}
+.month-val{font-size:13px;font-weight:700;color:white;width:70px;flex-shrink:0}
+.compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.compare-card{background:var(--card2);border-radius:12px;padding:20px;text-align:center}
+.compare-icon{font-size:32px;margin-bottom:8px}
+.compare-title{font-size:14px;color:var(--muted);margin-bottom:12px}
+.compare-stat{margin-bottom:8px}
+.compare-stat-label{font-size:11px;color:var(--muted)}
+.compare-stat-value{font-size:20px;font-weight:900;color:white}
+.upload-zone{border:2px dashed rgba(255,255,255,0.1);border-radius:16px;padding:32px;text-align:center;cursor:pointer;transition:all 0.2s;margin-top:16px}
+.upload-zone:hover{border-color:var(--accent);background:rgba(0,212,170,0.03)}
+.upload-icon{font-size:36px;margin-bottom:12px}
+.upload-title{font-size:15px;font-weight:700;color:white;margin-bottom:6px}
+.upload-sub{font-size:13px;color:var(--muted)}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--card2);border-radius:3px}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width:1024px){
+  .kpi-grid-5{grid-template-columns:repeat(3,1fr)}
+  .ads-grid{grid-template-columns:repeat(2,1fr)}
+  .charts-row{grid-template-columns:1fr}
+  .charts-row-equal{grid-template-columns:1fr}
+  .content{padding:0 24px 32px}
+  .header{padding:16px 24px}
+  .alert-banner{margin:12px 24px 0}
+  .tabs{padding:16px 24px 0}
+}
+@media (max-width:768px){
+  .header{padding:12px 16px;flex-wrap:wrap;gap:10px}
+  .logo-text h1{font-size:15px}
+  .header-right{flex-wrap:wrap;gap:8px;width:100%;justify-content:space-between}
+  .year-filter{flex-wrap:wrap;gap:4px}
+  .year-btn{padding:5px 12px;font-size:12px}
+  .alert-banner{margin:10px 16px 0;padding:10px 14px;font-size:12px}
+  .tabs{padding:14px 16px 0;gap:3px}
+  .tab{padding:8px 12px;font-size:12px}
+  .content{padding:0 16px 28px}
+  .kpi-grid{grid-template-columns:repeat(2,1fr);gap:12px;padding:16px 0 12px}
+  .kpi-grid-5{grid-template-columns:repeat(2,1fr)}
+  .kpi-value{font-size:22px}
+  .kpi-label{font-size:12px}
+  .kpi-change{font-size:11px}
+  .charts-row,.charts-row-equal{grid-template-columns:1fr}
+  .ads-grid{grid-template-columns:1fr;gap:12px;padding:14px 0}
+  .compare-grid{grid-template-columns:1fr}
+  .bar-chart{height:120px;gap:4px}
+  .bar-label{font-size:9px}
+  .data-table{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch;white-space:nowrap}
+  .platform-tabs{flex-wrap:wrap;gap:6px}
+  .card-header{flex-wrap:wrap;gap:8px}
+  .card-title{font-size:14px}
+  .month-label{font-size:11px;width:48px}
+  .month-val{font-size:11px;width:58px}
+  .age-label{font-size:11px;width:44px}
+  .age-pct{font-size:11px;width:30px}
+  .chart-card{padding:16px}
+  .ad-card{padding:16px}
+  .kpi-card{padding:16px}
+  .donut{width:120px;height:120px}
+  .donut svg{width:120px;height:120px}
+  .donut-center .value{font-size:18px}
+}
+@media (max-width:480px){
+  .logo-text p{display:none}
+  .logo-text h1{font-size:14px}
+  .kpi-grid{grid-template-columns:1fr}
+  .kpi-grid-5{grid-template-columns:1fr}
+  .kpi-value{font-size:26px}
+  .gender-row{flex-direction:column}
+  .compare-grid{grid-template-columns:1fr}
+  .ads-grid{grid-template-columns:1fr}
+  .tab{padding:7px 10px;font-size:12px}
+  .year-btn{padding:5px 10px;font-size:12px}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">
+    <div class="logo-icon">🏡</div>
+    <div class="logo-text"><h1>منتجع يوم العائلة</h1><p>لوحة الإحصائيات الشاملة</p></div>
+  </div>
+  <div class="header-right">
+    <div class="year-filter">
+      <button class="year-btn" onclick="setYear(2023,this)">2023</button>
+      <button class="year-btn" onclick="setYear(2024,this)">2024</button>
+      <button class="year-btn active" onclick="setYear(2025,this)">2025</button>
+    </div>
+    <div class="live-dot">تحديث تلقائي</div>
+  </div>
+</div>
+
+<div class="alert-banner">
+  <span>🔔</span>
+  <span><strong>تنبيه ذكي:</strong> إعلان "عرض رمضان" صرف 900 ريال بدون نتائج — يُنصح بإيقافه فوراً</span>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="showTab('instagram',this)">📸 Instagram</div>
+  <div class="tab" onclick="showTab('ads',this)">📢 الإعلانات</div>
+  <div class="tab" onclick="showTab('audience',this)">👥 الجمهور</div>
+  <div class="tab" onclick="showTab('finance',this)">💰 المالية</div>
+  <div class="tab" onclick="showTab('content',this)">🎬 المحتوى</div>
+</div>
+
+<div class="content">
+
+<!-- INSTAGRAM -->
+<div id="instagram" class="section active">
+  <div class="kpi-grid">
+    <div class="kpi-card"><div class="kpi-label">المتابعون</div><div class="kpi-value" id="ig-followers">104K</div><div class="kpi-change up">↑ +2,340 هذا الشهر</div></div>
+    <div class="kpi-card"><div class="kpi-label">مشاهدات الريلز</div><div class="kpi-value" id="ig-views">1.2M</div><div class="kpi-change up">↑ +18% عن الشهر الماضي</div></div>
+    <div class="kpi-card"><div class="kpi-label">معدل التفاعل</div><div class="kpi-value" id="ig-engage">4.8%</div><div class="kpi-change up">↑ ممتاز</div></div>
+    <div class="kpi-card"><div class="kpi-label">الوصول الأسبوعي</div><div class="kpi-value" id="ig-reach">58K</div><div class="kpi-change down">↓ -5% عن الأسبوع الماضي</div></div>
+  </div>
+  <div class="charts-row">
+    <div class="chart-card">
+      <div class="card-header">
+        <div><div class="card-title">نمو المتابعين</div><div class="card-subtitle" id="ig-chart-sub">متابعون جدد شهرياً — 2025</div></div>
+        <div class="badge" id="ig-growth-badge">+22% سنوياً</div>
+      </div>
+      <div class="bar-chart" id="followersChart"></div>
+    </div>
+    <div class="chart-card">
+      <div class="card-header"><div><div class="card-title">توزيع المحتوى</div><div class="card-subtitle">أنواع المنشورات</div></div></div>
+      <div class="donut-wrap">
+        <div class="donut">
+          <svg viewBox="0 0 100 100" width="140" height="140">
+            <circle cx="50" cy="50" r="38" fill="none" stroke="#111827" stroke-width="14"/>
+            <circle cx="50" cy="50" r="38" fill="none" stroke="#00d4aa" stroke-width="14" stroke-dasharray="131.5 238.9" stroke-dashoffset="0"/>
+            <circle cx="50" cy="50" r="38" fill="none" stroke="#6c63ff" stroke-width="14" stroke-dasharray="66.9 238.9" stroke-dashoffset="-131.5"/>
+            <circle cx="50" cy="50" r="38" fill="none" stroke="#ffd166" stroke-width="14" stroke-dasharray="40.6 238.9" stroke-dashoffset="-198.4"/>
+          </svg>
+          <div class="donut-center"><div class="value">124</div><div class="sublabel">منشور</div></div>
+        </div>
+        <div class="legend">
+          <div class="legend-item"><div class="legend-left"><div class="legend-dot" style="background:#00d4aa"></div>ريلز</div><div class="legend-pct">55%</div></div>
+          <div class="legend-item"><div class="legend-left"><div class="legend-dot" style="background:#6c63ff"></div>صور</div><div class="legend-pct">28%</div></div>
+          <div class="legend-item"><div class="legend-left"><div class="legend-dot" style="background:#ffd166"></div>ستوري</div><div class="legend-pct">17%</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="charts-row charts-row-equal">
+    <div class="chart-card">
+      <div class="card-header"><div><div class="card-title">أفضل المنشورات تفاعلاً</div><div class="card-subtitle">مرتبة تلقائياً حسب الأداء</div></div></div>
+      <table class="data-table">
+        <tr><th>#</th><th>المنشور</th><th>المشاهدات</th><th>الأداء</th></tr>
+        <tr><td class="rank">🥇</td><td>🎥 جولة كاملة في الكابينة</td><td style="color:#00d4aa;font-weight:700">1.0M</td><td><span class="status green">🔥 ممتاز</span></td></tr>
+        <tr><td class="rank">🥈</td><td>📸 المسبح عند الغروب</td><td>284K</td><td><span class="status green">✅ جيد</span></td></tr>
+        <tr><td class="rank">🥉</td><td>🎥 تجربة العائلة</td><td>198K</td><td><span class="status green">✅ جيد</span></td></tr>
+        <tr><td class="rank">4</td><td>📸 تصميم الكابينة الداخلي</td><td>92K</td><td><span class="status yellow">⏳ عادي</span></td></tr>
+        <tr><td class="rank">5</td><td>🎥 الإفطار في المنتجع</td><td>67K</td><td><span class="status yellow">⏳ عادي</span></td></tr>
+      </table>
+    </div>
+    <div class="chart-card">
+      <div class="card-header"><div><div class="card-title">أفضل أوقات النشر</div><div class="card-subtitle">متوسط التفاعل حسب الوقت</div></div></div>
+      <div class="age-bars" style="margin-top:8px">
+        <div class="age-row"><div class="age-label">8 صباح</div><div class="age-bar-track"><div class="age-bar-fill" style="width:30%;background:#6c63ff"></div></div><div class="age-pct">30%</div></div>
+        <div class="age-row"><div class="age-label">12 ظهر</div><div class="age-bar-track"><div class="age-bar-fill" style="width:55%;background:#6c63ff"></div></div><div class="age-pct">55%</div></div>
+        <div class="age-row"><div class="age-label">3 عصر</div><div class="age-bar-track"><div class="age-bar-fill" style="width:72%;background:#00d4aa"></div></div><div class="age-pct">72%</div></div>
+        <div class="age-row"><div class="age-label">6 مساء</div><div class="age-bar-track"><div class="age-bar-fill" style="width:95%;background:#00d4aa"></div></div><div class="age-pct">95%</div></div>
+        <div class="age-row"><div class="age-label">9 مساء</div><div class="age-bar-track"><div class="age-bar-fill" style="width:88%;background:#00d4aa"></div></div><div class="age-pct">88%</div></div>
+        <div class="age-row"><div class="age-label">12 ليل</div><div class="age-bar-track"><div class="age-bar-fill" style="width:40%;background:#ffd166"></div></div><div class="age-pct">40%</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ADS -->
+<div id="ads" class="section">
+  <div class="platform-tabs">
+    <button class="ptab active" onclick="setPlatform('meta',this)">📘 Meta</button>
+    <button class="ptab" onclick="setPlatform('tiktok',this)">🎵 TikTok</button>
+    <button class="ptab" onclick="setPlatform('snap',this)">👻 سناب</button>
+  </div>
+  <div id="ads-meta">
+    <div class="kpi-grid kpi-grid-5">
+      <div class="kpi-card"><div class="kpi-label">إجمالي الصرف</div><div class="kpi-value">8,400</div><div class="kpi-change neutral">ريال — 2025</div></div>
+      <div class="kpi-card"><div class="kpi-label">إجمالي النتائج</div><div class="kpi-value">312</div><div class="kpi-change up">↑ رسالة / حجز</div></div>
+      <div class="kpi-card"><div class="kpi-label">تكلفة النتيجة</div><div class="kpi-value">26.9</div><div class="kpi-change up">ريال</div></div>
+      <div class="kpi-card"><div class="kpi-label">مقارنة بالعام الماضي</div><div class="kpi-value">+31%</div><div class="kpi-change up">↑ نتائج أكثر</div></div>
+      <div class="kpi-card"><div class="kpi-label">أفضل إعلان</div><div class="kpi-value" style="font-size:15px">جولة الكابينة</div><div class="kpi-change up">↑ 89 نتيجة</div></div>
+    </div>
+    <div class="ads-grid">
+      <div class="ad-card" style="animation-delay:0.1s;border-color:rgba(0,212,170,0.3)"><div class="ad-name">🎥 جولة الكابينة الكاملة <span class="status green">✅ كمّل</span></div><div class="ad-stats"><div class="ad-stat"><div class="ad-stat-label">الصرف</div><div class="ad-stat-value">1,800 ر</div></div><div class="ad-stat"><div class="ad-stat-label">النتائج</div><div class="ad-stat-value" style="color:#00d4aa">89</div></div><div class="ad-stat"><div class="ad-stat-label">المشاهدات</div><div class="ad-stat-value">42K</div></div><div class="ad-stat"><div class="ad-stat-label">تكلفة النتيجة</div><div class="ad-stat-value">20 ر</div></div></div></div>
+      <div class="ad-card" style="animation-delay:0.2s;border-color:rgba(0,212,170,0.3)"><div class="ad-name">📸 عرض الويكند <span class="status green">✅ كمّل</span></div><div class="ad-stats"><div class="ad-stat"><div class="ad-stat-label">الصرف</div><div class="ad-stat-value">2,200 ر</div></div><div class="ad-stat"><div class="ad-stat-label">النتائج</div><div class="ad-stat-value" style="color:#00d4aa">74</div></div><div class="ad-stat"><div class="ad-stat-label">المشاهدات</div><div class="ad-stat-value">38K</div></div><div class="ad-stat"><div class="ad-stat-label">تكلفة النتيجة</div><div class="ad-stat-value">29 ر</div></div></div></div>
+      <div class="ad-card" style="animation-delay:0.3s;border-color:rgba(255,209,102,0.3)"><div class="ad-name">🏊 إعلان المسبح <span class="status yellow">⏳ راقب</span></div><div class="ad-stats"><div class="ad-stat"><div class="ad-stat-label">الصرف</div><div class="ad-stat-value">1,400 ر</div></div><div class="ad-stat"><div class="ad-stat-label">النتائج</div><div class="ad-stat-value" style="color:#ffd166">31</div></div><div class="ad-stat"><div class="ad-stat-label">المشاهدات</div><div class="ad-stat-value">29K</div></div><div class="ad-stat"><div class="ad-stat-label">تكلفة النتيجة</div><div class="ad-stat-value">45 ر</div></div></div></div>
+      <div class="ad-card" style="animation-delay:0.4s;border-color:rgba(255,107,107,0.3)"><div class="ad-name">🎁 عرض رمضان <span class="status red">❌ وقّف</span></div><div class="ad-stats"><div class="ad-stat"><div class="ad-stat-label">الصرف</div><div class="ad-stat-value">900 ر</div></div><div class="ad-stat"><div class="ad-stat-label">النتائج</div><div class="ad-stat-value" style="color:#ff6b6b">4</div></div><div class="ad-stat"><div class="ad-stat-label">المشاهدات</div><div class="ad-stat-value">11K</div></div><div class="ad-stat"><div class="ad-stat-label">تكلفة النتيجة</div><div class="ad-stat-value">225 ر</div></div></div></div>
+      <div class="ad-card" style="animation-delay:0.5s;border-color:rgba(0,212,170,0.3)"><div class="ad-name">👨‍👩‍👧 إعلان العائلة <span class="status green">✅ كمّل</span></div><div class="ad-stats"><div class="ad-stat"><div class="ad-stat-label">الصرف</div><div class="ad-stat-value">1,200 ر</div></div><div class="ad-stat"><div class="ad-stat-label">النتائج</div><div class="ad-stat-value" style="color:#00d4aa">68</div></div><div class="ad-stat"><div class="ad-stat-label">المشاهدات</div><div class="ad-stat-value">33K</div></div><div class="ad-stat"><div class="ad-stat-label">تكلفة النتيجة</div><div class="ad-stat-value">17 ر</div></div></div></div>
+      <div class="ad-card" style="animation-delay:0.6s;border-color:rgba(255,209,102,0.3)"><div class="ad-name">🌅 إعلان الطبيعة <span class="status yellow">⏳ راقب</span></div><div class="ad-stats"><div class="ad-stat"><div class="ad-stat-label">الصرف</div><div class="ad-stat-value">900 ر</div></div><div class="ad-stat"><div class="ad-stat-label">النتائج</div><div class="ad-stat-value" style="color:#ffd166">46</div></div><div class="ad-stat"><div class="ad-stat-label">المشاهدات</div><div class="ad-stat-value">21K</div></div><div class="ad-stat"><div class="ad-stat-label">تكلفة النتيجة</div><div class="ad-stat-value">19 ر</div></div></div></div>
+    </div>
+  </div>
+  <div id="ads-tiktok" style="display:none">
+    <div class="kpi-grid">
+      <div class="kpi-card"><div class="kpi-label">إجمالي الصرف</div><div class="kpi-value">4,200</div><div class="kpi-change neutral">ريال — 2025</div></div>
+      <div class="kpi-card"><div class="kpi-label">إجمالي النتائج</div><div class="kpi-value">178</div><div class="kpi-change up">↑ رسالة / حجز</div></div>
+      <div class="kpi-card"><div class="kpi-label">تكلفة النتيجة</div><div class="kpi-value">23.6</div><div class="kpi-change up">↑ أرخص من Meta</div></div>
+      <div class="kpi-card"><div class="kpi-label">أفضل إعلان</div><div class="kpi-value" style="font-size:15px">تجربة الكابينة</div><div class="kpi-change up">↑ 61 نتيجة</div></div>
+    </div>
+    <div class="ads-grid">
+      <div class="ad-card" style="border-color:rgba(0,212,170,0.3)"><div class="ad-name">🎥 تجربة الكابينة <span class="status green">✅ كمّل</span></div><div class="ad-stats"><div class="ad-stat"><div class="ad-stat-label">الصرف</div><div class="ad-stat-value">1,100 ر</div></div><div class="ad-stat"><div class="ad-stat-label">النتائج</div><div class="ad-stat-value" style="color:#00d4aa">61</div></div><div class="ad-stat"><div class="ad-stat-label">المشاهدات</div><div class="ad-stat-value">55K</div></div><div class="ad-stat"><div class="ad-stat-label">تكلفة النتيجة</div><div class="ad-stat-value">18 ر</div></div></div></div>
+      <div class="ad-card" style="border-color:rgba(255,209,102,0.3)"><div class="ad-name">🌿 الطبيعة والهدوء <span class="status yellow">⏳ راقب</span></div><div class="ad-stats"><div class="ad-stat"><div class="ad-stat-label">الصرف</div><div class="ad-stat-value">800 ر</div></div><div class="ad-stat"><div class="ad-stat-label">النتائج</div><div class="ad-stat-value" style="color:#ffd166">27</div></div><div class="ad-stat"><div class="ad-stat-label">المشاهدات</div><div class="ad-stat-value">31K</div></div><div class="ad-stat"><div class="ad-stat-label">تكلفة النتيجة</div><div class="ad-stat-value">29 ر</div></div></div></div>
+      <div class="ad-card" style="border-color:rgba(0,212,170,0.3)"><div class="ad-name">👨‍👩‍👧 عائلة سعيدة <span class="status green">✅ كمّل</span></div><div class="ad-stats"><div class="ad-stat"><div class="ad-stat-label">الصرف</div><div class="ad-stat-value">900 ر</div></div><div class="ad-stat"><div class="ad-stat-label">النتائج</div><div class="ad-stat-value" style="color:#00d4aa">52</div></div><div class="ad-stat"><div class="ad-stat-label">المشاهدات</div><div class="ad-stat-value">44K</div></div><div class="ad-stat"><div class="ad-stat-label">تكلفة النتيجة</div><div class="ad-stat-value">17 ر</div></div></div></div>
+    </div>
+  </div>
+  <div id="ads-snap" style="display:none">
+    <div class="kpi-grid">
+      <div class="kpi-card"><div class="kpi-label">إجمالي الصرف</div><div class="kpi-value">2,100</div><div class="kpi-change neutral">ريال — 2025</div></div>
+      <div class="kpi-card"><div class="kpi-label">إجمالي النتائج</div><div class="kpi-value">64</div><div class="kpi-change down">↓ أقل من المنصات</div></div>
+      <div class="kpi-card"><div class="kpi-label">تكلفة النتيجة</div><div class="kpi-value">32.8</div><div class="kpi-change down">↓ الأغلى</div></div>
+      <div class="kpi-card"><div class="kpi-label">التوصية</div><div class="kpi-value" style="font-size:15px">راجع الميزانية</div><div class="kpi-change down">↓ أداء محدود</div></div>
+    </div>
+    <div style="padding-top:16px"><div class="chart-card"><div class="card-header"><div><div class="card-title">ملاحظة عن سناب</div></div><div class="badge badge-yellow">⚠️ تحت المراقبة</div></div><p style="color:var(--muted);font-size:14px;line-height:2">سناب يعطي نتائج أقل مقارنة بـ Meta وTikTok. تكلفة النتيجة 32.8 ريال مقابل 26.9 في Meta و23.6 في TikTok. يُنصح بتقليل الميزانية وتركيزها على المنصتين الأفضل أداءً.</p></div></div>
+  </div>
+</div>
+
+<!-- AUDIENCE -->
+<div id="audience" class="section">
+  <div class="kpi-grid">
+    <div class="kpi-card"><div class="kpi-label">إجمالي المتابعين</div><div class="kpi-value">104K</div><div class="kpi-change up">↑ نمو مستمر</div></div>
+    <div class="kpi-card"><div class="kpi-label">من السعودية</div><div class="kpi-value">78%</div><div class="kpi-change up">↑ الجمهور المستهدف</div></div>
+    <div class="kpi-card"><div class="kpi-label">الفئة الأكثر</div><div class="kpi-value">25-34</div><div class="kpi-change up">↑ 34% من الجمهور</div></div>
+    <div class="kpi-card"><div class="kpi-label">متابعون جدد</div><div class="kpi-value">+2.3K</div><div class="kpi-change up">↑ هذا الشهر</div></div>
+  </div>
+  <div class="charts-row charts-row-equal">
+    <div class="chart-card">
+      <div class="card-header"><div><div class="card-title">الجنس</div><div class="card-subtitle">توزيع المتابعين</div></div></div>
+      <div class="gender-row">
+        <div class="gender-card"><div class="gender-icon">👩</div><div class="gender-pct" style="color:#ff6b9d">62%</div><div class="gender-label">بنات</div><div style="font-size:12px;color:var(--muted);margin-top:4px">64,480 متابعة</div></div>
+        <div class="gender-card"><div class="gender-icon">👨</div><div class="gender-pct" style="color:#6c63ff">38%</div><div class="gender-label">شباب</div><div style="font-size:12px;color:var(--muted);margin-top:4px">39,520 متابع</div></div>
+      </div>
+    </div>
+    <div class="chart-card">
+      <div class="card-header"><div><div class="card-title">الفئات العمرية</div><div class="card-subtitle">توزيع المتابعين حسب العمر</div></div></div>
+      <div class="age-bars" style="margin-top:8px">
+        <div class="age-row"><div class="age-label">18-24</div><div class="age-bar-track"><div class="age-bar-fill" style="width:22%;background:#6c63ff"></div></div><div class="age-pct">22%</div></div>
+        <div class="age-row"><div class="age-label">25-34</div><div class="age-bar-track"><div class="age-bar-fill" style="width:100%;background:#00d4aa"></div></div><div class="age-pct">34%</div></div>
+        <div class="age-row"><div class="age-label">35-44</div><div class="age-bar-track"><div class="age-bar-fill" style="width:70%;background:#00d4aa"></div></div><div class="age-pct">24%</div></div>
+        <div class="age-row"><div class="age-label">45-54</div><div class="age-bar-track"><div class="age-bar-fill" style="width:38%;background:#ffd166"></div></div><div class="age-pct">13%</div></div>
+        <div class="age-row"><div class="age-label">55+</div><div class="age-bar-track"><div class="age-bar-fill" style="width:20%;background:#ff6b6b"></div></div><div class="age-pct">7%</div></div>
+      </div>
+    </div>
+  </div>
+  <div style="margin-top:16px">
+    <div class="chart-card">
+      <div class="card-header"><div><div class="card-title">أعلى المدن</div><div class="card-subtitle">توزيع المتابعين جغرافياً</div></div></div>
+      <div class="age-bars" style="margin-top:8px">
+        <div class="age-row"><div class="age-label" style="width:80px">جدة</div><div class="age-bar-track"><div class="age-bar-fill" style="width:100%;background:#00d4aa"></div></div><div class="age-pct">38%</div></div>
+        <div class="age-row"><div class="age-label" style="width:80px">الرياض</div><div class="age-bar-track"><div class="age-bar-fill" style="width:79%;background:#00d4aa"></div></div><div class="age-pct">30%</div></div>
+        <div class="age-row"><div class="age-label" style="width:80px">مكة</div><div class="age-bar-track"><div class="age-bar-fill" style="width:26%;background:#6c63ff"></div></div><div class="age-pct">10%</div></div>
+        <div class="age-row"><div class="age-label" style="width:80px">المدينة</div><div class="age-bar-track"><div class="age-bar-fill" style="width:18%;background:#6c63ff"></div></div><div class="age-pct">7%</div></div>
+        <div class="age-row"><div class="age-label" style="width:80px">الدمام</div><div class="age-bar-track"><div class="age-bar-fill" style="width:13%;background:#ffd166"></div></div><div class="age-pct">5%</div></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- FINANCE -->
+<div id="finance" class="section">
+  <div class="kpi-grid kpi-grid-5">
+    <div class="kpi-card"><div class="kpi-label">إجمالي الصرف 2025</div><div class="kpi-value">14,700</div><div class="kpi-change neutral">ريال — كل المنصات</div></div>
+    <div class="kpi-card"><div class="kpi-label">Meta</div><div class="kpi-value">8,400</div><div class="kpi-change neutral">57% من الإجمالي</div></div>
+    <div class="kpi-card"><div class="kpi-label">TikTok</div><div class="kpi-value">4,200</div><div class="kpi-change up">↑ أفضل تكلفة نتيجة</div></div>
+    <div class="kpi-card"><div class="kpi-label">سناب</div><div class="kpi-value">2,100</div><div class="kpi-change down">↓ أغلى تكلفة نتيجة</div></div>
+    <div class="kpi-card"><div class="kpi-label">مقارنة بـ 2024</div><div class="kpi-value">+28%</div><div class="kpi-change up">↑ زيادة في الصرف</div></div>
+  </div>
+  <div class="charts-row">
+    <div class="chart-card">
+      <div class="card-header"><div><div class="card-title">الصرف الشهري — 2025</div><div class="card-subtitle">إجمالي كل المنصات</div></div><div class="badge">14,700 ريال</div></div>
+      <div class="month-bars" style="margin-top:8px" id="monthlyBars"></div>
+    </div>
+    <div class="chart-card">
+      <div class="card-header"><div><div class="card-title">مقارنة سنوية</div><div class="card-subtitle">إجمالي الصرف السنوي</div></div></div>
+      <div class="age-bars" style="margin-top:8px">
+        <div class="age-row"><div class="age-label" style="width:60px">2023</div><div class="age-bar-track"><div class="age-bar-fill" style="width:42%;background:#6c63ff"></div></div><div class="age-pct" style="width:80px">6,800 ر</div></div>
+        <div class="age-row"><div class="age-label" style="width:60px">2024</div><div class="age-bar-track"><div class="age-bar-fill" style="width:72%;background:#ffd166"></div></div><div class="age-pct" style="width:80px">11,500 ر</div></div>
+        <div class="age-row"><div class="age-label" style="width:60px">2025</div><div class="age-bar-track"><div class="age-bar-fill" style="width:100%;background:#00d4aa"></div></div><div class="age-pct" style="width:80px">14,700 ر</div></div>
+      </div>
+      <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border)">
+        <div class="card-title" style="margin-bottom:12px">توزيع المنصات 2025</div>
+        <div class="legend">
+          <div class="legend-item"><div class="legend-left"><div class="legend-dot" style="background:#4267B2"></div>Meta</div><div class="legend-pct">57%</div></div>
+          <div class="legend-item"><div class="legend-left"><div class="legend-dot" style="background:#ff0050"></div>TikTok</div><div class="legend-pct">28%</div></div>
+          <div class="legend-item"><div class="legend-left"><div class="legend-dot" style="background:#FFFC00"></div>سناب</div><div class="legend-pct">15%</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CONTENT -->
+<div id="content" class="section">
+  <div class="kpi-grid">
+    <div class="kpi-card"><div class="kpi-label">إجمالي المنشورات</div><div class="kpi-value">124</div><div class="kpi-change neutral">منشور في 2025</div></div>
+    <div class="kpi-card"><div class="kpi-label">أعلى ريلز</div><div class="kpi-value">1.0M</div><div class="kpi-change up">↑ جولة الكابينة</div></div>
+    <div class="kpi-card"><div class="kpi-label">متوسط ريلز</div><div class="kpi-value">186K</div><div class="kpi-change up">↑ ممتاز</div></div>
+    <div class="kpi-card"><div class="kpi-label">متوسط صور</div><div class="kpi-value">48K</div><div class="kpi-change down">↓ أقل من الريلز</div></div>
+  </div>
+  <div class="charts-row charts-row-equal" style="margin-bottom:16px">
+    <div class="chart-card">
+      <div class="card-header"><div><div class="card-title">ريلز مقابل صور</div><div class="card-subtitle">مقارنة متوسط الأداء</div></div><div class="badge">الريلز يفوز 🏆</div></div>
+      <div class="compare-grid">
+        <div class="compare-card" style="border:1px solid rgba(0,212,170,0.2)">
+          <div class="compare-icon">🎥</div><div class="compare-title">ريلز</div>
+          <div class="compare-stat"><div class="compare-stat-label">متوسط المشاهدات</div><div class="compare-stat-value" style="color:#00d4aa">186K</div></div>
+          <div class="compare-stat"><div class="compare-stat-label">متوسط التفاعل</div><div class="compare-stat-value" style="color:#00d4aa">5.2%</div></div>
+          <div class="compare-stat"><div class="compare-stat-label">عدد المنشورات</div><div class="compare-stat-value">68</div></div>
+        </div>
+        <div class="compare-card" style="border:1px solid rgba(108,99,255,0.2)">
+          <div class="compare-icon">📸</div><div class="compare-title">صور</div>
+          <div class="compare-stat"><div class="compare-stat-label">متوسط المشاهدات</div><div class="compare-stat-value" style="color:#6c63ff">48K</div></div>
+          <div class="compare-stat"><div class="compare-stat-label">متوسط التفاعل</div><div class="compare-stat-value" style="color:#6c63ff">2.8%</div></div>
+          <div class="compare-stat"><div class="compare-stat-label">عدد المنشورات</div><div class="compare-stat-value">35</div></div>
+        </div>
+      </div>
+      <div style="padding:14px;background:rgba(0,212,170,0.05);border-radius:10px;border:1px solid rgba(0,212,170,0.1);font-size:13px;color:var(--muted)">
+        💡 <strong style="color:white">التوصية:</strong> الريلز يعطي تفاعل أعلى بـ 86% من الصور — ركّز على الريلز أكثر
+      </div>
+    </div>
+    <div class="chart-card">
+      <div class="card-header"><div><div class="card-title">أفضل أنواع المحتوى</div><div class="card-subtitle">حسب متوسط المشاهدات</div></div></div>
+      <div class="age-bars" style="margin-top:8px">
+        <div class="age-row"><div class="age-label" style="width:100px">جولات الكابينة</div><div class="age-bar-track"><div class="age-bar-fill" style="width:100%;background:#00d4aa"></div></div><div class="age-pct">380K</div></div>
+        <div class="age-row"><div class="age-label" style="width:100px">تجارب العائلة</div><div class="age-bar-track"><div class="age-bar-fill" style="width:67%;background:#00d4aa"></div></div><div class="age-pct">256K</div></div>
+        <div class="age-row"><div class="age-label" style="width:100px">المسبح</div><div class="age-bar-track"><div class="age-bar-fill" style="width:52%;background:#6c63ff"></div></div><div class="age-pct">196K</div></div>
+        <div class="age-row"><div class="age-label" style="width:100px">الطبيعة</div><div class="age-bar-track"><div class="age-bar-fill" style="width:38%;background:#6c63ff"></div></div><div class="age-pct">143K</div></div>
+        <div class="age-row"><div class="age-label" style="width:100px">الأكل</div><div class="age-bar-track"><div class="age-bar-fill" style="width:22%;background:#ffd166"></div></div><div class="age-pct">82K</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="chart-card">
+    <div class="card-header"><div><div class="card-title">جميع المنشورات مرتبة بالأداء</div><div class="card-subtitle">مرتبة تلقائياً من الأعلى للأدنى</div></div></div>
+    <table class="data-table">
+      <tr><th>#</th><th>النوع</th><th>المنشور</th><th>المشاهدات</th><th>اللايكات</th><th>التعليقات</th><th>الحفظ</th><th>التفاعل</th></tr>
+      <tr><td class="rank">🥇</td><td>🎥</td><td>جولة كاملة في الكابينة</td><td style="color:#00d4aa;font-weight:700">1.0M</td><td>42K</td><td>1,840</td><td>8,200</td><td><span class="status green">8.4%</span></td></tr>
+      <tr><td class="rank">🥈</td><td>📸</td><td>المسبح عند الغروب</td><td>284K</td><td>18K</td><td>620</td><td>3,400</td><td><span class="status green">5.8%</span></td></tr>
+      <tr><td class="rank">🥉</td><td>🎥</td><td>تجربة العائلة كاملة</td><td>198K</td><td>12K</td><td>480</td><td>2,100</td><td><span class="status green">5.1%</span></td></tr>
+      <tr><td class="rank">4</td><td>🎥</td><td>الكابينة الفاخرة من الداخل</td><td>145K</td><td>9K</td><td>310</td><td>1,800</td><td><span class="status green">4.6%</span></td></tr>
+      <tr><td class="rank">5</td><td>📸</td><td>تصميم الكابينة الداخلي</td><td>92K</td><td>5K</td><td>180</td><td>900</td><td><span class="status yellow">3.1%</span></td></tr>
+      <tr><td class="rank">6</td><td>🎥</td><td>الإفطار في المنتجع</td><td>67K</td><td>3.8K</td><td>120</td><td>620</td><td><span class="status yellow">2.6%</span></td></tr>
+      <tr><td class="rank">7</td><td>📸</td><td>الحديقة الخضراء</td><td>48K</td><td>2.4K</td><td>88</td><td>340</td><td><span class="status yellow">2.0%</span></td></tr>
+    </table>
+  </div>
+</div>
+
+</div>
+
+<script>
+const yearData={2023:{followers:'62K',views:'480K',engage:'3.1%',reach:'28K',badge:'+14% سنوياً',sub:'متابعون جدد شهرياً — 2023',bars:[400,520,680,800,750,900,1100,1200,980,1300,1400,1600]},2024:{followers:'82K',views:'780K',engage:'3.9%',reach:'42K',badge:'+18% سنوياً',sub:'متابعون جدد شهرياً — 2024',bars:[800,900,1100,1400,1300,1600,1800,2100,1700,2200,2500,2800]},2025:{followers:'104K',views:'1.2M',engage:'4.8%',reach:'58K',badge:'+22% سنوياً',sub:'متابعون جدد شهرياً — 2025',bars:[1200,1400,1800,2100,1900,2400,2800,3100,2600,3400,3800,4200]}};
+const months=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+const monthlySpend=[800,900,1100,1400,1300,1600,1800,2100,1700,2200,0,0];
+
+function setYear(y,el){document.querySelectorAll('.year-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');const d=yearData[y];document.getElementById('ig-followers').textContent=d.followers;document.getElementById('ig-views').textContent=d.views;document.getElementById('ig-engage').textContent=d.engage;document.getElementById('ig-reach').textContent=d.reach;document.getElementById('ig-growth-badge').textContent=d.badge;document.getElementById('ig-chart-sub').textContent=d.sub;buildFollowersChart(d.bars)}
+
+function buildFollowersChart(values){const chart=document.getElementById('followersChart');const max=Math.max(...values);chart.innerHTML='';months.forEach((m,i)=>{const pct=(values[i]/max)*100;const color=i>=6?'#00d4aa':'#6c63ff';chart.innerHTML+=`<div class="bar-group"><div class="bar" style="height:${pct}%;background:${color};opacity:0.85" title="${values[i].toLocaleString()} متابع جديد"></div><div class="bar-label">${m.slice(0,3)}</div></div>`})}
+
+function buildMonthlyBars(){const max=Math.max(...monthlySpend.filter(v=>v>0));const container=document.getElementById('monthlyBars');container.innerHTML='';months.forEach((m,i)=>{if(monthlySpend[i]===0)return;const pct=(monthlySpend[i]/max)*100;container.innerHTML+=`<div class="month-row"><div class="month-label">${m}</div><div class="month-bar-track"><div class="month-bar-fill" style="width:${pct}%"></div></div><div class="month-val">${monthlySpend[i].toLocaleString()} ر</div></div>`})}
+
+function showTab(id,el){document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.getElementById(id).classList.add('active');el.classList.add('active')}
+
+function setPlatform(p,el){document.querySelectorAll('.ptab').forEach(t=>t.classList.remove('active'));el.classList.add('active');document.getElementById('ads-meta').style.display=p==='meta'?'block':'none';document.getElementById('ads-tiktok').style.display=p==='tiktok'?'block':'none';document.getElementById('ads-snap').style.display=p==='snap'?'block':'none'}
+
+buildFollowersChart(yearData[2025].bars);
+buildMonthlyBars();
+</script>
+</body>
+</html>
