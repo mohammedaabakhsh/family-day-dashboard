@@ -173,6 +173,29 @@ body.light .donut svg circle:first-child{stroke:#eef2f7}
 .cmp-diff{display:block;font-size:11px;font-weight:400;color:var(--muted);margin-top:3px}
 .cmp-diff.up{color:var(--accent)}.cmp-diff.down{color:var(--accent2)}
 .cmp-winner{background:rgba(0,212,170,0.04)}
+/* ===== GOALS ===== */
+.goals-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;padding:24px 0 8px}
+.goal-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:22px;animation:fadeUp 0.5s ease both;transition:border-color 0.2s}
+.goal-card:hover{border-color:rgba(255,255,255,0.12)}
+.goal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.goal-title{font-size:14px;font-weight:700;color:white}
+.goal-icon{font-size:22px}
+.goal-nums{display:flex;align-items:baseline;gap:8px;margin-bottom:4px}
+.goal-current{font-size:26px;font-weight:900;color:white}
+.goal-target{font-size:13px;color:var(--muted)}
+.goal-bar-track{width:100%;height:10px;background:rgba(255,255,255,0.06);border-radius:5px;overflow:hidden;margin:12px 0 8px}
+.goal-bar-fill{height:100%;border-radius:5px;transition:width 0.8s ease}
+.goal-pct-row{display:flex;align-items:center;justify-content:space-between;font-size:12px}
+.goal-pct{font-weight:700;font-size:15px}
+/* dual chart */
+.dual-picker{background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:5px 10px;font-size:12px;color:var(--text);font-family:'Tajawal',sans-serif;cursor:pointer;outline:none;transition:border-color 0.2s}
+.dual-picker:focus{border-color:var(--accent3)}
+.line-chart-svg .lc-line2{fill:none;stroke:#ffd166;stroke-width:2;stroke-linecap:round;stroke-dasharray:6,3}
+.line-chart-svg .lc-dot2{fill:#ffd166;stroke:var(--card);stroke-width:2;cursor:pointer;transition:r 0.15s}
+.line-chart-svg .lc-dot2:hover{r:5}
+/* ===== RESPONSIVE: GOALS ===== */
+@media(max-width:1024px){.goals-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:480px){.goals-grid{grid-template-columns:1fr}}
 /* ===== RESPONSIVE ===== */
 @media (max-width:1024px){
   .kpi-grid-5{grid-template-columns:repeat(3,1fr)}
@@ -250,6 +273,7 @@ body.light .donut svg circle:first-child{stroke:#eef2f7}
     <div class="live-dot">تحديث تلقائي</div>
     <button class="print-btn" onclick="window.print()">🖨️ طباعة</button>
     <button class="mode-toggle" onclick="toggleMode(this)">☀️ فاتح</button>
+    <button class="print-btn" onclick="exportCSV()">📥 CSV</button>
   </div>
 </div>
 
@@ -262,6 +286,7 @@ body.light .donut svg circle:first-child{stroke:#eef2f7}
   <div class="tab" onclick="showTab('finance',this)">💰 المالية</div>
   <div class="tab" onclick="showTab('content',this)">🎬 المحتوى</div>
   <div class="tab" onclick="showTab('monthcompare',this)">📊 مقارنة الأشهر</div>
+  <div class="tab" onclick="showTab('goals',this)">🎯 الأهداف</div>
 </div>
 
 <div class="content">
@@ -278,7 +303,16 @@ body.light .donut svg circle:first-child{stroke:#eef2f7}
     <div class="chart-card">
       <div class="card-header">
         <div><div class="card-title">نمو المتابعين</div><div class="card-subtitle" id="ig-chart-sub">متابعون جدد شهرياً — 2025</div></div>
-        <div class="badge" id="ig-growth-badge">+22% سنوياً</div>
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          <select class="dual-picker" id="dualYear" onchange="buildFollowersChart(currentBars,this.value)">
+            <option value="">+ قارن مع سنة</option>
+            <option value="2023">2023</option>
+            <option value="2024">2024</option>
+            <option value="2025">2025</option>
+            <option value="2026">2026</option>
+          </select>
+          <div class="badge" id="ig-growth-badge">+22% سنوياً</div>
+        </div>
       </div>
       <div class="bar-chart" id="followersChart"></div>
     </div>
@@ -522,34 +556,114 @@ body.light .donut svg circle:first-child{stroke:#eef2f7}
   <div id="compareResult" style="margin-top:16px"></div>
 </div>
 
+<!-- GOALS -->
+<div id="goals" class="section">
+  <div class="kpi-grid" style="padding-bottom:4px">
+    <div class="kpi-card"><div class="kpi-label">أهداف قريبة من التحقق</div><div class="kpi-value" style="color:#ffd166">4</div><div class="kpi-change up">↑ من أصل 6 أهداف ≥80%</div></div>
+    <div class="kpi-card"><div class="kpi-label">متوسط الإنجاز</div><div class="kpi-value">81%</div><div class="kpi-change up">↑ أداء جيد</div></div>
+    <div class="kpi-card"><div class="kpi-label">أقرب هدف للتحقق</div><div class="kpi-value" style="font-size:16px">تكلفة Meta</div><div class="kpi-change up">↑ 93% مكتمل</div></div>
+    <div class="kpi-card"><div class="kpi-label">الأبعد عن الهدف</div><div class="kpi-value" style="font-size:16px">المشاهدات</div><div class="kpi-change down">↓ 60% فقط</div></div>
+  </div>
+  <div class="goals-grid" id="goalsGrid"></div>
+  <div class="chart-card" style="margin-top:0">
+    <div class="card-header"><div><div class="card-title">💡 ملاحظة عن الأهداف</div></div><div class="badge badge-yellow">بيانات 2025</div></div>
+    <p style="color:var(--muted);font-size:14px;line-height:2.2">
+      يمكنك تعديل الأهداف يدوياً في كود الداشبورد — عند ربط Instagram API غداً ستتحدث الأرقام تلقائياً وتُحسب النسب دون أي تدخل 🚀
+    </p>
+  </div>
+</div>
+
 </div>
 
 <script>
-const yearData={2023:{followers:'62K',views:'480K',engage:'3.1%',reach:'28K',badge:'+14% سنوياً',sub:'متابعون جدد شهرياً — 2023',bars:[400,520,680,800,750,900,1100,1200,980,1300,1400,1600]},2024:{followers:'82K',views:'780K',engage:'3.9%',reach:'42K',badge:'+18% سنوياً',sub:'متابعون جدد شهرياً — 2024',bars:[800,900,1100,1400,1300,1600,1800,2100,1700,2200,2500,2800]},2025:{followers:'104K',views:'1.2M',engage:'4.8%',reach:'58K',badge:'+22% سنوياً',sub:'متابعون جدد شهرياً — 2025',bars:[1200,1400,1800,2100,1900,2400,2800,3100,2600,3400,3800,4200]},2026:{followers:'130K',views:'1.8M',engage:'5.4%',reach:'74K',badge:'🟡 جزئي — يناير إلى مارس',sub:'متابعون جدد — 2026 (يناير–مارس)',bars:[2200,2600,2900,0,0,0,0,0,0,0,0,0]}};
+const yearData={
+  2023:{followers:'62K',views:'480K',engage:'3.1%',reach:'28K',badge:'+14% سنوياً',sub:'متابعون جدد شهرياً — 2023',bars:[400,520,680,800,750,900,1100,1200,980,1300,1400,1600]},
+  2024:{followers:'82K',views:'780K',engage:'3.9%',reach:'42K',badge:'+18% سنوياً',sub:'متابعون جدد شهرياً — 2024',bars:[800,900,1100,1400,1300,1600,1800,2100,1700,2200,2500,2800]},
+  2025:{followers:'104K',views:'1.2M',engage:'4.8%',reach:'58K',badge:'+22% سنوياً',sub:'متابعون جدد شهرياً — 2025',bars:[1200,1400,1800,2100,1900,2400,2800,3100,2600,3400,3800,4200]},
+  2026:{followers:'130K',views:'1.8M',engage:'5.4%',reach:'74K',badge:'🟡 جزئي — يناير إلى مارس',sub:'متابعون جدد — 2026 (يناير–مارس)',bars:[2200,2600,2900,0,0,0,0,0,0,0,0,0]}
+};
 const months=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
 const monthlySpend=[800,900,1100,1400,1300,1600,1800,2100,1700,2200,0,0];
+let currentBars=yearData[2025].bars;
 
-function setYear(y,el){document.querySelectorAll('.year-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');const d=yearData[y];document.getElementById('ig-followers').textContent=d.followers;document.getElementById('ig-views').textContent=d.views;document.getElementById('ig-engage').textContent=d.engage;document.getElementById('ig-reach').textContent=d.reach;document.getElementById('ig-growth-badge').textContent=d.badge;document.getElementById('ig-chart-sub').textContent=d.sub;buildFollowersChart(d.bars)}
+// ===== COUNTER ANIMATION =====
+function animateValue(el, newText){
+  const m=newText.match(/^([+\-]?)([0-9,.]+)(.*)/);
+  if(!m){el.textContent=newText;return;}
+  const sign=m[1]||'', num=parseFloat(m[2].replace(',','')), suf=m[3]||'';
+  if(isNaN(num)){el.textContent=newText;return;}
+  const isFloat=newText.includes('.');
+  const dur=650,steps=35,ms=dur/steps;
+  let t=0;
+  const id=setInterval(()=>{
+    t++;
+    const cur=num*t/steps;
+    const disp=isFloat?cur.toFixed(1):(Math.round(cur)).toLocaleString();
+    el.textContent=sign+disp+suf;
+    if(t>=steps){el.textContent=newText;clearInterval(id);}
+  },ms);
+}
 
-function buildFollowersChart(values){
+function setYear(y,el){
+  document.querySelectorAll('.year-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  const d=yearData[y];
+  animateValue(document.getElementById('ig-followers'),d.followers);
+  animateValue(document.getElementById('ig-views'),d.views);
+  animateValue(document.getElementById('ig-engage'),d.engage);
+  animateValue(document.getElementById('ig-reach'),d.reach);
+  document.getElementById('ig-growth-badge').textContent=d.badge;
+  document.getElementById('ig-chart-sub').textContent=d.sub;
+  const dp=document.getElementById('dualYear');
+  if(dp)dp.value='';
+  currentBars=d.bars;
+  buildFollowersChart(d.bars);
+}
+
+// ===== FOLLOWERS CHART (supports dual-year overlay) =====
+function buildFollowersChart(values, compareYearStr){
   const container=document.getElementById('followersChart');
   container.innerHTML='';
   const active=values.map((v,i)=>({v,i})).filter(x=>x.v>0);
   if(!active.length)return;
   const VW=600,VH=180,PT=18,PB=28,PL=15,PR=15;
-  const cW=VW-PL-PR,cH=VH-PT-PB,max=Math.max(...active.map(x=>x.v)),n=active.length;
+  const cW=VW-PL-PR,cH=VH-PT-PB;
+  let max=Math.max(...active.map(x=>x.v));
+  let cmpActive=null;
+  if(compareYearStr && yearData[compareYearStr]){
+    cmpActive=yearData[compareYearStr].bars.map((v,i)=>({v,i})).filter(x=>x.v>0);
+    if(cmpActive.length) max=Math.max(max,...cmpActive.map(x=>x.v));
+  }
+  const n=active.length;
   const pts=active.map((x,j)=>({x:PL+(j/Math.max(n-1,1))*cW,y:PT+(1-x.v/max)*cH,mi:x.i,v:x.v}));
   function curve(p){let d=`M${p[0].x},${p[0].y}`;for(let i=0;i<p.length-1;i++){const mx=(p[i].x+p[i+1].x)/2;d+=` C${mx},${p[i].y} ${mx},${p[i+1].y} ${p[i+1].x},${p[i+1].y}`}return d}
   const lp=curve(pts);
   const ap=`${lp} L${pts[n-1].x},${VH-PB} L${pts[0].x},${VH-PB} Z`;
+  let cmpSVG='';
+  if(cmpActive && cmpActive.length>1){
+    const cn=cmpActive.length;
+    const cpts=cmpActive.map((x,j)=>({x:PL+(j/Math.max(cn-1,1))*cW,y:PT+(1-x.v/max)*cH,mi:x.i,v:x.v}));
+    cmpSVG=`<path class="lc-line2" d="${curve(cpts)}"/>`+cpts.map((p,j)=>`<circle class="lc-dot2" cx="${p.x}" cy="${p.y}" r="3.5" data-cv="${p.v}" data-cmi="${p.mi}"/>`).join('');
+  }
   const tip=document.createElement('div');tip.className='lc-tooltip';container.appendChild(tip);
   const ns='http://www.w3.org/2000/svg';
   const svg=document.createElementNS(ns,'svg');
   svg.setAttribute('viewBox',`0 0 ${VW} ${VH}`);
   svg.setAttribute('width','100%');svg.setAttribute('height','100%');
   svg.setAttribute('class','line-chart-svg');
-  svg.innerHTML=`<defs><linearGradient id="lcGrad" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="#00d4aa" stop-opacity="0.3"/><stop offset="100%" stop-color="#00d4aa" stop-opacity="0"/></linearGradient></defs><path class="lc-area" d="${ap}"/><path class="lc-line" d="${lp}"/>${pts.map((p,j)=>`<circle class="lc-dot" cx="${p.x}" cy="${p.y}" r="4" data-j="${j}"/><text class="lc-label" x="${p.x}" y="${VH-8}">${months[p.mi].slice(0,3)}</text>`).join('')}`;
-  svg.querySelectorAll('.lc-dot').forEach(d=>{const j=+d.getAttribute('data-j');const p=pts[j];d.addEventListener('mouseenter',()=>{tip.textContent=`${months[p.mi]}: ${p.v.toLocaleString()} متابع جديد`;tip.style.opacity='1'});d.addEventListener('mousemove',e=>{const r=container.getBoundingClientRect();let l=e.clientX-r.left+12,t=e.clientY-r.top-38;if(t<0)t=4;tip.style.left=l+'px';tip.style.top=t+'px'});d.addEventListener('mouseleave',()=>{tip.style.opacity='0'})});
+  svg.innerHTML=`<defs><linearGradient id="lcGrad" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="#00d4aa" stop-opacity="0.3"/><stop offset="100%" stop-color="#00d4aa" stop-opacity="0"/></linearGradient></defs><path class="lc-area" d="${ap}"/><path class="lc-line" d="${lp}"/>${cmpSVG}${pts.map((p,j)=>`<circle class="lc-dot" cx="${p.x}" cy="${p.y}" r="4" data-j="${j}"/><text class="lc-label" x="${p.x}" y="${VH-8}">${months[p.mi].slice(0,3)}</text>`).join('')}`;
+  svg.querySelectorAll('.lc-dot').forEach(d=>{
+    const j=+d.getAttribute('data-j');const p=pts[j];
+    d.addEventListener('mouseenter',()=>{tip.textContent=`${months[p.mi]}: ${p.v.toLocaleString()} متابع جديد`;tip.style.opacity='1'});
+    d.addEventListener('mousemove',e=>{const r=container.getBoundingClientRect();let l=e.clientX-r.left+12,t=e.clientY-r.top-38;if(t<0)t=4;tip.style.left=l+'px';tip.style.top=t+'px'});
+    d.addEventListener('mouseleave',()=>{tip.style.opacity='0'});
+  });
+  svg.querySelectorAll('.lc-dot2').forEach(d=>{
+    const cv=+d.getAttribute('data-cv'),cmi=+d.getAttribute('data-cmi');
+    d.addEventListener('mouseenter',()=>{tip.textContent=`${compareYearStr} ← ${months[cmi]}: ${cv.toLocaleString()} متابع`;tip.style.opacity='1'});
+    d.addEventListener('mousemove',e=>{const r=container.getBoundingClientRect();let l=e.clientX-r.left+12,t=e.clientY-r.top-38;if(t<0)t=4;tip.style.left=l+'px';tip.style.top=t+'px'});
+    d.addEventListener('mouseleave',()=>{tip.style.opacity='0'});
+  });
   container.appendChild(svg);
 }
 
@@ -577,7 +691,6 @@ const monthlyData={
   spend:    [800,900,1100,1400,1300,1600,1800,2100,1700,2200,0,0],
   results:  [28,32,42,55,48,62,70,82,65,89,0,0]
 };
-
 const cmpMetrics=[
   {label:'متابعون جدد',    key:'followers', higherBetter:true,  fmt:v=>v.toLocaleString()},
   {label:'الوصول',         key:'reach',     higherBetter:true,  fmt:v=>(v/1000).toFixed(0)+'K'},
@@ -585,7 +698,6 @@ const cmpMetrics=[
   {label:'الصرف الإعلاني', key:'spend',     higherBetter:false, fmt:v=>v?v.toLocaleString()+' ر':'—'},
   {label:'نتائج الإعلانات',key:'results',   higherBetter:true,  fmt:v=>v||'—'},
 ];
-
 function initCompare(){
   ['month1','month2'].forEach((id,idx)=>{
     const sel=document.getElementById(id);
@@ -598,16 +710,10 @@ function initCompare(){
   });
   buildComparison();
 }
-
 function buildComparison(){
   const m1=+document.getElementById('month1').value;
   const m2=+document.getElementById('month2').value;
-  let html=`<table class="cmp-table">
-    <thead><tr>
-      <th>${months[m1]}</th>
-      <th class="cmp-th-label">المقياس</th>
-      <th>${months[m2]}</th>
-    </tr></thead><tbody>`;
+  let html=`<table class="cmp-table"><thead><tr><th>${months[m1]}</th><th class="cmp-th-label">المقياس</th><th>${months[m2]}</th></tr></thead><tbody>`;
   cmpMetrics.forEach(({label,key,higherBetter,fmt})=>{
     const v1=monthlyData[key][m1], v2=monthlyData[key][m2];
     const valid=v1>0&&v2>0;
@@ -621,20 +727,69 @@ function buildComparison(){
       diff=`<span class="cmp-diff ${pct>0?'up':'down'}">${sign}${pct}%</span>`;
     }
     const rowCls=c2==='cmp-better'?'cmp-winner':'';
-    html+=`<tr class="${rowCls}">
-      <td class="${c1}">${fmt(v1)}</td>
-      <td class="cmp-td-label">${label}</td>
-      <td class="${c2}">${fmt(v2)}${diff}</td>
-    </tr>`;
+    html+=`<tr class="${rowCls}"><td class="${c1}">${fmt(v1)}</td><td class="cmp-td-label">${label}</td><td class="${c2}">${fmt(v2)}${diff}</td></tr>`;
   });
   html+='</tbody></table>';
   document.getElementById('compareResult').innerHTML=html;
+}
+
+// ===== KPI GOALS =====
+const goalsData=[
+  {icon:'👥',title:'متابعو Instagram',cur:'104K',tar:'150K',pct:69},
+  {icon:'🎥',title:'مشاهدات الريلز',cur:'1.2M',tar:'2M',pct:60},
+  {icon:'💬',title:'معدل التفاعل',cur:'4.8%',tar:'5.5%',pct:87},
+  {icon:'💰',title:'ميزانية الإعلانات',cur:'14,700 ر',tar:'16,000 ر (حد أقصى)',pct:92},
+  {icon:'📈',title:'متابع جديد / شهر',cur:'3,800',tar:'4,500',pct:84},
+  {icon:'🎯',title:'تكلفة نتيجة Meta',cur:'26.9 ر',tar:'≤ 25 ر',pct:93},
+];
+function buildGoals(){
+  const grid=document.getElementById('goalsGrid');
+  if(!grid)return;
+  grid.innerHTML='';
+  goalsData.forEach((g,i)=>{
+    let badge,bc;
+    if(g.pct>=100){badge='✅ محقق';bc='#00d4aa';}
+    else if(g.pct>=80){badge='🔥 قريب';bc='#ffd166';}
+    else if(g.pct>=50){badge='⏳ جارٍ';bc='#64748b';}
+    else{badge='⚠️ متأخر';bc='#ff6b6b';}
+    const fc=g.pct>=100?'#00d4aa':g.pct>=80?'#ffd166':g.pct>=50?'#6c63ff':'#ff6b6b';
+    grid.innerHTML+=`<div class="goal-card" style="animation-delay:${i*0.08}s">
+      <div class="goal-header"><div class="goal-title">${g.title}</div><div class="goal-icon">${g.icon}</div></div>
+      <div class="goal-nums"><div class="goal-current">${g.cur}</div><div class="goal-target">الهدف: ${g.tar}</div></div>
+      <div class="goal-bar-track"><div class="goal-bar-fill" style="width:${g.pct}%;background:${fc}"></div></div>
+      <div class="goal-pct-row"><div class="goal-pct" style="color:${fc}">${g.pct}%</div><div style="color:${bc};font-size:12px">${badge}</div></div>
+    </div>`;
+  });
+}
+
+// ===== CSV EXPORT =====
+function exportCSV(){
+  const y=document.querySelector('.year-btn.active')?.textContent||'2025';
+  const d=yearData[y];
+  const rows=[
+    ['داشبورد منتجع يوم العائلة — '+y],[''],
+    ['نمو المتابعين الشهري'],['الشهر','متابعون جدد'],
+    ...d.bars.map((v,i)=>[months[i],v>0?v:'—']),
+    [''],['الصرف الإعلاني الشهري (2025)'],['الشهر','المبلغ (ريال)'],
+    ...monthlySpend.map((v,i)=>[months[i],v>0?v:'—']),
+    [''],['مقارنة الأشهر التفصيلية (2025)'],
+    ['الشهر','متابعون جدد','الوصول','التفاعل%','الصرف (ر)','النتائج'],
+    ...months.map((m,i)=>[m,monthlyData.followers[i],monthlyData.reach[i],monthlyData.engage[i],monthlyData.spend[i]||'—',monthlyData.results[i]||'—']),
+    [''],['أهداف KPI'],['الهدف','الحالي','المستهدف','النسبة'],
+    ...goalsData.map(g=>[g.title,g.cur,g.tar,g.pct+'%']),
+  ];
+  const csv='\uFEFF'+rows.map(r=>r.join(',')).join('\n');
+  const a=document.createElement('a');
+  a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);
+  a.download=`family-day-dashboard-${y}.csv`;
+  a.click();
 }
 
 buildFollowersChart(yearData[2025].bars);
 buildMonthlyBars();
 buildAlerts();
 initCompare();
+buildGoals();
 </script>
 </body>
 </html>
