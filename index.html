@@ -1008,6 +1008,7 @@ var contentYearData={
 
 // ===== COUNTER ANIMATION =====
 function animateValue(el, newText){
+  if(!el||!newText)return;
   const m=newText.match(/^([+\-]?)([0-9,.]+)(.*)/);
   if(!m){el.textContent=newText;return;}
   const sign=m[1]||'', num=parseFloat(m[2].replace(',','')), suf=m[3]||'';
@@ -1113,12 +1114,9 @@ function setYear(y,el){
   document.querySelectorAll('.year-btn').forEach(b=>b.classList.remove('active'));
   el.classList.add('active');
   const d=yearData[y];
-  animateValue(document.getElementById('ig-followers'),d.followers);
-  animateValue(document.getElementById('ig-views'),d.views);
-  animateValue(document.getElementById('ig-engage'),d.engage);
-  animateValue(document.getElementById('ig-reach'),d.reach);
-  document.getElementById('ig-growth-badge').textContent=d.badge;
-  document.getElementById('ig-chart-sub').textContent=d.sub;
+  var igF=document.getElementById('ig-followers'); if(igF)animateValue(igF,d.followers);
+  var igGb=document.getElementById('ig-growth-badge'); if(igGb)igGb.textContent=d.badge;
+  var igCs=document.getElementById('ig-chart-sub'); if(igCs)igCs.textContent=d.sub;
   const dp=document.getElementById('dualYear');
   if(dp)dp.value='';
   currentBars=d.bars;
