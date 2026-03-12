@@ -369,11 +369,11 @@ body.light .donut svg circle:first-child{stroke:#eef2f7}
   </div>
   <div id="ads-meta">
     <div class="kpi-grid kpi-grid-5">
-      <div class="kpi-card"><div class="kpi-label">إجمالي الصرف</div><div class="kpi-value">8,400</div><div class="kpi-change neutral">ريال — 2025</div></div>
-      <div class="kpi-card"><div class="kpi-label">إجمالي النتائج</div><div class="kpi-value">312</div><div class="kpi-change up">↑ رسالة / حجز</div></div>
-      <div class="kpi-card"><div class="kpi-label">تكلفة النتيجة</div><div class="kpi-value">26.9</div><div class="kpi-change up">ريال</div></div>
-      <div class="kpi-card"><div class="kpi-label">مقارنة بالعام الماضي</div><div class="kpi-value">+31%</div><div class="kpi-change up">↑ نتائج أكثر</div></div>
-      <div class="kpi-card"><div class="kpi-label">أفضل إعلان</div><div class="kpi-value" style="font-size:15px">جولة الكابينة</div><div class="kpi-change up">↑ 89 نتيجة</div></div>
+      <div class="kpi-card"><div class="kpi-label" id="ads-spend-lbl">إجمالي الصرف</div><div class="kpi-value" id="ads-spend">50,800</div><div class="kpi-change neutral" id="ads-spend-sub">ريال — 2025</div></div>
+      <div class="kpi-card"><div class="kpi-label">إجمالي النتائج</div><div class="kpi-value" id="ads-results">312</div><div class="kpi-change up">↑ رسالة / حجز</div></div>
+      <div class="kpi-card"><div class="kpi-label">تكلفة النتيجة</div><div class="kpi-value" id="ads-cost">26.9</div><div class="kpi-change up">ريال</div></div>
+      <div class="kpi-card"><div class="kpi-label" id="ads-growth-lbl">مقارنة بالعام الماضي</div><div class="kpi-value" id="ads-growth">+31%</div><div class="kpi-change up" id="ads-growth-sub">↑ نتائج أكثر</div></div>
+      <div class="kpi-card"><div class="kpi-label">أفضل إعلان</div><div class="kpi-value" id="ads-best" style="font-size:15px">جولة الكابينة</div><div class="kpi-change up" id="ads-best-sub">↑ 89 نتيجة</div></div>
     </div>
     <div class="ads-grid">
       <div class="ad-card" style="animation-delay:0.1s;border-color:rgba(0,212,170,0.3)"><div class="ad-name">🎥 جولة الكابينة الكاملة <span class="status green">✅ كمّل</span></div><div class="ad-stats"><div class="ad-stat"><div class="ad-stat-label">الصرف</div><div class="ad-stat-value">1,800 ر</div></div><div class="ad-stat"><div class="ad-stat-label">النتائج</div><div class="ad-stat-value" style="color:#00d4aa">89</div></div><div class="ad-stat"><div class="ad-stat-label">المشاهدات</div><div class="ad-stat-value">42K</div></div><div class="ad-stat"><div class="ad-stat-label">تكلفة النتيجة</div><div class="ad-stat-value">20 ر</div></div></div></div>
@@ -390,10 +390,10 @@ body.light .donut svg circle:first-child{stroke:#eef2f7}
 <!-- AUDIENCE -->
 <div id="audience" class="section">
   <div class="kpi-grid">
-    <div class="kpi-card"><div class="kpi-label">إجمالي المتابعين</div><div class="kpi-value">104K</div><div class="kpi-change up">↑ نمو مستمر</div></div>
-    <div class="kpi-card"><div class="kpi-label">من السعودية</div><div class="kpi-value">78%</div><div class="kpi-change up">↑ الجمهور المستهدف</div></div>
-    <div class="kpi-card"><div class="kpi-label">الفئة الأكثر</div><div class="kpi-value">25-34</div><div class="kpi-change up">↑ 34% من الجمهور</div></div>
-    <div class="kpi-card"><div class="kpi-label">متابعون جدد</div><div class="kpi-value">+2.3K</div><div class="kpi-change up">↑ هذا الشهر</div></div>
+    <div class="kpi-card"><div class="kpi-label">إجمالي المتابعين</div><div class="kpi-value" id="aud-total">104K</div><div class="kpi-change up">↑ نمو مستمر</div></div>
+    <div class="kpi-card"><div class="kpi-label">من السعودية</div><div class="kpi-value" id="aud-saudi">78%</div><div class="kpi-change up">↑ الجمهور المستهدف</div></div>
+    <div class="kpi-card"><div class="kpi-label">الفئة الأكثر</div><div class="kpi-value" id="aud-age">25-34</div><div class="kpi-change up" id="aud-age-sub">↑ 34% من الجمهور</div></div>
+    <div class="kpi-card"><div class="kpi-label">متابعون جدد</div><div class="kpi-value" id="aud-new">+2.3K</div><div class="kpi-change up" id="aud-new-sub">↑ هذا الشهر</div></div>
   </div>
   <div class="charts-row charts-row-equal">
     <div class="chart-card">
@@ -463,10 +463,10 @@ body.light .donut svg circle:first-child{stroke:#eef2f7}
 <!-- CONTENT -->
 <div id="content" class="section">
   <div class="kpi-grid">
-    <div class="kpi-card"><div class="kpi-label">إجمالي المنشورات</div><div class="kpi-value">124</div><div class="kpi-change neutral">منشور في 2025</div></div>
-    <div class="kpi-card"><div class="kpi-label">أعلى ريلز</div><div class="kpi-value">1.0M</div><div class="kpi-change up">↑ جولة الكابينة</div></div>
-    <div class="kpi-card"><div class="kpi-label">متوسط ريلز</div><div class="kpi-value">186K</div><div class="kpi-change up">↑ ممتاز</div></div>
-    <div class="kpi-card"><div class="kpi-label">متوسط صور</div><div class="kpi-value">48K</div><div class="kpi-change down">↓ أقل من الريلز</div></div>
+    <div class="kpi-card"><div class="kpi-label" id="cnt-posts-lbl">إجمالي المنشورات</div><div class="kpi-value" id="cnt-posts">124</div><div class="kpi-change neutral" id="cnt-posts-sub">منشور في 2025</div></div>
+    <div class="kpi-card"><div class="kpi-label">أعلى ريلز</div><div class="kpi-value" id="cnt-top">1.0M</div><div class="kpi-change up" id="cnt-top-sub">↑ جولة الكابينة</div></div>
+    <div class="kpi-card"><div class="kpi-label">متوسط ريلز</div><div class="kpi-value" id="cnt-avg-reels">186K</div><div class="kpi-change up">↑ ممتاز</div></div>
+    <div class="kpi-card"><div class="kpi-label">متوسط صور</div><div class="kpi-value" id="cnt-avg-photos">48K</div><div class="kpi-change down">↓ أقل من الريلز</div></div>
   </div>
   <div class="charts-row charts-row-equal" style="margin-bottom:16px">
     <div class="chart-card">
@@ -570,6 +570,26 @@ var finAllData={
 };
 var finGrandTotal=86735;
 
+// ===== PER-YEAR DATA: ADS / AUDIENCE / CONTENT =====
+var adsYearData={
+  2023:{spend:'2,500', results:'45',  cost:'55.6', growth:'—',    growthSub:'أول سنة',          best:'عرض الافتتاح', bestSub:'↑ 28 نتيجة', spendSub:'ريال — 2023'},
+  2024:{spend:'23,700',results:'180', cost:'31.7', growth:'+300%',growthSub:'↑ نمو كبير',        best:'عرض الكابينة', bestSub:'↑ 62 نتيجة', spendSub:'ريال — 2024'},
+  2025:{spend:'50,800',results:'312', cost:'26.9', growth:'+73%', growthSub:'↑ نتائج أكثر',      best:'جولة الكابينة',bestSub:'↑ 89 نتيجة', spendSub:'ريال — 2025'},
+  2026:{spend:'9,735', results:'85',  cost:'28.5', growth:'جزئي',growthSub:'🟡 يناير–مارس فقط', best:'عرض رمضان',   bestSub:'↑ 32 نتيجة', spendSub:'ريال — 2026 🟡'}
+};
+var audienceYearData={
+  2023:{total:'62K',  saudi:'75%', age:'25-34', ageSub:'↑ 32% من الجمهور', newF:'+1.2K', newSub:'↑ هذا الشهر'},
+  2024:{total:'82K',  saudi:'76%', age:'25-34', ageSub:'↑ 33% من الجمهور', newF:'+1.7K', newSub:'↑ هذا الشهر'},
+  2025:{total:'104K', saudi:'78%', age:'25-34', ageSub:'↑ 34% من الجمهور', newF:'+2.3K', newSub:'↑ هذا الشهر'},
+  2026:{total:'130K', saudi:'79%', age:'25-34', ageSub:'↑ 35% من الجمهور', newF:'+2.5K', newSub:'↑ 🟡 جزئي'}
+};
+var contentYearData={
+  2023:{posts:'68',  postsSub:'منشور في 2023', top:'280K', topSub:'↑ أفضل ريلز', avgReels:'85K',  avgPhotos:'22K'},
+  2024:{posts:'96',  postsSub:'منشور في 2024', top:'520K', topSub:'↑ أفضل ريلز', avgReels:'142K', avgPhotos:'35K'},
+  2025:{posts:'124', postsSub:'منشور في 2025', top:'1.0M', topSub:'↑ جولة الكابينة', avgReels:'186K', avgPhotos:'48K'},
+  2026:{posts:'32',  postsSub:'منشور 🟡 جزئي', top:'380K', topSub:'↑ أفضل ريلز', avgReels:'95K',  avgPhotos:'28K'}
+};
+
 // ===== COUNTER ANIMATION =====
 function animateValue(el, newText){
   const m=newText.match(/^([+\-]?)([0-9,.]+)(.*)/);
@@ -588,6 +608,36 @@ function animateValue(el, newText){
   },ms);
 }
 
+function updateAdsSection(y){
+  var d=adsYearData[y]; if(!d)return;
+  var el=document.getElementById('ads-spend'); if(el)el.textContent=d.spend;
+  var sl=document.getElementById('ads-spend-lbl'); if(sl)sl.textContent='إجمالي الصرف';
+  var ss=document.getElementById('ads-spend-sub'); if(ss)ss.textContent=d.spendSub;
+  var r=document.getElementById('ads-results'); if(r)r.textContent=d.results;
+  var c=document.getElementById('ads-cost'); if(c)c.textContent=d.cost;
+  var g=document.getElementById('ads-growth'); if(g)g.textContent=d.growth;
+  var gs=document.getElementById('ads-growth-sub'); if(gs)gs.textContent=d.growthSub;
+  var b=document.getElementById('ads-best'); if(b)b.textContent=d.best;
+  var bs=document.getElementById('ads-best-sub'); if(bs)bs.textContent=d.bestSub;
+}
+function updateAudienceSection(y){
+  var d=audienceYearData[y]; if(!d)return;
+  var el=document.getElementById('aud-total'); if(el)el.textContent=d.total;
+  var s=document.getElementById('aud-saudi'); if(s)s.textContent=d.saudi;
+  var a=document.getElementById('aud-age'); if(a)a.textContent=d.age;
+  var as=document.getElementById('aud-age-sub'); if(as)as.textContent=d.ageSub;
+  var n=document.getElementById('aud-new'); if(n)n.textContent=d.newF;
+  var ns=document.getElementById('aud-new-sub'); if(ns)ns.textContent=d.newSub;
+}
+function updateContentSection(y){
+  var d=contentYearData[y]; if(!d)return;
+  var p=document.getElementById('cnt-posts'); if(p)p.textContent=d.posts;
+  var ps=document.getElementById('cnt-posts-sub'); if(ps)ps.textContent=d.postsSub;
+  var t=document.getElementById('cnt-top'); if(t)t.textContent=d.top;
+  var ts=document.getElementById('cnt-top-sub'); if(ts)ts.textContent=d.topSub;
+  var ar=document.getElementById('cnt-avg-reels'); if(ar)ar.textContent=d.avgReels;
+  var ap=document.getElementById('cnt-avg-photos'); if(ap)ap.textContent=d.avgPhotos;
+}
 function updateFinanceSection(y){
   var fd=finAllData[y];
   if(!fd)return;
@@ -647,6 +697,9 @@ function setYear(y,el){
   currentBars=d.bars;
   buildFollowersChart(d.bars);
   updateFinanceSection(y);
+  updateAdsSection(y);
+  updateAudienceSection(y);
+  updateContentSection(y);
 }
 
 // ===== FOLLOWERS CHART (supports dual-year overlay) =====
