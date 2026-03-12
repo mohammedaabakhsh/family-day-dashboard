@@ -145,6 +145,18 @@ body.light .donut svg circle:first-child{stroke:#eef2f7}
 .alert-banner.warn strong{color:var(--accent3)}
 .alert-banner.ok{background:rgba(0,212,170,0.08);border-color:rgba(0,212,170,0.25)}
 .alert-banner.ok strong{color:var(--accent)}
+/* ===== WHATSAPP & FACEBOOK ===== */
+.wa-kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;padding:16px 0 20px}
+.template-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;padding:8px 0}
+.template-item{background:var(--card2);border-radius:12px;padding:16px;border:1px solid var(--border);transition:border-color 0.2s}
+.template-item:hover{border-color:rgba(255,255,255,0.12)}
+.template-name{font-size:13px;font-weight:700;color:white;margin-bottom:8px;direction:ltr;text-align:left}
+.fb-post-card{background:var(--card2);border-radius:12px;padding:16px;border:1px solid var(--border);margin-bottom:10px;transition:border-color 0.2s}
+.fb-post-card:hover{border-color:rgba(255,255,255,0.12)}
+.fb-post-msg{font-size:13px;color:var(--text);margin-bottom:10px;line-height:1.7}
+.fb-post-meta{display:flex;align-items:center;gap:16px;font-size:12px;color:var(--muted);flex-wrap:wrap}
+@media(max-width:768px){.wa-kpi-grid{grid-template-columns:repeat(2,1fr)}.template-grid{grid-template-columns:1fr}}
+@media(max-width:480px){.wa-kpi-grid{grid-template-columns:1fr}}
 /* ===== PRINT ===== */
 @media print{
   body{background:#fff!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
@@ -287,6 +299,8 @@ body.light .donut svg circle:first-child{stroke:#eef2f7}
   <div class="tab" onclick="showTab('content',this)">🎬 المحتوى</div>
   <div class="tab" onclick="showTab('monthcompare',this)">📊 مقارنة الأشهر</div>
   <div class="tab" onclick="showTab('goals',this)">🎯 الأهداف</div>
+  <div class="tab" onclick="showTab('whatsapp',this)">💬 واتساب</div>
+  <div class="tab" onclick="showTab('facebook',this)">📘 فيسبوك</div>
 </div>
 
 <div class="content">
@@ -545,6 +559,76 @@ body.light .donut svg circle:first-child{stroke:#eef2f7}
     <p style="color:var(--muted);font-size:14px;line-height:2.2">
       يمكنك تعديل الأهداف يدوياً في كود الداشبورد — عند ربط Instagram API غداً ستتحدث الأرقام تلقائياً وتُحسب النسب دون أي تدخل 🚀
     </p>
+  </div>
+</div>
+
+<!-- WHATSAPP -->
+<div id="whatsapp" class="section">
+  <div class="wa-kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-label">رقم الهاتف</div>
+      <div class="kpi-value" style="font-size:17px;direction:ltr;text-align:right">+966 55 615 6693</div>
+      <div class="kpi-change neutral">WhatsApp Business</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">القوالب المعتمدة</div>
+      <div class="kpi-value" style="color:#00d4aa">10</div>
+      <div class="kpi-change up">✅ جميعها موافق عليها</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">حالة التحقق</div>
+      <div class="kpi-value" style="font-size:20px;color:#ff6b6b">⚠️ منتهية</div>
+      <div class="kpi-change down">↓ يجب التجديد من Meta</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">اسم الحساب</div>
+      <div class="kpi-value" style="font-size:16px;line-height:1.3">منتجع يوم العائلة</div>
+      <div class="kpi-change neutral">WABA Business</div>
+    </div>
+  </div>
+  <div class="alert-banner" style="margin:0 0 16px">
+    <span>⚠️</span>
+    <span><strong>تنبيه:</strong> حالة التحقق (Phone Verification) على واتساب بزنس <strong style="color:#ff6b6b">منتهية</strong> — يجب تجديدها من Meta Business Manager لضمان استمرار إرسال الرسائل والحملات</span>
+  </div>
+  <div class="chart-card">
+    <div class="card-header">
+      <div><div class="card-title">قوالب الرسائل</div><div class="card-subtitle">10 قوالب — بيانات من WhatsApp Business API</div></div>
+      <div class="badge badge-yellow">10 APPROVED ✅</div>
+    </div>
+    <div class="template-grid" id="waTemplates"></div>
+  </div>
+</div>
+
+<!-- FACEBOOK -->
+<div id="facebook" class="section">
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-label">المتابعون</div>
+      <div class="kpi-value" id="fb-followers">1,139</div>
+      <div class="kpi-change neutral">فيسبوك بيج</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">اسم الصفحة</div>
+      <div class="kpi-value" style="font-size:18px">Family-day</div>
+      <div class="kpi-change neutral">صفحة رسمية</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">المنشورات المُسترجعة</div>
+      <div class="kpi-value" id="fb-posts-count">10</div>
+      <div class="kpi-change neutral" id="fb-posts-sub">فبراير–مارس 2026</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">التفاعل العام</div>
+      <div class="kpi-value" style="font-size:16px;color:#ffd166">منخفض</div>
+      <div class="kpi-change down">↓ التركيز على Instagram</div>
+    </div>
+  </div>
+  <div class="chart-card">
+    <div class="card-header">
+      <div><div class="card-title">آخر المنشورات</div><div class="card-subtitle" id="fb-sub">جارٍ التحميل…</div></div>
+      <div class="badge" id="fb-live-badge">📘 Live</div>
+    </div>
+    <div id="fbPostsList"><div style="color:var(--muted);font-size:13px;text-align:center;padding:24px">جارٍ تحميل المنشورات…</div></div>
   </div>
 </div>
 
@@ -875,6 +959,36 @@ buildAlerts();
 initCompare();
 buildGoals();
 
+// ===== WHATSAPP TEMPLATES =====
+var waTemplates=[
+  {name:'ramdan2025',      cat:'MARKETING'},
+  {name:'tasees',          cat:'MARKETING'},
+  {name:'999/cancellation',cat:'UTILITY'},
+  {name:'payment_link',    cat:'UTILITY'},
+  {name:'teacher_s_day',   cat:'MARKETING'},
+  {name:'10hours',         cat:'MARKETING'},
+  {name:'confirm_reservation_2', cat:'UTILITY'},
+  {name:'offers2024_5',    cat:'MARKETING'},
+  {name:'ffffffffffff',    cat:'MARKETING'},
+  {name:'offersssss',      cat:'MARKETING'},
+];
+function buildWaTemplates(){
+  var grid=document.getElementById('waTemplates');
+  if(!grid)return;
+  grid.innerHTML=waTemplates.map(function(t){
+    var catBg=t.cat==='UTILITY'?'rgba(108,99,255,0.15)':'rgba(0,212,170,0.1)';
+    var catColor=t.cat==='UTILITY'?'#6c63ff':'#00d4aa';
+    return '<div class="template-item">'+
+      '<div class="template-name">'+t.name+'</div>'+
+      '<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px">'+
+        '<span style="display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;font-size:12px;background:rgba(0,212,170,0.1);color:#00d4aa">✅ APPROVED</span>'+
+        '<span style="font-size:11px;color:'+catColor+';background:'+catBg+';padding:2px 8px;border-radius:10px;font-weight:600">'+t.cat+'</span>'+
+      '</div>'+
+    '</div>';
+  }).join('');
+}
+buildWaTemplates();
+
 // ===== META ADS LIVE API =====
 setTimeout(async function(){
   var TOKEN='EAAUoBeSqM64BQ1iDmZA87dVJtsVO87gyHP6kTkE1ZCivkh6ZA6rayj3yeqG75i61xYocqMhdL3XfG17eTEBb7VcI6Kt5ZCXRG4Y4Ypez5ZBZBno5Jr0tZB8noshFC3ZCZAVwsErsb7eedeyd3rBUxo80Blsr6WXtehdAOmk1UcrRx5OcapQxTZBZBIZAfVk1hZAyC';
@@ -1007,6 +1121,66 @@ setTimeout(async function(){
     }
   }catch(e){console.error('IG API:',e);}
 },500);
+
+// ===== FACEBOOK PAGE LIVE API =====
+setTimeout(async function(){
+  var TOKEN='EAAUoBeSqM64BQ1iDmZA87dVJtsVO87gyHP6kTkE1ZCivkh6ZA6rayj3yeqG75i61xYocqMhdL3XfG17eTEBb7VcI6Kt5ZCXRG4Y4Ypez5ZBZBno5Jr0tZB8noshFC3ZCZAVwsErsb7eedeyd3rBUxo80Blsr6WXtehdAOmk1UcrRx5OcapQxTZBZBIZAfVk1hZAyC';
+  var PAGE_ID='314636285900808';
+  var V='https://graph.facebook.com/v19.0';
+  try{
+    // Get page access token
+    var accounts=await(await fetch(V+'/me/accounts?access_token='+TOKEN)).json();
+    var pageToken=TOKEN;
+    if(accounts.data){
+      var pg=accounts.data.find(function(p){return p.id===PAGE_ID;});
+      if(pg && pg.access_token) pageToken=pg.access_token;
+    }
+    // Get page followers
+    var pageData=await(await fetch(V+'/'+PAGE_ID+'?fields=followers_count,fan_count&access_token='+pageToken)).json();
+    if(pageData.followers_count||pageData.fan_count){
+      var fc=document.getElementById('fb-followers');
+      if(fc) fc.textContent=((pageData.followers_count||pageData.fan_count)||0).toLocaleString();
+    }
+    // Get recent posts
+    var postsData=await(await fetch(V+'/'+PAGE_ID+'/posts?fields=message,created_time,likes.limit(1).summary(true),comments.limit(1).summary(true)&limit=10&access_token='+pageToken)).json();
+    if(postsData.data&&postsData.data.length){
+      var posts=postsData.data;
+      var cnt=document.getElementById('fb-posts-count');
+      if(cnt) cnt.textContent=posts.length;
+      var sub=document.getElementById('fb-sub');
+      if(sub) sub.textContent=posts.length+' منشور — بيانات حية من Facebook API';
+      var list=document.getElementById('fbPostsList');
+      if(list){
+        list.innerHTML=posts.map(function(p){
+          var msg=(p.message||'منشور بدون نص').substring(0,150);
+          if((p.message||'').length>150) msg+='…';
+          var likes=(p.likes&&p.likes.summary)?p.likes.summary.total_count:0;
+          var cmts=(p.comments&&p.comments.summary)?p.comments.summary.total_count:0;
+          var date=new Date(p.created_time);
+          var dateStr=date.toLocaleDateString('ar-SA',{year:'numeric',month:'long',day:'numeric'});
+          var engColor=likes+cmts>0?'#00d4aa':'var(--muted)';
+          return '<div class="fb-post-card">'+
+            '<div class="fb-post-msg">'+msg+'</div>'+
+            '<div class="fb-post-meta">'+
+              '<span>📅 '+dateStr+'</span>'+
+              '<span style="color:'+engColor+'">❤️ '+likes+' إعجاب</span>'+
+              '<span>💬 '+cmts+' تعليق</span>'+
+            '</div>'+
+          '</div>';
+        }).join('');
+      }
+    }
+    // Live badge
+    var fbSec=document.getElementById('facebook');
+    if(fbSec&&!fbSec.querySelector('.api-live-badge')){
+      var b=document.createElement('div');
+      b.className='api-live-badge';
+      b.style.cssText='display:flex;align-items:center;gap:6px;font-size:12px;color:#1877f2;padding:12px 0 2px';
+      b.innerHTML='<span style="width:7px;height:7px;background:#1877f2;border-radius:50%;display:inline-block;animation:pulse 2s infinite"></span> بيانات حية من Facebook Page API';
+      fbSec.insertBefore(b,fbSec.firstChild);
+    }
+  }catch(e){console.error('FB API:',e);}
+},1500);
 </script>
 </body>
 </html>
