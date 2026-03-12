@@ -157,6 +157,178 @@ body.light .donut svg circle:first-child{stroke:#eef2f7}
 .fb-post-meta{display:flex;align-items:center;gap:16px;font-size:12px;color:var(--muted);flex-wrap:wrap}
 @media(max-width:768px){.wa-kpi-grid{grid-template-columns:repeat(2,1fr)}.template-grid{grid-template-columns:1fr}}
 @media(max-width:480px){.wa-kpi-grid{grid-template-columns:1fr}}
+/* Better card shadows */
+.kpi-card { box-shadow: 0 4px 24px rgba(0,0,0,0.25); }
+.chart-card { box-shadow: 0 4px 24px rgba(0,0,0,0.2); }
+.kpi-card:hover { box-shadow: 0 8px 32px rgba(0,0,0,0.35); }
+
+/* Global KPI Bar */
+.global-kpi-bar {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  padding: 20px 32px 0;
+}
+.gkpi-card {
+  background: linear-gradient(135deg, var(--card), var(--card2));
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  transition: all 0.2s;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+  cursor: default;
+}
+.gkpi-card:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,0,0,0.3); }
+.gkpi-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+.gkpi-icon.teal { background: rgba(0,212,170,0.15); }
+.gkpi-icon.purple { background: rgba(108,99,255,0.15); }
+.gkpi-icon.yellow { background: rgba(255,209,102,0.15); }
+.gkpi-icon.pink { background: rgba(255,107,107,0.15); }
+.gkpi-body { flex: 1; min-width: 0; }
+.gkpi-value { font-size: 22px; font-weight: 900; color: white; line-height: 1; }
+.gkpi-label { font-size: 12px; color: var(--muted); margin-top: 4px; }
+.gkpi-change { font-size: 11px; margin-top: 4px; }
+
+/* Live clock in header */
+.header-clock {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+.clock-time {
+  font-size: 20px;
+  font-weight: 900;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 1px;
+}
+.clock-date {
+  font-size: 12px;
+  color: var(--muted);
+}
+.clock-day {
+  font-size: 11px;
+  color: var(--muted);
+  opacity: 0.7;
+}
+
+/* Smart Alerts */
+.smart-alerts {
+  margin: 16px 32px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.smart-alert {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 18px;
+  border-radius: 12px;
+  font-size: 13px;
+  border: 1px solid transparent;
+  animation: fadeUp 0.4s ease both;
+}
+.smart-alert.danger { background: rgba(255,107,107,0.08); border-color: rgba(255,107,107,0.25); }
+.smart-alert.warn { background: rgba(255,209,102,0.08); border-color: rgba(255,209,102,0.25); }
+.smart-alert.success { background: rgba(0,212,170,0.08); border-color: rgba(0,212,170,0.25); }
+.smart-alert.info { background: rgba(108,99,255,0.08); border-color: rgba(108,99,255,0.25); }
+.smart-alert-icon { font-size: 18px; flex-shrink: 0; }
+.smart-alert-text strong { font-weight: 700; }
+.smart-alert.danger .smart-alert-text strong { color: #ff6b6b; }
+.smart-alert.warn .smart-alert-text strong { color: #ffd166; }
+.smart-alert.success .smart-alert-text strong { color: #00d4aa; }
+.smart-alert.info .smart-alert-text strong { color: #6c63ff; }
+
+/* Section divider */
+.section-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 28px 0 20px;
+}
+.section-divider-line { flex: 1; height: 1px; background: var(--border); }
+.section-divider-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; white-space: nowrap; }
+
+/* Expert Insights */
+.expert-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  padding: 20px 0;
+}
+.expert-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 24px;
+  transition: border-color 0.2s;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+}
+.expert-card:hover { border-color: rgba(255,255,255,0.12); }
+.expert-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border);
+}
+.expert-card-icon {
+  width: 38px; height: 38px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.expert-card-icon.blue { background: rgba(108,99,255,0.15); }
+.expert-card-icon.teal { background: rgba(0,212,170,0.15); }
+.expert-card-icon.yellow { background: rgba(255,209,102,0.15); }
+.expert-card-icon.red { background: rgba(255,107,107,0.15); }
+.expert-card-title { font-size: 15px; font-weight: 700; color: white; }
+.expert-card-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.expert-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 14px;
+  background: var(--card2);
+  border-radius: 10px;
+  margin-bottom: 10px;
+  font-size: 13px;
+  line-height: 1.7;
+}
+.expert-note:last-child { margin-bottom: 0; }
+.expert-note-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 6px;
+}
+
+/* Last update badge */
+.last-update-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(0,212,170,0.08);
+  border: 1px solid rgba(0,212,170,0.15);
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: 11px;
+  color: var(--muted);
+}
+.last-update-badge span { color: var(--accent); font-weight: 600; }
+
+/* Responsive global KPI bar */
+@media (max-width: 1024px) { .global-kpi-bar { grid-template-columns: repeat(2, 1fr); padding: 16px 24px 0; } }
+@media (max-width: 768px) { .global-kpi-bar { padding: 12px 16px 0; gap: 10px; } .gkpi-card { padding: 12px 14px; } .gkpi-value { font-size: 18px; } .expert-grid { grid-template-columns: 1fr; } .smart-alerts { margin: 12px 16px 0; } .header-clock { display: none; } }
+@media (max-width: 480px) { .global-kpi-bar { grid-template-columns: 1fr 1fr; } }
+
 /* ===== PRINT ===== */
 @media print{
   body{background:#fff!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
@@ -272,24 +444,89 @@ body.light .donut svg circle:first-child{stroke:#eef2f7}
 
 <div class="header">
   <div class="logo">
-    <div class="logo-icon">🏡</div>
-    <div class="logo-text"><h1>منتجع يوم العائلة</h1><p>لوحة الإحصائيات الشاملة</p></div>
+    <div class="logo-icon">📊</div>
+    <div class="logo-text">
+      <h1>Family Day Media Dashboard</h1>
+      <p>منتجع يوم العائلة — لوحة تحليل الأداء</p>
+    </div>
   </div>
   <div class="header-right">
+    <div class="last-update-badge">
+      <span style="width:6px;height:6px;background:var(--accent);border-radius:50%;display:inline-block;animation:pulse 2s infinite"></span>
+      Last Update: <span id="last-update-time">--:--</span>
+    </div>
     <div class="year-filter">
       <button class="year-btn" onclick="setYear(2023,this)">2023</button>
       <button class="year-btn" onclick="setYear(2024,this)">2024</button>
       <button class="year-btn active" onclick="setYear(2025,this)">2025</button>
       <button class="year-btn" onclick="setYear(2026,this)">2026</button>
     </div>
-    <div class="live-dot">تحديث تلقائي</div>
-    <button class="print-btn" onclick="window.print()">🖨️ طباعة</button>
-    <button class="mode-toggle" onclick="toggleMode(this)">☀️ فاتح</button>
-    <button class="print-btn" onclick="exportCSV()">📥 CSV</button>
+    <div class="header-clock">
+      <div class="clock-time" id="live-clock">--:--:--</div>
+      <div class="clock-date" id="live-date-header">-- --- ----</div>
+      <div class="clock-day" id="live-day-header">---</div>
+    </div>
+    <button class="print-btn" onclick="window.print()">🖨️</button>
+    <button class="mode-toggle" onclick="toggleMode(this)">☀️</button>
+    <button class="print-btn" onclick="exportCSV()">📥</button>
   </div>
 </div>
 
-<div class="alerts-wrap" id="alertsWrap"></div>
+<!-- GLOBAL KPI BAR -->
+<div class="global-kpi-bar">
+  <div class="gkpi-card">
+    <div class="gkpi-icon teal">👥</div>
+    <div class="gkpi-body">
+      <div class="gkpi-value" id="gkpi-followers">104K</div>
+      <div class="gkpi-label">المتابعون — Instagram</div>
+      <div class="gkpi-change up" id="gkpi-followers-sub">↑ Live</div>
+    </div>
+  </div>
+  <div class="gkpi-card">
+    <div class="gkpi-icon purple">💰</div>
+    <div class="gkpi-body">
+      <div class="gkpi-value" id="gkpi-spend">50,761</div>
+      <div class="gkpi-label">إجمالي الصرف — ريال</div>
+      <div class="gkpi-change neutral" id="gkpi-spend-sub">2025</div>
+    </div>
+  </div>
+  <div class="gkpi-card">
+    <div class="gkpi-icon yellow">💬</div>
+    <div class="gkpi-body">
+      <div class="gkpi-value" id="gkpi-msgs">2,719</div>
+      <div class="gkpi-label">محادثات الإعلانات</div>
+      <div class="gkpi-change up" id="gkpi-msgs-sub">↑ 2025</div>
+    </div>
+  </div>
+  <div class="gkpi-card">
+    <div class="gkpi-icon pink">🎯</div>
+    <div class="gkpi-body">
+      <div class="gkpi-value" id="gkpi-cost">18.7</div>
+      <div class="gkpi-label">تكلفة المحادثة — ريال</div>
+      <div class="gkpi-change up" id="gkpi-cost-sub">↑ أفضل من 2024</div>
+    </div>
+  </div>
+</div>
+
+<!-- SMART ALERTS -->
+<div class="smart-alerts" id="smartAlerts">
+  <div class="smart-alert danger">
+    <div class="smart-alert-icon">⚠️</div>
+    <div class="smart-alert-text"><strong>تحقق واتساب منتهي</strong> — يجب تجديد التحقق من Meta Business Manager لضمان استمرار إرسال الرسائل</div>
+  </div>
+  <div class="smart-alert success">
+    <div class="smart-alert-icon">✅</div>
+    <div class="smart-alert-text"><strong>تكلفة المحادثة تحسّنت</strong> — 18.7 ريال في 2025 مقارنة بـ 52 ريال في 2024 (توفير 64%)</div>
+  </div>
+  <div class="smart-alert info">
+    <div class="smart-alert-icon">📈</div>
+    <div class="smart-alert-text"><strong>نمو قوي في النتائج</strong> — المحادثات ارتفعت من 452 إلى 2,719 (+501%) خلال 2025</div>
+  </div>
+  <div class="smart-alert warn">
+    <div class="smart-alert-icon">🟡</div>
+    <div class="smart-alert-text"><strong>التوكن ينتهي صلاحية الوصول</strong> — data_access_expires_at في 10 يونيو 2026، يجب تجديده قبل هذا التاريخ</div>
+  </div>
+</div>
 
 <div class="tabs">
   <div class="tab active" onclick="showTab('instagram',this)">📸 Instagram</div>
@@ -301,6 +538,7 @@ body.light .donut svg circle:first-child{stroke:#eef2f7}
   <div class="tab" onclick="showTab('goals',this)">🎯 الأهداف</div>
   <div class="tab" onclick="showTab('whatsapp',this)">💬 واتساب</div>
   <div class="tab" onclick="showTab('facebook',this)">📘 فيسبوك</div>
+  <div class="tab" onclick="showTab('expert',this)">🧠 Expert Insights</div>
 </div>
 
 <div class="content">
@@ -635,6 +873,93 @@ body.light .donut svg circle:first-child{stroke:#eef2f7}
       <div class="badge" id="fb-live-badge">📘 Live</div>
     </div>
     <div id="fbPostsList"><div style="color:var(--muted);font-size:13px;text-align:center;padding:24px">جارٍ تحميل المنشورات…</div></div>
+  </div>
+</div>
+
+<!-- EXPERT INSIGHTS -->
+<div id="expert" class="section">
+  <div style="padding:24px 0 8px">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px">
+      <div style="width:40px;height:40px;background:linear-gradient(135deg,var(--accent4),var(--accent));border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px">🧠</div>
+      <div>
+        <div style="font-size:18px;font-weight:900;color:white">Expert Insights — Analyst Panel</div>
+        <div style="font-size:13px;color:var(--muted)">تحليلات خاصة بالمختص — غير مرئية للشركاء العاديين</div>
+      </div>
+    </div>
+  </div>
+  <div class="expert-grid">
+    <!-- Strategic Notes -->
+    <div class="expert-card">
+      <div class="expert-card-header">
+        <div class="expert-card-icon blue">📋</div>
+        <div>
+          <div class="expert-card-title">Strategic Notes</div>
+          <div class="expert-card-sub">ملاحظات استراتيجية سريعة</div>
+        </div>
+      </div>
+      <div class="expert-note"><div class="expert-note-dot" style="background:#6c63ff"></div>جدة تمثّل 64% من الجمهور — يجب تركيز الإعلانات الجغرافية على جدة ومكة</div>
+      <div class="expert-note"><div class="expert-note-dot" style="background:#6c63ff"></div>الريلز يحقق 86% أداء أفضل من الصور — زيادة نسبة الريلز في خطة المحتوى ضرورية</div>
+      <div class="expert-note"><div class="expert-note-dot" style="background:#6c63ff"></div>الفئة 25-44 تمثّل 78% من الجمهور — المحتوى يجب أن يستهدف هذه الفئة بشكل أساسي</div>
+      <div class="expert-note"><div class="expert-note-dot" style="background:#6c63ff"></div>تكلفة المحادثة تحسّنت من 52 إلى 18.7 ريال — الحملات أصبحت أكثر كفاءة في 2025</div>
+    </div>
+
+    <!-- Performance Insights -->
+    <div class="expert-card">
+      <div class="expert-card-header">
+        <div class="expert-card-icon teal">📊</div>
+        <div>
+          <div class="expert-card-title">Performance Insights</div>
+          <div class="expert-card-sub">تحليل مختصر للأداء الحالي</div>
+        </div>
+      </div>
+      <div class="expert-note"><div class="expert-note-dot" style="background:#00d4aa"></div>وصول الإعلانات ارتفع من 914K إلى 1.93M (+112%) — الاستهداف يتحسّن سنوياً</div>
+      <div class="expert-note"><div class="expert-note-dot" style="background:#00d4aa"></div>698K مشاهدة فيديو من الإعلانات في 2025 — المحتوى المرئي يعمل بشكل ممتاز</div>
+      <div class="expert-note"><div class="expert-note-dot" style="background:#ffd166"></div>تكلفة المحادثة في 2026 ارتفعت إلى 51 ريال مقارنة بـ 18.7 ريال في 2025 — يحتاج مراجعة</div>
+      <div class="expert-note"><div class="expert-note-dot" style="background:#00d4aa"></div>95% من الجمهور من السعودية — استهداف محلي قوي جداً</div>
+    </div>
+
+    <!-- Growth Opportunities -->
+    <div class="expert-card">
+      <div class="expert-card-header">
+        <div class="expert-card-icon yellow">🚀</div>
+        <div>
+          <div class="expert-card-title">Growth Opportunities</div>
+          <div class="expert-card-sub">فرص نمو قابلة للتطبيق</div>
+        </div>
+      </div>
+      <div class="expert-note"><div class="expert-note-dot" style="background:#ffd166"></div>مكة تمثّل 11% من الجمهور ومتاخمة لجدة — فرصة لإعلانات مخصصة لأهل مكة</div>
+      <div class="expert-note"><div class="expert-note-dot" style="background:#ffd166"></div>56K نقرة رابط في 2025 — تحسين صفحة الهبوط قد يرفع نسبة الحجز بشكل كبير</div>
+      <div class="expert-note"><div class="expert-note-dot" style="background:#ffd166"></div>52 قالب واتساب متاح — استخدام قوالب المتابعة بعد الاستفسار يمكن أن يرفع معدل الإغلاق</div>
+      <div class="expert-note"><div class="expert-note-dot" style="background:#ffd166"></div>الجنس الأنثوي 68% — محتوى موجّه للمرأة (تجارب العائلة، المسبح، الاسترخاء) يؤدي بشكل أفضل</div>
+    </div>
+
+    <!-- Watchlist -->
+    <div class="expert-card">
+      <div class="expert-card-header">
+        <div class="expert-card-icon red">👁️</div>
+        <div>
+          <div class="expert-card-title">Watchlist</div>
+          <div class="expert-card-sub">أشياء تحتاج مراقبة</div>
+        </div>
+      </div>
+      <div class="expert-note"><div class="expert-note-dot" style="background:#ff6b6b"></div><strong style="color:#ff6b6b">عاجل:</strong> تحقق واتساب EXPIRED — يؤثر على إرسال الحملات والرسائل</div>
+      <div class="expert-note"><div class="expert-note-dot" style="background:#ff6b6b"></div>تكلفة المحادثة في 2026 ارتفعت لـ 51 ريال (2.7x مقارنة بـ 2025) — يحتاج تحليل الحملات الحالية</div>
+      <div class="expert-note"><div class="expert-note-dot" style="background:#ffd166"></div>data_access_expires_at في 10 يونيو 2026 — يجب تجديد التوكن قبل هذا التاريخ</div>
+      <div class="expert-note"><div class="expert-note-dot" style="background:#ffd166"></div>فيسبوك (1,139 متابع) تفاعله منخفض — قرار: هل يستحق الاستثمار أم تركيز الجهد على Instagram فقط؟</div>
+    </div>
+  </div>
+
+  <!-- Top Content Performance -->
+  <div class="section-divider"><div class="section-divider-line"></div><div class="section-divider-label">Top Content Performance</div><div class="section-divider-line"></div></div>
+  <div class="chart-card">
+    <div class="card-header">
+      <div><div class="card-title">🏆 أفضل المحتويات أداءً — Live من Instagram API</div><div class="card-subtitle" id="top-content-sub">مرتبة تلقائياً حسب التفاعل</div></div>
+      <div class="badge" id="top-content-badge">📸 Live</div>
+    </div>
+    <table class="data-table" id="top-content-table">
+      <tr><th>#</th><th>النوع</th><th>المنشور</th><th>الإعجابات</th><th>التعليقات</th><th>الوصول</th><th>الحفظ</th><th>الأداء</th></tr>
+      <tr><td colspan="8" style="text-align:center;color:var(--muted);padding:24px">جارٍ تحميل البيانات…</td></tr>
+    </table>
   </div>
 </div>
 
@@ -1406,6 +1731,110 @@ setInterval(function(){
   fetchAudienceData();
   fetchAdsMetrics();
 }, 5 * 60 * 1000);
+
+// ===== LIVE CLOCK =====
+function updateClock(){
+  var now=new Date();
+  var days=['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+  var months=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+  var h=String(now.getHours()).padStart(2,'0');
+  var m=String(now.getMinutes()).padStart(2,'0');
+  var s=String(now.getSeconds()).padStart(2,'0');
+  var ampm=now.getHours()>=12?'م':'ص';
+  var h12=now.getHours()%12||12;
+  var timeStr=String(h12).padStart(2,'0')+':'+m+':'+s+' '+ampm;
+  var dateStr=now.getDate()+' '+months[now.getMonth()]+' '+now.getFullYear();
+  var dayStr=days[now.getDay()];
+  var cl=document.getElementById('live-clock'); if(cl)cl.textContent=timeStr;
+  var dl=document.getElementById('live-date-header'); if(dl)dl.textContent=dateStr;
+  var dy=document.getElementById('live-day-header'); if(dy)dy.textContent=dayStr;
+}
+updateClock();
+setInterval(updateClock,1000);
+
+// ===== UPDATE LAST UPDATE TIME =====
+function updateLastUpdateTime(){
+  var now=new Date();
+  var h=String(now.getHours()).padStart(2,'0');
+  var m=String(now.getMinutes()).padStart(2,'0');
+  var s=String(now.getSeconds()).padStart(2,'0');
+  var el=document.getElementById('last-update-time'); if(el)el.textContent=h+':'+m+':'+s;
+}
+
+// ===== UPDATE GLOBAL KPI BAR =====
+function updateGlobalKPIs(){
+  // followers
+  var f=document.getElementById('ig-followers');
+  var gf=document.getElementById('gkpi-followers');
+  if(f&&gf)gf.textContent=f.textContent;
+  // spend (current year)
+  var s=document.getElementById('ads-spend');
+  var gs=document.getElementById('gkpi-spend');
+  if(s&&gs)gs.textContent=s.textContent;
+  // msgs
+  var r=document.getElementById('ads-results');
+  var gr=document.getElementById('gkpi-msgs');
+  if(r&&gr)gr.textContent=r.textContent;
+  // cost
+  var c=document.getElementById('ads-cost');
+  var gc=document.getElementById('gkpi-cost');
+  if(c&&gc)gc.textContent=c.textContent;
+  // labels
+  var spendSub=document.getElementById('ads-spend-sub');
+  var gSpendSub=document.getElementById('gkpi-spend-sub');
+  if(spendSub&&gSpendSub)gSpendSub.textContent=spendSub.textContent;
+}
+// run after data loads
+setTimeout(updateGlobalKPIs,3500);
+setInterval(updateGlobalKPIs,30000);
+
+// ===== TOP CONTENT TABLE (in Expert section) =====
+async function fetchTopContent(){
+  var IGID='17841412382902267';
+  var TOKEN_VAL=TOKEN; // use existing TOKEN variable
+  try{
+    var md=await fetch(V+'/'+IGID+'/media?fields=id,media_type,timestamp,like_count,comments_count,caption,insights.metric(reach,saved,shares)&limit=50&access_token='+TOKEN_VAL).then(function(r){return r.json();});
+    if(!md.data||!md.data.length)return;
+    var posts=md.data.map(function(p){
+      var ins=p.insights?p.insights.data:[];
+      var r={};
+      ins.forEach(function(x){r[x.name]=x.values[0].value;});
+      return {
+        type:p.media_type,
+        caption:(p.caption||'منشور').split('\n')[0].substring(0,32),
+        likes:p.like_count||0,
+        comments:p.comments_count||0,
+        reach:r.reach||0,
+        saved:r.saved||0,
+        shares:r.shares||0,
+        date:p.timestamp?p.timestamp.substring(0,10):''
+      };
+    });
+    posts.sort(function(a,b){return(b.likes+b.comments+b.saved+b.shares)-(a.likes+a.comments+a.saved+a.shares);});
+    var medals=['🥇','🥈','🥉','4','5','6','7','8','9','10'];
+    var tbl=document.getElementById('top-content-table');
+    if(tbl){
+      var rows=posts.slice(0,10).map(function(p,i){
+        var eng=p.likes+p.comments+p.saved+p.shares;
+        var ico=p.type==='VIDEO'?'🎥':p.type==='CAROUSEL_ALBUM'?'📽️':'📸';
+        var st=eng>=30?'<span class="status green">🔥 ممتاز</span>':eng>=15?'<span class="status green">✅ جيد</span>':eng>=5?'<span class="status yellow">⏳ عادي</span>':'<span class="status red">↓ ضعيف</span>';
+        return '<tr><td class="rank">'+medals[i]+'</td><td>'+ico+'</td><td>'+p.caption+'</td><td style="color:#ff6b9d;font-weight:700">'+p.likes+'</td><td>'+p.comments+'</td><td style="color:#00d4aa">'+p.reach.toLocaleString('en-US')+'</td><td>'+p.saved+'</td><td>'+st+'</td></tr>';
+      }).join('');
+      tbl.innerHTML='<tr><th>#</th><th>النوع</th><th>المنشور</th><th>الإعجابات</th><th>التعليقات</th><th>الوصول</th><th>الحفظ</th><th>الأداء</th></tr>'+rows;
+    }
+    var sub=document.getElementById('top-content-sub');
+    if(sub)sub.textContent='آخر '+posts.length+' منشور — مرتبة حسب التفاعل';
+    var badge=document.getElementById('top-content-badge');
+    if(badge)badge.textContent='📸 '+posts.length+' منشور';
+  }catch(e){console.error('TopContent:',e);}
+}
+setTimeout(fetchTopContent,3000);
+
+// Hook into existing data loaders to update last-update time and global KPIs
+var _origFetchAdsData=fetchAdsData;
+fetchAdsData=async function(){await _origFetchAdsData.apply(this,arguments);updateLastUpdateTime();setTimeout(updateGlobalKPIs,500);};
+var _origFetchIGData=fetchIGData;
+fetchIGData=async function(){await _origFetchIGData.apply(this,arguments);setTimeout(updateGlobalKPIs,500);};
 </script>
 </body>
 </html>
