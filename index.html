@@ -941,12 +941,18 @@ setTimeout(async function(){
     if(pr.followers_count){
       var f=pr.followers_count;
       var fK=f>=1000?(f/1000).toFixed(1)+'K':String(f);
-      document.getElementById('ig-followers').textContent=fK;
-      Object.keys(yearData).forEach(function(y){yearData[y].followers=fK;});
-      // Update 2026 audience with live count (API only gives current, not historical)
+      // Only update 2026 with live count — keep 2023/2024/2025 historical estimates
+      yearData[2026].followers=fK;
       audienceYearData[2026].total=fK;
-      var audKpi=document.querySelector('#audience .kpi-value');
-      if(audKpi)audKpi.textContent=fK;
+      // Refresh display only if currently on 2026
+      var activeYBtn=document.querySelector('.year-btn.active');
+      var activeYStr=activeYBtn?activeYBtn.textContent.trim():'2025';
+      if(activeYStr==='2026'){
+        var igF=document.getElementById('ig-followers');
+        if(igF) igF.textContent=fK;
+        var audKpi=document.querySelector('#audience .kpi-value');
+        if(audKpi) audKpi.textContent=fK;
+      }
       var gd=goalsData.find(function(g){return g.title==='متابعو Instagram';});
       if(gd){gd.cur=fK;buildGoals();}
     }
