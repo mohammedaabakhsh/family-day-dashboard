@@ -763,6 +763,86 @@ buildMonthlyBars();
 buildAlerts();
 initCompare();
 buildGoals();
+
+// ===== INSTAGRAM LIVE API =====
+async function loadInstagramData(){
+  const TOKEN='EAAUoBeSqM64BQzdUF9vJVuZBYN4ZBk8akMx85JIiSmvy2Jz4rEwgPYCRQ3zfoE1AgBA95R5ke2YAopmQuN9shE7oZBEM4O0VcA7Phvl9RNT3kHIHVmQXXMFhqKHOuzXtpbd4TvXW1lNhJQcNbbSZAwzIM8HRP8FVgjA7Fl8fYQhoEAXskrcSjt7OaZBbsAD2mXfnMZCMm9MqFhUL1DZA0WA2D8E7vM58tMLopPsuQKtsTXFt5U0d99ZCObouPcbsoWru03NGq1L6erVAwK6vn9Hj';
+  const IGID='17841412382902267';
+  const V='https://graph.facebook.com/v19.0';
+  try{
+    // --- Profile ---
+    const pr=await(await fetch(`${V}/${IGID}?fields=followers_count,media_count&access_token=${TOKEN}`)).json();
+    if(pr.followers_count){
+      const f=pr.followers_count;
+      const fK=f>=1000?(f/1000).toFixed(1)+'K':String(f);
+      document.getElementById('ig-followers').textContent=fK;
+      Object.keys(yearData).forEach(y=>{yearData[y].followers=fK;});
+      const audKpi=document.querySelector('#audience .kpi-value');
+      if(audKpi)audKpi.textContent=fK;
+      // Update KPI goals live followers
+      const gd=goalsData.find(g=>g.title==='متابعو Instagram');
+      if(gd){gd.cur=fK;buildGoals();}
+    }
+    if(pr.media_count){
+      const dv=document.querySelector('#instagram .donut-center .value');
+      if(dv)dv.textContent=pr.media_count;
+    }
+
+    // --- Recent media ---
+    const md=await(await fetch(`${V}/${IGID}/media?fields=id,timestamp,like_count,comments_count,media_type,caption&limit=20&access_token=${TOKEN}`)).json();
+    if(md.data&&md.data.length){
+      const posts=md.data;
+
+      // Top posts table
+      const sorted=[...posts].sort((a,b)=>(b.like_count+b.comments_count)-(a.like_count+a.comments_count));
+      const medals=['🥇','🥈','🥉','4','5'];
+      const icon=t=>t==='VIDEO'?'🎥':t==='CAROUSEL_ALBUM'?'📽️':'📸';
+      const perf=e=>e>=18?'<span class="status green">🔥 ممتاز</span>':e>=10?'<span class="status green">✅ جيد</span>':'<span class="status yellow">⏳ عادي</span>';
+      const tbl=document.querySelector('#instagram .data-table');
+      if(tbl){
+        const ths=tbl.querySelectorAll('th');
+        if(ths[2])ths[2].textContent='الإعجابات';
+        [...tbl.querySelectorAll('tr')].slice(1).forEach(r=>r.remove());
+        sorted.slice(0,5).forEach((p,i)=>{
+          const eng=p.like_count+p.comments_count;
+          const cap=(p.caption||'منشور').split('\n')[0].substring(0,28);
+          const tr=document.createElement('tr');
+          tr.innerHTML=`<td class="rank">${medals[i]}</td><td>${icon(p.media_type)} ${cap}</td><td style="color:#00d4aa;font-weight:700">${p.like_count} ❤️</td><td>${perf(eng)}</td>`;
+          tbl.appendChild(tr);
+        });
+      }
+
+      // Content type donut
+      const cnt={VIDEO:0,IMAGE:0,CAROUSEL_ALBUM:0};
+      posts.forEach(p=>cnt[p.media_type]=(cnt[p.media_type]||0)+1);
+      const tot=posts.length;
+      const vp=Math.round(cnt.VIDEO/tot*100);
+      const ip=Math.round(cnt.IMAGE/tot*100);
+      const cp=100-vp-ip;
+      const C=238.9;
+      const lpcts=document.querySelectorAll('#instagram .legend-pct');
+      if(lpcts.length>=3){lpcts[0].textContent=vp+'%';lpcts[1].textContent=ip+'%';lpcts[2].textContent=cp+'%';}
+      const arcs=document.querySelectorAll('#instagram .donut svg circle');
+      if(arcs.length>=4){
+        const va=C*vp/100,ia=C*ip/100,ca=C*cp/100;
+        arcs[1].setAttribute('stroke-dasharray',`${va} ${C}`);arcs[1].setAttribute('stroke-dashoffset','0');
+        arcs[2].setAttribute('stroke-dasharray',`${ia} ${C}`);arcs[2].setAttribute('stroke-dashoffset',`-${va}`);
+        arcs[3].setAttribute('stroke-dasharray',`${ca} ${C}`);arcs[3].setAttribute('stroke-dashoffset',`-${va+ia}`);
+      }
+    }
+
+    // Live badge
+    const ig=document.getElementById('instagram');
+    if(ig&&!ig.querySelector('.api-live-badge')){
+      const b=document.createElement('div');
+      b.className='api-live-badge';
+      b.style.cssText='display:flex;align-items:center;gap:6px;font-size:12px;color:#00d4aa;padding:12px 0 2px';
+      b.innerHTML=`<span style="width:7px;height:7px;background:#00d4aa;border-radius:50%;display:inline-block;animation:pulse 2s infinite"></span> بيانات حية من Instagram API — آخر تحديث: ${new Date().toLocaleTimeString('ar-SA')}`;
+      ig.insertBefore(b,ig.firstChild);
+    }
+  }catch(e){console.log('IG API:',e);}
+}
+loadInstagramData();
 </script>
 </body>
 </html>
