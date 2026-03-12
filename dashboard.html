@@ -561,6 +561,15 @@ const months=['يناير','فبراير','مارس','أبريل','مايو','ي
 const monthlySpend=[4316,3721,2945,2587,3410,6727,7500,4581,3321,4313,3164,4175];
 let currentBars=yearData[2025].bars;
 
+// ===== FINANCE DATA PER YEAR (populated by API, preset as fallback) =====
+var finAllData={
+  2023:{total:2500, monthly:[0,0,0,0,0,0,0,0,0,0,416,2084], peak:2084, peakMonth:'ديسمبر', prevTotal:0},
+  2024:{total:23700, monthly:[1100,1300,1500,1900,1800,2200,2600,3000,2200,2700,2700,2700], peak:3000, peakMonth:'أغسطس', prevTotal:2500},
+  2025:{total:50800, monthly:[4316,3721,2945,2587,3410,6727,7500,4581,3321,4313,3164,4175], peak:7500, peakMonth:'يوليو', prevTotal:23700},
+  2026:{total:9735, monthly:[3500,3200,3035,0,0,0,0,0,0,0,0,0], peak:3500, peakMonth:'يناير', prevTotal:50800}
+};
+var finGrandTotal=86735;
+
 // ===== COUNTER ANIMATION =====
 function animateValue(el, newText){
   const m=newText.match(/^([+\-]?)([0-9,.]+)(.*)/);
@@ -579,6 +588,50 @@ function animateValue(el, newText){
   },ms);
 }
 
+function updateFinanceSection(y){
+  var fd=finAllData[y];
+  if(!fd)return;
+  var mNames=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+  var isPartial=(y==2026);
+  // KPI cards
+  var el=document.getElementById('fin-spend');
+  if(el){el.textContent=fd.total.toLocaleString();el.closest('.kpi-card').querySelector('.kpi-label').textContent='إجمالي الصرف '+y;}
+  var ft=document.getElementById('fin-total');
+  if(ft) ft.textContent=finGrandTotal.toLocaleString();
+  var pk=document.getElementById('fin-peak');
+  if(pk){pk.textContent=fd.peak.toLocaleString();pk.nextElementSibling.textContent='↑ '+fd.peakMonth+' '+y;}
+  var fg=document.getElementById('fin-growth');
+  if(fg){
+    if(fd.prevTotal>0){fg.textContent='+'+(Math.round((fd.total-fd.prevTotal)/fd.prevTotal*100))+'%';fg.closest('.kpi-card').querySelector('.kpi-change').className='kpi-change up';}
+    else{fg.textContent='—';fg.closest('.kpi-card').querySelector('.kpi-change').className='kpi-change neutral';}
+  }
+  // Monthly chart title & badge
+  var badge=document.getElementById('fin-badge');
+  if(badge)badge.textContent=fd.total.toLocaleString()+(isPartial?' ريال 🟡':' ريال');
+  var chartTitle=document.querySelector('#finance .card-title');
+  if(chartTitle)chartTitle.textContent='الصرف الشهري — '+y+(isPartial?' (جزئي)':'');
+  // Monthly bars
+  for(var i=0;i<12;i++) monthlySpend[i]=fd.monthly[i]||0;
+  buildMonthlyBars();
+  // Yearly bars highlight
+  var allYears=[
+    {y:'2023',v:finAllData[2023].total,c:'#6c63ff',p:false},
+    {y:'2024',v:finAllData[2024].total,c:'#ffd166',p:false},
+    {y:'2025',v:finAllData[2025].total,c:'#00d4aa',p:false},
+    {y:'2026',v:finAllData[2026].total,c:'#ff6b6b',p:true}
+  ];
+  var maxY=Math.max.apply(null,allYears.map(function(x){return x.v;}));
+  var barsEl=document.getElementById('fin-yearly-bars');
+  if(barsEl&&maxY>0){
+    barsEl.innerHTML=allYears.map(function(d){
+      var isActive=(d.y==y);
+      var label=d.y+(d.p?' 🟡':'');
+      var border=isActive?';outline:2px solid #fff;border-radius:2px':'';
+      return '<div class="age-row"><div class="age-label" style="width:70px;font-size:11px;'+(isActive?'font-weight:700;color:#fff':'')+'">'+label+'</div><div class="age-bar-track"><div class="age-bar-fill" style="width:'+Math.round(d.v/maxY*100)+'%;background:'+d.c+(d.p?';opacity:0.75':'')+border+'"></div></div><div class="age-pct" style="width:80px;'+(isActive?'font-weight:700':'')+'">'+d.v.toLocaleString()+' ر</div></div>';
+    }).join('');
+  }
+}
+
 function setYear(y,el){
   document.querySelectorAll('.year-btn').forEach(b=>b.classList.remove('active'));
   el.classList.add('active');
@@ -593,6 +646,7 @@ function setYear(y,el){
   if(dp)dp.value='';
   currentBars=d.bars;
   buildFollowersChart(d.bars);
+  updateFinanceSection(y);
 }
 
 // ===== FOLLOWERS CHART (supports dual-year overlay) =====
@@ -776,45 +830,37 @@ setTimeout(async function(){
     var allData=await(await fetch(V+'/'+ACT+'/insights?fields=spend&time_increment=monthly&date_preset=maximum&access_token='+TOKEN)).json();
     if(allData.data&&allData.data.length){
       var yMap={};
-      var spend2025=[0,0,0,0,0,0,0,0,0,0,0,0];
-      var spend2026=[0,0,0,0,0,0,0,0,0,0,0,0];
+      var spendByYear={2023:[0,0,0,0,0,0,0,0,0,0,0,0],2024:[0,0,0,0,0,0,0,0,0,0,0,0],2025:[0,0,0,0,0,0,0,0,0,0,0,0],2026:[0,0,0,0,0,0,0,0,0,0,0,0]};
+      var mNames=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
       allData.data.forEach(function(d){
-        var yr=d.date_start.split('-')[0];
+        var yr=parseInt(d.date_start.split('-')[0]);
         var mo=parseInt(d.date_start.split('-')[1])-1;
         var sar=Math.round(parseFloat(d.spend)*SAR);
         yMap[yr]=(yMap[yr]||0)+sar;
-        if(yr==='2025') spend2025[mo]=sar;
-        if(yr==='2026') spend2026[mo]=sar;
+        if(spendByYear[yr]) spendByYear[yr][mo]=sar;
       });
-      // Update monthly chart with 2025 data
-      for(var i=0;i<12;i++) monthlySpend[i]=spend2025[i];
-      buildMonthlyBars();
-      // KPI values
-      var y2023=yMap['2023']||0, y2024=yMap['2024']||0, y2025=yMap['2025']||0, y2026=yMap['2026']||0;
-      var grandTotal=y2023+y2024+y2025+y2026;
-      var peakVal=Math.max.apply(null,spend2025.filter(function(v){return v>0;}));
-      var mNames=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
-      var peakMonth=mNames[spend2025.indexOf(peakVal)];
-      var el=document.getElementById('fin-spend');
-      if(el) el.textContent=y2025.toLocaleString();
-      var ft=document.getElementById('fin-total');
-      if(ft) ft.textContent=grandTotal.toLocaleString();
-      var badge=document.getElementById('fin-badge');
-      if(badge) badge.textContent=y2025.toLocaleString()+' ريال';
-      var pk=document.getElementById('fin-peak');
-      if(pk){pk.textContent=peakVal.toLocaleString();pk.nextElementSibling.textContent='↑ '+peakMonth+' 2025';}
-      var fg=document.getElementById('fin-growth');
-      if(fg&&y2024>0) fg.textContent='+'+(Math.round((y2025-y2024)/y2024*100))+'%';
-      // Yearly bars — 2023, 2024, 2025, 2026
-      var allYears=[{y:'2023',v:y2023,c:'#6c63ff'},{y:'2024',v:y2024,c:'#ffd166'},{y:'2025',v:y2025,c:'#00d4aa'},{y:'2026',v:y2026,c:'#ff6b6b',partial:true}];
-      var maxY=Math.max.apply(null,allYears.map(function(x){return x.v;}));
-      var bars=document.getElementById('fin-yearly-bars');
-      if(bars&&maxY>0){
-        bars.innerHTML=allYears.map(function(d){
-          var label=d.y+(d.partial?' 🟡':'');
-          return '<div class="age-row"><div class="age-label" style="width:70px;font-size:11px">'+label+'</div><div class="age-bar-track"><div class="age-bar-fill" style="width:'+Math.round(d.v/maxY*100)+'%;background:'+d.c+(d.partial?';opacity:0.75':'')+'"></div></div><div class="age-pct" style="width:80px">'+d.v.toLocaleString()+' ر</div></div>';
-        }).join('');
-      }
+      // Update finAllData with real API values
+      [2023,2024,2025,2026].forEach(function(yr){
+        var total=yMap[yr]||0;
+        if(total===0) return;
+        var monthly=spendByYear[yr];
+        var nonZero=monthly.filter(function(v){return v>0;});
+        var peakVal=nonZero.length?Math.max.apply(null,nonZero):0;
+        var peakIdx=monthly.indexOf(peakVal);
+        finAllData[yr].total=total;
+        finAllData[yr].monthly=monthly;
+        finAllData[yr].peak=peakVal;
+        finAllData[yr].peakMonth=mNames[peakIdx]||'—';
+      });
+      // Update prevTotal for growth calculation
+      finAllData[2024].prevTotal=finAllData[2023].total;
+      finAllData[2025].prevTotal=finAllData[2024].total;
+      finAllData[2026].prevTotal=finAllData[2025].total;
+      finGrandTotal=(yMap[2023]||0)+(yMap[2024]||0)+(yMap[2025]||0)+(yMap[2026]||0);
+      // Re-render finance for currently active year
+      var activeYearBtn=document.querySelector('.year-btn.active');
+      var activeY=activeYearBtn?parseInt(activeYearBtn.textContent):2025;
+      updateFinanceSection(activeY);
     }
   }catch(e){console.error('Ads API:',e);}
 },800);
