@@ -432,10 +432,10 @@ body.light .donut svg circle:first-child{stroke:#eef2f7}
 <!-- FINANCE -->
 <div id="finance" class="section">
   <div class="kpi-grid">
-    <div class="kpi-card"><div class="kpi-label">إجمالي الصرف 2025</div><div class="kpi-value" id="fin-spend">50,800</div><div class="kpi-change neutral">ريال — Meta</div></div>
-    <div class="kpi-card"><div class="kpi-label">إجمالي الصرف الكلي</div><div class="kpi-value" id="fin-total">86,735</div><div class="kpi-change neutral">ريال — 2023 إلى 2026</div></div>
+    <div class="kpi-card"><div class="kpi-label" id="fin-spend-lbl">إجمالي الصرف 2025</div><div class="kpi-value" id="fin-spend">46,586</div><div class="kpi-change neutral">ريال — Meta</div></div>
+    <div class="kpi-card"><div class="kpi-label">إجمالي الصرف الكلي</div><div class="kpi-value" id="fin-total">82,579</div><div class="kpi-change neutral">ريال — 2023 إلى 2026</div></div>
     <div class="kpi-card"><div class="kpi-label">أعلى شهر صرف</div><div class="kpi-value" id="fin-peak">7,500</div><div class="kpi-change up">↑ يوليو 2025</div></div>
-    <div class="kpi-card"><div class="kpi-label">مقارنة بـ 2024</div><div class="kpi-value" id="fin-growth">+114%</div><div class="kpi-change up">↑ زيادة في الصرف</div></div>
+    <div class="kpi-card"><div class="kpi-label">مقارنة بـ 2024</div><div class="kpi-value" id="fin-growth">+96%</div><div class="kpi-change up">↑ زيادة في الصرف</div></div>
   </div>
   <div class="charts-row">
     <div class="chart-card">
@@ -446,9 +446,9 @@ body.light .donut svg circle:first-child{stroke:#eef2f7}
       <div class="card-header"><div><div class="card-title">مقارنة سنوية</div><div class="card-subtitle">إجمالي الصرف السنوي</div></div></div>
       <div class="age-bars" style="margin-top:8px" id="fin-yearly-bars">
         <div class="age-row"><div class="age-label" style="width:70px;font-size:11px">2023</div><div class="age-bar-track"><div class="age-bar-fill" style="width:5%;background:#6c63ff"></div></div><div class="age-pct" style="width:80px">2,500 ر</div></div>
-        <div class="age-row"><div class="age-label" style="width:70px;font-size:11px">2024</div><div class="age-bar-track"><div class="age-bar-fill" style="width:47%;background:#ffd166"></div></div><div class="age-pct" style="width:80px">23,700 ر</div></div>
-        <div class="age-row"><div class="age-label" style="width:70px;font-size:11px">2025</div><div class="age-bar-track"><div class="age-bar-fill" style="width:100%;background:#00d4aa"></div></div><div class="age-pct" style="width:80px">50,800 ر</div></div>
-        <div class="age-row"><div class="age-label" style="width:70px;font-size:11px">2026 🟡</div><div class="age-bar-track"><div class="age-bar-fill" style="width:19%;background:#ff6b6b;opacity:0.75"></div></div><div class="age-pct" style="width:80px">9,735 ر</div></div>
+        <div class="age-row"><div class="age-label" style="width:70px;font-size:11px">2024</div><div class="age-bar-track"><div class="age-bar-fill" style="width:51%;background:#ffd166"></div></div><div class="age-pct" style="width:80px">23,713 ر</div></div>
+        <div class="age-row"><div class="age-label" style="width:70px;font-size:11px">2025</div><div class="age-bar-track"><div class="age-bar-fill" style="width:100%;background:#00d4aa"></div></div><div class="age-pct" style="width:80px">46,586 ر</div></div>
+        <div class="age-row"><div class="age-label" style="width:70px;font-size:11px">2026 🟡</div><div class="age-bar-track"><div class="age-bar-fill" style="width:21%;background:#ff6b6b;opacity:0.75"></div></div><div class="age-pct" style="width:80px">9,780 ر</div></div>
       </div>
       <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border)">
         <div class="card-title" style="margin-bottom:12px">المنصة المستخدمة 2025</div>
@@ -558,24 +558,25 @@ const yearData={
   2026:{followers:'130K',views:'1.8M',engage:'5.4%',reach:'74K',badge:'🟡 جزئي — يناير إلى مارس',sub:'متابعون جدد — 2026 (يناير–مارس)',bars:[2200,2600,2900,0,0,0,0,0,0,0,0,0]}
 };
 const months=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
-const monthlySpend=[4316,3721,2945,2587,3410,6727,7500,4581,3321,4313,3164,4175];
+// Real monthly spend 2025 from API (Dec=0, no spending)
+const monthlySpend=[4317,3721,2945,2587,3410,6727,7500,4581,3321,4313,3164,0];
 let currentBars=yearData[2025].bars;
 
-// ===== FINANCE DATA PER YEAR (populated by API, preset as fallback) =====
+// ===== FINANCE DATA PER YEAR — REAL API DATA =====
 var finAllData={
-  2023:{total:2500, monthly:[0,0,0,0,0,0,0,0,0,0,416,2084], peak:2084, peakMonth:'ديسمبر', prevTotal:0},
-  2024:{total:23700, monthly:[1100,1300,1500,1900,1800,2200,2600,3000,2200,2700,2700,2700], peak:3000, peakMonth:'أغسطس', prevTotal:2500},
-  2025:{total:50800, monthly:[4316,3721,2945,2587,3410,6727,7500,4581,3321,4313,3164,4175], peak:7500, peakMonth:'يوليو', prevTotal:23700},
-  2026:{total:9735, monthly:[3500,3200,3035,0,0,0,0,0,0,0,0,0], peak:3500, peakMonth:'يناير', prevTotal:50800}
+  2023:{total:2500,  monthly:[0,0,0,0,0,0,0,0,0,0,278,2222],                               peak:2222, peakMonth:'ديسمبر', prevTotal:0},
+  2024:{total:23713, monthly:[1250,1447,1134,729,1756,2444,2321,671,2109,3610,2365,3877],   peak:3877, peakMonth:'ديسمبر', prevTotal:2500},
+  2025:{total:46586, monthly:[4317,3721,2945,2587,3410,6727,7500,4581,3321,4313,3164,0],    peak:7500, peakMonth:'يوليو',  prevTotal:23713},
+  2026:{total:9780,  monthly:[4456,4032,1292,0,0,0,0,0,0,0,0,0],                           peak:4456, peakMonth:'يناير', prevTotal:46586}
 };
-var finGrandTotal=86735;
+var finGrandTotal=82579;
 
 // ===== PER-YEAR DATA: ADS / AUDIENCE / CONTENT =====
 var adsYearData={
   2023:{spend:'2,500', results:'45',  cost:'55.6', growth:'—',    growthSub:'أول سنة',          best:'عرض الافتتاح', bestSub:'↑ 28 نتيجة', spendSub:'ريال — 2023'},
-  2024:{spend:'23,700',results:'180', cost:'31.7', growth:'+300%',growthSub:'↑ نمو كبير',        best:'عرض الكابينة', bestSub:'↑ 62 نتيجة', spendSub:'ريال — 2024'},
-  2025:{spend:'50,800',results:'312', cost:'26.9', growth:'+73%', growthSub:'↑ نتائج أكثر',      best:'جولة الكابينة',bestSub:'↑ 89 نتيجة', spendSub:'ريال — 2025'},
-  2026:{spend:'9,735', results:'85',  cost:'28.5', growth:'جزئي',growthSub:'🟡 يناير–مارس فقط', best:'عرض رمضان',   bestSub:'↑ 32 نتيجة', spendSub:'ريال — 2026 🟡'}
+  2024:{spend:'23,713',results:'180', cost:'31.7', growth:'+848%',growthSub:'↑ نمو كبير',        best:'عرض الكابينة', bestSub:'↑ 62 نتيجة', spendSub:'ريال — 2024'},
+  2025:{spend:'46,586',results:'312', cost:'26.9', growth:'+96%', growthSub:'↑ نتائج أكثر',      best:'جولة الكابينة',bestSub:'↑ 89 نتيجة', spendSub:'ريال — 2025'},
+  2026:{spend:'9,780', results:'85',  cost:'28.5', growth:'جزئي',growthSub:'🟡 يناير–مارس فقط', best:'عرض رمضان',   bestSub:'↑ 32 نتيجة', spendSub:'ريال — 2026 🟡'}
 };
 var audienceYearData={
   2023:{total:'62K',  saudi:'75%', age:'25-34', ageSub:'↑ 32% من الجمهور', newF:'+1.2K', newSub:'↑ هذا الشهر'},
@@ -645,7 +646,9 @@ function updateFinanceSection(y){
   var isPartial=(y==2026);
   // KPI cards
   var el=document.getElementById('fin-spend');
-  if(el){el.textContent=fd.total.toLocaleString();el.closest('.kpi-card').querySelector('.kpi-label').textContent='إجمالي الصرف '+y;}
+  if(el) el.textContent=fd.total.toLocaleString();
+  var sl=document.getElementById('fin-spend-lbl');
+  if(sl) sl.textContent='إجمالي الصرف '+y;
   var ft=document.getElementById('fin-total');
   if(ft) ft.textContent=finGrandTotal.toLocaleString();
   var pk=document.getElementById('fin-peak');
@@ -879,20 +882,27 @@ setTimeout(async function(){
   var V='https://graph.facebook.com/v19.0';
   var SAR=3.75;
   try{
-    // --- All monthly data (gives 2023 → present) ---
-    var allData=await(await fetch(V+'/'+ACT+'/insights?fields=spend&time_increment=monthly&date_preset=maximum&access_token='+TOKEN)).json();
-    if(allData.data&&allData.data.length){
+    var mNames=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+    var today=new Date();
+    var todayStr=today.getFullYear()+'-'+(String(today.getMonth()+1).padStart(2,'0'))+'-'+(String(today.getDate()).padStart(2,'0'));
+    // Fetch historical (max 37 months back) + 2026 separately
+    var res=await Promise.all([
+      fetch(V+'/'+ACT+'/insights?fields=spend&time_increment=monthly&time_range={"since":"2023-11-01","until":"2025-12-31"}&access_token='+TOKEN).then(function(r){return r.json();}),
+      fetch(V+'/'+ACT+'/insights?fields=spend&time_increment=monthly&time_range={"since":"2026-01-01","until":"'+todayStr+'"}&access_token='+TOKEN).then(function(r){return r.json();})
+    ]);
+    var allRows=[];
+    if(res[0].data) allRows=allRows.concat(res[0].data);
+    if(res[1].data) allRows=allRows.concat(res[1].data);
+    if(allRows.length){
       var yMap={};
       var spendByYear={2023:[0,0,0,0,0,0,0,0,0,0,0,0],2024:[0,0,0,0,0,0,0,0,0,0,0,0],2025:[0,0,0,0,0,0,0,0,0,0,0,0],2026:[0,0,0,0,0,0,0,0,0,0,0,0]};
-      var mNames=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
-      allData.data.forEach(function(d){
+      allRows.forEach(function(d){
         var yr=parseInt(d.date_start.split('-')[0]);
         var mo=parseInt(d.date_start.split('-')[1])-1;
         var sar=Math.round(parseFloat(d.spend)*SAR);
         yMap[yr]=(yMap[yr]||0)+sar;
         if(spendByYear[yr]) spendByYear[yr][mo]=sar;
       });
-      // Update finAllData with real API values
       [2023,2024,2025,2026].forEach(function(yr){
         var total=yMap[yr]||0;
         if(total===0) return;
@@ -904,16 +914,17 @@ setTimeout(async function(){
         finAllData[yr].monthly=monthly;
         finAllData[yr].peak=peakVal;
         finAllData[yr].peakMonth=mNames[peakIdx]||'—';
+        // Update adsYearData spend too
+        if(adsYearData[yr]) adsYearData[yr].spend=total.toLocaleString();
       });
-      // Update prevTotal for growth calculation
       finAllData[2024].prevTotal=finAllData[2023].total;
       finAllData[2025].prevTotal=finAllData[2024].total;
       finAllData[2026].prevTotal=finAllData[2025].total;
       finGrandTotal=(yMap[2023]||0)+(yMap[2024]||0)+(yMap[2025]||0)+(yMap[2026]||0);
-      // Re-render finance for currently active year
       var activeYearBtn=document.querySelector('.year-btn.active');
       var activeY=activeYearBtn?parseInt(activeYearBtn.textContent):2025;
       updateFinanceSection(activeY);
+      updateAdsSection(activeY);
     }
   }catch(e){console.error('Ads API:',e);}
 },800);
