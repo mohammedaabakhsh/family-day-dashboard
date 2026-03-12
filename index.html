@@ -1040,11 +1040,13 @@ html,body{overflow-x:hidden;max-width:100vw}
 
 <script>
 const yearData={
-  2023:{followers:'62K',views:'480K',engage:'3.1%',reach:'28K',badge:'+14% سنوياً',sub:'متابعون جدد شهرياً — 2023',bars:[400,520,680,800,750,900,1100,1200,980,1300,1400,1600]},
-  2024:{followers:'82K',views:'780K',engage:'3.9%',reach:'42K',badge:'+18% سنوياً',sub:'متابعون جدد شهرياً — 2024',bars:[800,900,1100,1400,1300,1600,1800,2100,1700,2200,2500,2800]},
-  2025:{followers:'104K',views:'1.2M',engage:'4.8%',reach:'58K',badge:'+22% سنوياً',sub:'متابعون جدد شهرياً — 2025',bars:[1200,1400,1800,2100,1900,2400,2800,3100,2600,3400,3800,4200]},
-  2026:{followers:'130K',views:'1.8M',engage:'5.4%',reach:'74K',badge:'🟡 جزئي — يناير إلى مارس',sub:'متابعون جدد — 2026 (يناير–مارس)',bars:[2200,2600,2900,0,0,0,0,0,0,0,0,0]}
+  2023:{followers:'62K', followersSub:'↑ 2023',  badge:'+14% سنوياً',sub:'متابعون جدد شهرياً — 2023',bars:[400,520,680,800,750,900,1100,1200,980,1300,1400,1600]},
+  2024:{followers:'82K', followersSub:'↑ 2024',  badge:'+18% سنوياً',sub:'متابعون جدد شهرياً — 2024',bars:[800,900,1100,1400,1300,1600,1800,2100,1700,2200,2500,2800]},
+  2025:{followers:'104K',followersSub:'↑ نمو مستمر',badge:'+22% سنوياً',sub:'متابعون جدد شهرياً — 2025',bars:[1200,1400,1800,2100,1900,2400,2800,3100,2600,3400,3800,4200]},
+  2026:{followers:'104K',followersSub:'↑ Live 🟡',badge:'🟡 جزئي — يناير إلى مارس',sub:'متابعون جدد — 2026 (يناير–مارس)',bars:[2200,2600,2900,0,0,0,0,0,0,0,0,0]}
 };
+// مخزن البيانات الحية من API (تُحفظ وتُستعاد عند العودة للسنة الحالية)
+var _liveIG={reach7d:'—',profileViews:'—',websiteClicks:'—',newFollowers:'—'};
 const months=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
 // Real monthly spend 2025 from API (all 12 months including Dec=4175)
 const monthlySpend=[4317,3721,2945,2587,3410,6727,7500,4581,3321,4313,3164,4175];
@@ -1187,7 +1189,43 @@ function setYear(y,el){
   document.querySelectorAll('.year-btn').forEach(b=>b.classList.remove('active'));
   el.classList.add('active');
   const d=yearData[y];
+  var curYear=new Date().getFullYear();
+
+  // === المتابعون ===
   var igF=document.getElementById('ig-followers'); if(igF)animateValue(igF,d.followers);
+  var igFs=document.getElementById('ig-followers-sub'); if(igFs)igFs.textContent=d.followersSub||'↑ نمو مستمر';
+
+  // === الـ 4 KPIs الحية: تظهر للسنة الحالية فقط ===
+  var igR7=document.getElementById('ig-reach-7d');
+  var igPv=document.getElementById('ig-profile-views');
+  var igWc=document.getElementById('ig-website-clicks');
+  var igNf=document.getElementById('ig-new-followers');
+  var igR7s=document.getElementById('ig-reach-7d-sub');
+  var igPvs=document.getElementById('ig-pv-sub');
+  var igWcs=document.getElementById('ig-wc-sub');
+  var igNfs=document.getElementById('ig-nf-sub');
+  if(y==curYear){
+    // استعادة البيانات الحية المحفوظة
+    if(igR7)igR7.textContent=_liveIG.reach7d;
+    if(igPv)igPv.textContent=_liveIG.profileViews;
+    if(igWc)igWc.textContent=_liveIG.websiteClicks;
+    if(igNf)igNf.textContent=_liveIG.newFollowers;
+    if(igR7s)igR7s.textContent='↑ آخر 7 أيام';
+    if(igPvs)igPvs.textContent='↑ آخر 7 أيام';
+    if(igWcs)igWcs.textContent='↑ من البايو';
+    if(igNfs)igNfs.textContent='↑ آخر 7 أيام';
+  }else{
+    // سنوات تاريخية: البيانات الحية غير متاحة
+    if(igR7)igR7.textContent='—';
+    if(igPv)igPv.textContent='—';
+    if(igWc)igWc.textContent='—';
+    if(igNf)igNf.textContent='—';
+    if(igR7s)igR7s.textContent='📅 بيانات '+y+' غير متاحة';
+    if(igPvs)igPvs.textContent='📅 بيانات '+y+' غير متاحة';
+    if(igWcs)igWcs.textContent='📅 بيانات '+y+' غير متاحة';
+    if(igNfs)igNfs.textContent='📅 بيانات '+y+' غير متاحة';
+  }
+
   var igGb=document.getElementById('ig-growth-badge'); if(igGb)igGb.textContent=d.badge;
   var igCs=document.getElementById('ig-chart-sub'); if(igCs)igCs.textContent=d.sub;
   const dp=document.getElementById('dualYear');
@@ -1560,19 +1598,31 @@ async function fetchIGData(){
       // profile_views & website_clicks
       if(pvRes.data){
         pvRes.data.forEach(function(m){
-          if(m.name==='profile_views'){var el=document.getElementById('ig-profile-views'); if(el)el.textContent=(m.total_value&&m.total_value.value?m.total_value.value:0).toLocaleString('en-US');}
-          if(m.name==='website_clicks'){var el=document.getElementById('ig-website-clicks'); if(el)el.textContent=(m.total_value&&m.total_value.value?m.total_value.value:0).toLocaleString('en-US');}
+          if(m.name==='profile_views'){
+            var pvVal=(m.total_value&&m.total_value.value?m.total_value.value:0).toLocaleString('en-US');
+            _liveIG.profileViews=pvVal;
+            var el=document.getElementById('ig-profile-views'); if(el)el.textContent=pvVal;
+          }
+          if(m.name==='website_clicks'){
+            var wcVal=(m.total_value&&m.total_value.value?m.total_value.value:0).toLocaleString('en-US');
+            _liveIG.websiteClicks=wcVal;
+            var el=document.getElementById('ig-website-clicks'); if(el)el.textContent=wcVal;
+          }
         });
       }
       // reach (sum last 7 days)
       if(reachRes.data&&reachRes.data[0]){
         var totalReach=reachRes.data[0].values.reduce(function(s,v){return s+v.value;},0);
-        var el=document.getElementById('ig-reach-7d'); if(el)el.textContent=totalReach.toLocaleString('en-US');
+        var rVal=totalReach.toLocaleString('en-US');
+        _liveIG.reach7d=rVal;
+        var el=document.getElementById('ig-reach-7d'); if(el)el.textContent=rVal;
       }
       // new followers (sum last 7 days)
       if(nfRes.data&&nfRes.data[0]){
         var totalNF=nfRes.data[0].values.reduce(function(s,v){return s+v.value;},0);
-        var el=document.getElementById('ig-new-followers'); if(el)el.textContent='+'+totalNF;
+        var nfVal='+'+totalNF;
+        _liveIG.newFollowers=nfVal;
+        var el=document.getElementById('ig-new-followers'); if(el)el.textContent=nfVal;
       }
     }catch(e2){console.error('IG Insights:',e2);}
 
