@@ -429,14 +429,87 @@ body.light .donut svg circle:first-child{stroke:#eef2f7}
 @media (max-width:480px){
   .logo-text p{display:none}
   .logo-text h1{font-size:14px}
-  .kpi-grid{grid-template-columns:1fr}
-  .kpi-grid-5{grid-template-columns:1fr}
-  .kpi-value{font-size:26px}
+  .kpi-grid{grid-template-columns:repeat(2,1fr)}
+  .kpi-grid-5{grid-template-columns:repeat(2,1fr)}
+  .kpi-value{font-size:20px}
   .gender-row{flex-direction:column}
   .compare-grid{grid-template-columns:1fr}
   .ads-grid{grid-template-columns:1fr}
   .tab{padding:7px 10px;font-size:12px}
   .year-btn{padding:5px 10px;font-size:12px}
+}
+
+/* ===== MOBILE DEEP FIX ===== */
+/* منع الـ page من التمدد أفقياً */
+html,body{overflow-x:hidden;max-width:100vw}
+
+/* Tabs: scroll أفقي ناعم + إخفاء scrollbar */
+.tabs{-webkit-overflow-scrolling:touch;scrollbar-width:none;-ms-overflow-style:none}
+.tabs::-webkit-scrollbar{display:none}
+
+@media(max-width:768px){
+  /* مقارنة الأشهر: ترتيب رأسي */
+  .cmp-selectors{flex-direction:column;gap:10px}
+  .cmp-vs{display:none}
+  /* جدول المقارنة يسمح بالتمرير */
+  #compareResult{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .cmp-table{min-width:360px}
+  /* الـ KPI تبقى عمودين */
+  .kpi-grid{grid-template-columns:repeat(2,1fr)!important}
+}
+
+@media(max-width:480px){
+  /* تقليص padding للمحتوى */
+  .content{padding:0 10px 20px}
+  .tabs{padding:8px 10px 0}
+  .global-kpi-bar{padding:8px 10px 0;gap:8px}
+  .smart-alerts{margin:8px 10px 0;gap:6px}
+
+  /* تبسيط الهيدر: إخفاء العناصر الثانوية */
+  .last-update-badge{display:none}
+  .print-btn{display:none}
+  .header{padding:10px 12px}
+
+  /* Global KPI bar: 2x2 دائماً */
+  .global-kpi-bar{grid-template-columns:repeat(2,1fr)!important}
+  .gkpi-card{padding:10px 12px;gap:8px}
+  .gkpi-icon{width:32px;height:32px;font-size:14px}
+  .gkpi-value{font-size:14px}
+  .gkpi-label{font-size:9px;line-height:1.3}
+  .gkpi-change{font-size:9px}
+
+  /* Smart alerts: أكثر إحكاماً */
+  .smart-alert{padding:8px 12px;font-size:11px;gap:8px}
+  .smart-alert-icon{font-size:14px}
+
+  /* KPI cards */
+  .kpi-card{padding:12px}
+  .kpi-value{font-size:19px!important}
+  .kpi-label{font-size:11px}
+
+  /* تصحيح labels المثبتة بـ inline style (120px / 100px / 80px) */
+  #ads-metrics-bars .age-label{width:72px!important;font-size:9px!important}
+  #city-bars-container .age-label{width:50px!important;font-size:9px!important}
+  #fin-yearly-bars .age-label{width:46px!important;font-size:9px!important}
+  #fin-yearly-bars .age-pct{width:55px!important;font-size:10px!important}
+  #content .age-bars .age-label{width:68px!important;font-size:9px!important}
+
+  /* Monthly bars */
+  .month-label{width:36px!important;font-size:10px}
+  .month-val{width:48px!important;font-size:10px}
+
+  /* جدول المقارنة */
+  .cmp-table td,.cmp-table th{padding:8px 10px;font-size:11px}
+
+  /* Goals */
+  .goals-grid{grid-template-columns:1fr}
+
+  /* Card padding */
+  .chart-card{padding:14px}
+
+  /* الـ donut chart */
+  .donut{width:110px;height:110px}
+  .donut svg{width:110px;height:110px}
 }
 </style>
 </head>
