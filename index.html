@@ -989,17 +989,18 @@ function buildWaTemplates(){
 }
 buildWaTemplates();
 
+// ===== SHARED CONFIG =====
+var TOKEN='EAAUoBeSqM64BQxR5JurEoLPZAvwyaM5Y7IzIkYDUyMXzUhvPixAxDP4NsDdWFfWZAmp60QZAfr0mZAt1BiBj3ahIywxB1PCytIb6hV3JRA6qlTZAOSIT85UxPjs4u4X9sGv0ujmF2ZBtaJu0RQcs4IbG2LZASFjh7rsFePrRU89ugARaZBXYLmQLWofvbuPkqt50';
+var V='https://graph.facebook.com/v19.0';
+
 // ===== META ADS LIVE API =====
-setTimeout(async function(){
-  var TOKEN='EAAUoBeSqM64BQxR5JurEoLPZAvwyaM5Y7IzIkYDUyMXzUhvPixAxDP4NsDdWFfWZAmp60QZAfr0mZAt1BiBj3ahIywxB1PCytIb6hV3JRA6qlTZAOSIT85UxPjs4u4X9sGv0ujmF2ZBtaJu0RQcs4IbG2LZASFjh7rsFePrRU89ugARaZBXYLmQLWofvbuPkqt50';
+async function fetchAdsData(){
   var ACT='act_1975936919266764';
-  var V='https://graph.facebook.com/v19.0';
   var SAR=3.75;
   try{
     var mNames=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
     var today=new Date();
     var todayStr=today.getFullYear()+'-'+(String(today.getMonth()+1).padStart(2,'0'))+'-'+(String(today.getDate()).padStart(2,'0'));
-    // Fetch historical (max 37 months back) + 2026 separately
     var res=await Promise.all([
       fetch(V+'/'+ACT+'/insights?fields=spend&time_increment=monthly&time_range={"since":"2023-11-01","until":"2025-11-30"}&access_token='+TOKEN).then(function(r){return r.json();}),
       fetch(V+'/'+ACT+'/insights?fields=spend&time_increment=monthly&time_range={"since":"2025-12-01","until":"2025-12-31"}&access_token='+TOKEN).then(function(r){return r.json();}),
@@ -1030,7 +1031,6 @@ setTimeout(async function(){
         finAllData[yr].monthly=monthly;
         finAllData[yr].peak=peakVal;
         finAllData[yr].peakMonth=mNames[peakIdx]||'—';
-        // Update adsYearData spend too
         if(adsYearData[yr]) adsYearData[yr].spend=total.toLocaleString();
       });
       finAllData[2024].prevTotal=finAllData[2023].total;
@@ -1043,32 +1043,29 @@ setTimeout(async function(){
       updateAdsSection(activeY);
     }
   }catch(e){console.error('Ads API:',e);}
-},800);
+}
 
 // ===== INSTAGRAM LIVE API =====
-setTimeout(async function(){
-  var TOKEN='EAAUoBeSqM64BQxR5JurEoLPZAvwyaM5Y7IzIkYDUyMXzUhvPixAxDP4NsDdWFfWZAmp60QZAfr0mZAt1BiBj3ahIywxB1PCytIb6hV3JRA6qlTZAOSIT85UxPjs4u4X9sGv0ujmF2ZBtaJu0RQcs4IbG2LZASFjh7rsFePrRU89ugARaZBXYLmQLWofvbuPkqt50';
+async function fetchIGData(){
   var IGID='17841412382902267';
-  var V='https://graph.facebook.com/v19.0';
   try{
     var pr=await(await fetch(V+'/'+IGID+'?fields=followers_count,media_count&access_token='+TOKEN)).json();
     if(pr.followers_count){
       var f=pr.followers_count;
-      var fK=f>=1000?(f/1000).toFixed(1)+'K':String(f);
-      // Only update 2026 with live count — keep 2023/2024/2025 historical estimates
-      yearData[2026].followers=fK;
-      audienceYearData[2026].total=fK;
-      // Refresh display only if currently on 2026
+      // عرض الرقم الدقيق بالفاصلة (مثال: 104,237)
+      var fExact=f.toLocaleString('en-US');
+      yearData[2026].followers=fExact;
+      audienceYearData[2026].total=fExact;
       var activeYBtn=document.querySelector('.year-btn.active');
       var activeYStr=activeYBtn?activeYBtn.textContent.trim():'2025';
       if(activeYStr==='2026'){
         var igF=document.getElementById('ig-followers');
-        if(igF) igF.textContent=fK;
+        if(igF) igF.textContent=fExact;
         var audKpi=document.querySelector('#audience .kpi-value');
-        if(audKpi) audKpi.textContent=fK;
+        if(audKpi) audKpi.textContent=fExact;
       }
       var gd=goalsData.find(function(g){return g.title==='متابعو Instagram';});
-      if(gd){gd.cur=fK;buildGoals();}
+      if(gd){gd.cur=fExact;buildGoals();}
     }
     if(pr.media_count){
       var dv=document.querySelector('#instagram .donut-center .value');
@@ -1120,29 +1117,27 @@ setTimeout(async function(){
       ig.insertBefore(b,ig.firstChild);
     }
   }catch(e){console.error('IG API:',e);}
-},500);
+}
 
 // ===== FACEBOOK PAGE LIVE API =====
-setTimeout(async function(){
-  var TOKEN='EAAUoBeSqM64BQxR5JurEoLPZAvwyaM5Y7IzIkYDUyMXzUhvPixAxDP4NsDdWFfWZAmp60QZAfr0mZAt1BiBj3ahIywxB1PCytIb6hV3JRA6qlTZAOSIT85UxPjs4u4X9sGv0ujmF2ZBtaJu0RQcs4IbG2LZASFjh7rsFePrRU89ugARaZBXYLmQLWofvbuPkqt50';
+var _fbPageToken=null;
+async function fetchFBData(){
   var PAGE_ID='314636285900808';
-  var V='https://graph.facebook.com/v19.0';
   try{
-    // Get page access token
-    var accounts=await(await fetch(V+'/me/accounts?access_token='+TOKEN)).json();
-    var pageToken=TOKEN;
-    if(accounts.data){
-      var pg=accounts.data.find(function(p){return p.id===PAGE_ID;});
-      if(pg && pg.access_token) pageToken=pg.access_token;
+    if(!_fbPageToken){
+      var accounts=await(await fetch(V+'/me/accounts?access_token='+TOKEN)).json();
+      if(accounts.data){
+        var pg=accounts.data.find(function(p){return p.id===PAGE_ID;});
+        if(pg&&pg.access_token) _fbPageToken=pg.access_token;
+      }
+      if(!_fbPageToken) _fbPageToken=TOKEN;
     }
-    // Get page followers
-    var pageData=await(await fetch(V+'/'+PAGE_ID+'?fields=followers_count,fan_count&access_token='+pageToken)).json();
+    var pageData=await(await fetch(V+'/'+PAGE_ID+'?fields=followers_count,fan_count&access_token='+_fbPageToken)).json();
     if(pageData.followers_count||pageData.fan_count){
       var fc=document.getElementById('fb-followers');
-      if(fc) fc.textContent=((pageData.followers_count||pageData.fan_count)||0).toLocaleString();
+      if(fc) fc.textContent=((pageData.followers_count||pageData.fan_count)||0).toLocaleString('en-US');
     }
-    // Get recent posts
-    var postsData=await(await fetch(V+'/'+PAGE_ID+'/posts?fields=message,created_time,likes.limit(1).summary(true),comments.limit(1).summary(true)&limit=10&access_token='+pageToken)).json();
+    var postsData=await(await fetch(V+'/'+PAGE_ID+'/posts?fields=message,created_time,likes.limit(1).summary(true),comments.limit(1).summary(true)&limit=10&access_token='+_fbPageToken)).json();
     if(postsData.data&&postsData.data.length){
       var posts=postsData.data;
       var cnt=document.getElementById('fb-posts-count');
@@ -1170,7 +1165,6 @@ setTimeout(async function(){
         }).join('');
       }
     }
-    // Live badge
     var fbSec=document.getElementById('facebook');
     if(fbSec&&!fbSec.querySelector('.api-live-badge')){
       var b=document.createElement('div');
@@ -1180,7 +1174,19 @@ setTimeout(async function(){
       fbSec.insertBefore(b,fbSec.firstChild);
     }
   }catch(e){console.error('FB API:',e);}
-},1500);
+}
+
+// ===== INITIAL LOAD =====
+setTimeout(fetchAdsData, 800);
+setTimeout(fetchIGData,  500);
+setTimeout(fetchFBData, 1500);
+
+// ===== AUTO-REFRESH كل 5 دقائق =====
+setInterval(function(){
+  fetchIGData();
+  fetchAdsData();
+  fetchFBData();
+}, 5 * 60 * 1000);
 </script>
 </body>
 </html>
