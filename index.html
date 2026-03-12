@@ -433,7 +433,7 @@ body.light .donut svg circle:first-child{stroke:#eef2f7}
 <div id="finance" class="section">
   <div class="kpi-grid">
     <div class="kpi-card"><div class="kpi-label">إجمالي الصرف 2025</div><div class="kpi-value" id="fin-spend">50,800</div><div class="kpi-change neutral">ريال — Meta</div></div>
-    <div class="kpi-card"><div class="kpi-label">إجمالي الصرف الكلي</div><div class="kpi-value" id="fin-total">77,000</div><div class="kpi-change neutral">ريال — منذ 2023</div></div>
+    <div class="kpi-card"><div class="kpi-label">إجمالي الصرف الكلي</div><div class="kpi-value" id="fin-total">86,735</div><div class="kpi-change neutral">ريال — 2023 إلى 2026</div></div>
     <div class="kpi-card"><div class="kpi-label">أعلى شهر صرف</div><div class="kpi-value" id="fin-peak">7,500</div><div class="kpi-change up">↑ يوليو 2025</div></div>
     <div class="kpi-card"><div class="kpi-label">مقارنة بـ 2024</div><div class="kpi-value" id="fin-growth">+114%</div><div class="kpi-change up">↑ زيادة في الصرف</div></div>
   </div>
@@ -445,9 +445,10 @@ body.light .donut svg circle:first-child{stroke:#eef2f7}
     <div class="chart-card">
       <div class="card-header"><div><div class="card-title">مقارنة سنوية</div><div class="card-subtitle">إجمالي الصرف السنوي</div></div></div>
       <div class="age-bars" style="margin-top:8px" id="fin-yearly-bars">
-        <div class="age-row"><div class="age-label" style="width:60px">2023</div><div class="age-bar-track"><div class="age-bar-fill" style="width:5%;background:#6c63ff"></div></div><div class="age-pct" style="width:80px">2,500 ر</div></div>
-        <div class="age-row"><div class="age-label" style="width:60px">2024</div><div class="age-bar-track"><div class="age-bar-fill" style="width:47%;background:#ffd166"></div></div><div class="age-pct" style="width:80px">23,700 ر</div></div>
-        <div class="age-row"><div class="age-label" style="width:60px">2025</div><div class="age-bar-track"><div class="age-bar-fill" style="width:100%;background:#00d4aa"></div></div><div class="age-pct" style="width:80px">50,800 ر</div></div>
+        <div class="age-row"><div class="age-label" style="width:70px;font-size:11px">2023</div><div class="age-bar-track"><div class="age-bar-fill" style="width:5%;background:#6c63ff"></div></div><div class="age-pct" style="width:80px">2,500 ر</div></div>
+        <div class="age-row"><div class="age-label" style="width:70px;font-size:11px">2024</div><div class="age-bar-track"><div class="age-bar-fill" style="width:47%;background:#ffd166"></div></div><div class="age-pct" style="width:80px">23,700 ر</div></div>
+        <div class="age-row"><div class="age-label" style="width:70px;font-size:11px">2025</div><div class="age-bar-track"><div class="age-bar-fill" style="width:100%;background:#00d4aa"></div></div><div class="age-pct" style="width:80px">50,800 ر</div></div>
+        <div class="age-row"><div class="age-label" style="width:70px;font-size:11px">2026 🟡</div><div class="age-bar-track"><div class="age-bar-fill" style="width:19%;background:#ff6b6b;opacity:0.75"></div></div><div class="age-pct" style="width:80px">9,735 ر</div></div>
       </div>
       <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border)">
         <div class="card-title" style="margin-bottom:12px">المنصة المستخدمة 2025</div>
@@ -776,19 +777,21 @@ setTimeout(async function(){
     if(allData.data&&allData.data.length){
       var yMap={};
       var spend2025=[0,0,0,0,0,0,0,0,0,0,0,0];
+      var spend2026=[0,0,0,0,0,0,0,0,0,0,0,0];
       allData.data.forEach(function(d){
         var yr=d.date_start.split('-')[0];
         var mo=parseInt(d.date_start.split('-')[1])-1;
         var sar=Math.round(parseFloat(d.spend)*SAR);
         yMap[yr]=(yMap[yr]||0)+sar;
         if(yr==='2025') spend2025[mo]=sar;
+        if(yr==='2026') spend2026[mo]=sar;
       });
       // Update monthly chart with 2025 data
       for(var i=0;i<12;i++) monthlySpend[i]=spend2025[i];
       buildMonthlyBars();
       // KPI values
-      var y2023=yMap['2023']||0, y2024=yMap['2024']||0, y2025=yMap['2025']||0;
-      var grandTotal=y2023+y2024+y2025;
+      var y2023=yMap['2023']||0, y2024=yMap['2024']||0, y2025=yMap['2025']||0, y2026=yMap['2026']||0;
+      var grandTotal=y2023+y2024+y2025+y2026;
       var peakVal=Math.max.apply(null,spend2025.filter(function(v){return v>0;}));
       var mNames=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
       var peakMonth=mNames[spend2025.indexOf(peakVal)];
@@ -802,12 +805,14 @@ setTimeout(async function(){
       if(pk){pk.textContent=peakVal.toLocaleString();pk.nextElementSibling.textContent='↑ '+peakMonth+' 2025';}
       var fg=document.getElementById('fin-growth');
       if(fg&&y2024>0) fg.textContent='+'+(Math.round((y2025-y2024)/y2024*100))+'%';
-      // Yearly bars
-      var maxY=Math.max(y2023,y2024,y2025);
+      // Yearly bars — 2023, 2024, 2025, 2026
+      var allYears=[{y:'2023',v:y2023,c:'#6c63ff'},{y:'2024',v:y2024,c:'#ffd166'},{y:'2025',v:y2025,c:'#00d4aa'},{y:'2026',v:y2026,c:'#ff6b6b',partial:true}];
+      var maxY=Math.max.apply(null,allYears.map(function(x){return x.v;}));
       var bars=document.getElementById('fin-yearly-bars');
       if(bars&&maxY>0){
-        bars.innerHTML=[{y:'2023',v:y2023,c:'#6c63ff'},{y:'2024',v:y2024,c:'#ffd166'},{y:'2025',v:y2025,c:'#00d4aa'}].map(function(d){
-          return '<div class="age-row"><div class="age-label" style="width:60px">'+d.y+'</div><div class="age-bar-track"><div class="age-bar-fill" style="width:'+Math.round(d.v/maxY*100)+'%;background:'+d.c+'"></div></div><div class="age-pct" style="width:80px">'+d.v.toLocaleString()+' ر</div></div>';
+        bars.innerHTML=allYears.map(function(d){
+          var label=d.y+(d.partial?' 🟡':'');
+          return '<div class="age-row"><div class="age-label" style="width:70px;font-size:11px">'+label+'</div><div class="age-bar-track"><div class="age-bar-fill" style="width:'+Math.round(d.v/maxY*100)+'%;background:'+d.c+(d.partial?';opacity:0.75':'')+'"></div></div><div class="age-pct" style="width:80px">'+d.v.toLocaleString()+' ر</div></div>';
         }).join('');
       }
     }
