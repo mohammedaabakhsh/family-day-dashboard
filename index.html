@@ -432,22 +432,22 @@ body.light .donut svg circle:first-child{stroke:#eef2f7}
 <!-- FINANCE -->
 <div id="finance" class="section">
   <div class="kpi-grid">
-    <div class="kpi-card"><div class="kpi-label">إجمالي الصرف 2025</div><div class="kpi-value">8,400</div><div class="kpi-change neutral">ريال — Meta</div></div>
-    <div class="kpi-card"><div class="kpi-label">إجمالي النتائج</div><div class="kpi-value">312</div><div class="kpi-change up">↑ رسالة / حجز</div></div>
-    <div class="kpi-card"><div class="kpi-label">تكلفة النتيجة</div><div class="kpi-value">26.9</div><div class="kpi-change up">↑ ريال / نتيجة</div></div>
-    <div class="kpi-card"><div class="kpi-label">مقارنة بـ 2024</div><div class="kpi-value">+28%</div><div class="kpi-change up">↑ زيادة في الصرف</div></div>
+    <div class="kpi-card"><div class="kpi-label">إجمالي الصرف 2025</div><div class="kpi-value" id="fin-spend">50,800</div><div class="kpi-change neutral">ريال — Meta</div></div>
+    <div class="kpi-card"><div class="kpi-label">إجمالي الصرف الكلي</div><div class="kpi-value" id="fin-total">77,000</div><div class="kpi-change neutral">ريال — منذ 2023</div></div>
+    <div class="kpi-card"><div class="kpi-label">أعلى شهر صرف</div><div class="kpi-value" id="fin-peak">7,500</div><div class="kpi-change up">↑ يوليو 2025</div></div>
+    <div class="kpi-card"><div class="kpi-label">مقارنة بـ 2024</div><div class="kpi-value" id="fin-growth">+114%</div><div class="kpi-change up">↑ زيادة في الصرف</div></div>
   </div>
   <div class="charts-row">
     <div class="chart-card">
-      <div class="card-header"><div><div class="card-title">الصرف الشهري — 2025</div><div class="card-subtitle">إجمالي كل المنصات</div></div><div class="badge">14,700 ريال</div></div>
+      <div class="card-header"><div><div class="card-title">الصرف الشهري — 2025</div><div class="card-subtitle">Meta Ads — بالريال السعودي</div></div><div class="badge" id="fin-badge">50,800 ريال</div></div>
       <div class="month-bars" style="margin-top:8px" id="monthlyBars"></div>
     </div>
     <div class="chart-card">
       <div class="card-header"><div><div class="card-title">مقارنة سنوية</div><div class="card-subtitle">إجمالي الصرف السنوي</div></div></div>
-      <div class="age-bars" style="margin-top:8px">
-        <div class="age-row"><div class="age-label" style="width:60px">2023</div><div class="age-bar-track"><div class="age-bar-fill" style="width:42%;background:#6c63ff"></div></div><div class="age-pct" style="width:80px">6,800 ر</div></div>
-        <div class="age-row"><div class="age-label" style="width:60px">2024</div><div class="age-bar-track"><div class="age-bar-fill" style="width:72%;background:#ffd166"></div></div><div class="age-pct" style="width:80px">11,500 ر</div></div>
-        <div class="age-row"><div class="age-label" style="width:60px">2025</div><div class="age-bar-track"><div class="age-bar-fill" style="width:100%;background:#00d4aa"></div></div><div class="age-pct" style="width:80px">14,700 ر</div></div>
+      <div class="age-bars" style="margin-top:8px" id="fin-yearly-bars">
+        <div class="age-row"><div class="age-label" style="width:60px">2023</div><div class="age-bar-track"><div class="age-bar-fill" style="width:5%;background:#6c63ff"></div></div><div class="age-pct" style="width:80px">2,500 ر</div></div>
+        <div class="age-row"><div class="age-label" style="width:60px">2024</div><div class="age-bar-track"><div class="age-bar-fill" style="width:47%;background:#ffd166"></div></div><div class="age-pct" style="width:80px">23,700 ر</div></div>
+        <div class="age-row"><div class="age-label" style="width:60px">2025</div><div class="age-bar-track"><div class="age-bar-fill" style="width:100%;background:#00d4aa"></div></div><div class="age-pct" style="width:80px">50,800 ر</div></div>
       </div>
       <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border)">
         <div class="card-title" style="margin-bottom:12px">المنصة المستخدمة 2025</div>
@@ -557,7 +557,7 @@ const yearData={
   2026:{followers:'130K',views:'1.8M',engage:'5.4%',reach:'74K',badge:'🟡 جزئي — يناير إلى مارس',sub:'متابعون جدد — 2026 (يناير–مارس)',bars:[2200,2600,2900,0,0,0,0,0,0,0,0,0]}
 };
 const months=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
-const monthlySpend=[800,900,1100,1400,1300,1600,1800,2100,1700,2200,0,0];
+const monthlySpend=[4316,3721,2945,2587,3410,6727,7500,4581,3321,4313,3164,4175];
 let currentBars=yearData[2025].bars;
 
 // ===== COUNTER ANIMATION =====
@@ -763,6 +763,62 @@ buildMonthlyBars();
 buildAlerts();
 initCompare();
 buildGoals();
+
+// ===== META ADS LIVE API =====
+setTimeout(async function(){
+  var TOKEN='EAAUoBeSqM64BQzdUF9vJVuZBYN4ZBk8akMx85JIiSmvy2Jz4rEwgPYCRQ3zfoE1AgBA95R5ke2YAopmQuN9shE7oZBEM4O0VcA7Phvl9RNT3kHIHVmQXXMFhqKHOuzXtpbd4TvXW1lNhJQcNbbSZAwzIM8HRP8FVgjA7Fl8fYQhoEAXskrcSjt7OaZBbsAD2mXfnMZCMm9MqFhUL1DZA0WA2D8E7vM58tMLopPsuQKtsTXFt5U0d99ZCObouPcbsoWru03NGq1L6erVAwK6vn9Hj';
+  var ACT='act_1975936919266764';
+  var V='https://graph.facebook.com/v19.0';
+  var SAR=3.75;
+  try{
+    // --- Monthly 2025 spend ---
+    var r2025=await(await fetch(V+'/'+ACT+'/insights?fields=spend&time_increment=monthly&date_preset=this_year&access_token='+TOKEN)).json();
+    if(r2025.data&&r2025.data.length){
+      var newSpend=[0,0,0,0,0,0,0,0,0,0,0,0];
+      r2025.data.forEach(function(d){
+        var m=parseInt(d.date_start.split('-')[1])-1;
+        newSpend[m]=Math.round(parseFloat(d.spend)*SAR);
+      });
+      // Update monthlySpend and redraw
+      for(var i=0;i<12;i++) monthlySpend[i]=newSpend[i];
+      buildMonthlyBars();
+      // Update finance KPIs
+      var total2025=newSpend.reduce(function(a,b){return a+b;},0);
+      var el=document.getElementById('fin-spend');
+      if(el) el.textContent=total2025.toLocaleString();
+      var badge=document.getElementById('fin-badge');
+      if(badge) badge.textContent=total2025.toLocaleString()+' ريال';
+      var peakVal=Math.max.apply(null,newSpend.filter(function(v){return v>0;}));
+      var peakMonth=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'][newSpend.indexOf(peakVal)];
+      var pk=document.getElementById('fin-peak');
+      if(pk){pk.textContent=peakVal.toLocaleString();pk.nextElementSibling.textContent='↑ '+peakMonth+' 2025';}
+    }
+    // --- Yearly totals ---
+    var yr=await(await fetch(V+'/'+ACT+'/insights?fields=spend&time_increment=yearly&date_preset=maximum&access_token='+TOKEN)).json();
+    if(yr.data&&yr.data.length){
+      var yMap={};
+      yr.data.forEach(function(d){yMap[d.date_start.split('-')[0]]=Math.round(parseFloat(d.spend)*SAR);});
+      var y2023=yMap['2023']||2500, y2024=yMap['2024']||23700, y2025=yMap['2025']||50800;
+      var grandTotal=y2023+y2024+y2025;
+      var maxY=Math.max(y2023,y2024,y2025);
+      var ft=document.getElementById('fin-total');
+      if(ft) ft.textContent=grandTotal.toLocaleString();
+      var fg=document.getElementById('fin-growth');
+      if(fg&&y2024>0) fg.textContent='+'+(Math.round((y2025-y2024)/y2024*100))+'%';
+      // Update yearly bars
+      var bars=document.getElementById('fin-yearly-bars');
+      if(bars){
+        bars.innerHTML=[
+          {y:'2023',v:y2023,c:'#6c63ff'},
+          {y:'2024',v:y2024,c:'#ffd166'},
+          {y:'2025',v:y2025,c:'#00d4aa'}
+        ].map(function(d){
+          return '<div class="age-row"><div class="age-label" style="width:60px">'+d.y+'</div><div class="age-bar-track"><div class="age-bar-fill" style="width:'+Math.round(d.v/maxY*100)+'%;background:'+d.c+'"></div></div><div class="age-pct" style="width:80px">'+d.v.toLocaleString()+' ر</div></div>';
+        }).join('');
+      }
+    }
+  }catch(e){console.error('Ads API:',e);}
+},800);
 
 // ===== INSTAGRAM LIVE API =====
 setTimeout(async function(){
