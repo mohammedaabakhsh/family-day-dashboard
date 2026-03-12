@@ -771,48 +771,42 @@ setTimeout(async function(){
   var V='https://graph.facebook.com/v19.0';
   var SAR=3.75;
   try{
-    // --- Monthly 2025 spend ---
-    var r2025=await(await fetch(V+'/'+ACT+'/insights?fields=spend&time_increment=monthly&date_preset=this_year&access_token='+TOKEN)).json();
-    if(r2025.data&&r2025.data.length){
-      var newSpend=[0,0,0,0,0,0,0,0,0,0,0,0];
-      r2025.data.forEach(function(d){
-        var m=parseInt(d.date_start.split('-')[1])-1;
-        newSpend[m]=Math.round(parseFloat(d.spend)*SAR);
-      });
-      // Update monthlySpend and redraw
-      for(var i=0;i<12;i++) monthlySpend[i]=newSpend[i];
-      buildMonthlyBars();
-      // Update finance KPIs
-      var total2025=newSpend.reduce(function(a,b){return a+b;},0);
-      var el=document.getElementById('fin-spend');
-      if(el) el.textContent=total2025.toLocaleString();
-      var badge=document.getElementById('fin-badge');
-      if(badge) badge.textContent=total2025.toLocaleString()+' ريال';
-      var peakVal=Math.max.apply(null,newSpend.filter(function(v){return v>0;}));
-      var peakMonth=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'][newSpend.indexOf(peakVal)];
-      var pk=document.getElementById('fin-peak');
-      if(pk){pk.textContent=peakVal.toLocaleString();pk.nextElementSibling.textContent='↑ '+peakMonth+' 2025';}
-    }
-    // --- Yearly totals ---
-    var yr=await(await fetch(V+'/'+ACT+'/insights?fields=spend&time_increment=yearly&date_preset=maximum&access_token='+TOKEN)).json();
-    if(yr.data&&yr.data.length){
+    // --- All monthly data (gives 2023 → present) ---
+    var allData=await(await fetch(V+'/'+ACT+'/insights?fields=spend&time_increment=monthly&date_preset=maximum&access_token='+TOKEN)).json();
+    if(allData.data&&allData.data.length){
       var yMap={};
-      yr.data.forEach(function(d){yMap[d.date_start.split('-')[0]]=Math.round(parseFloat(d.spend)*SAR);});
-      var y2023=yMap['2023']||2500, y2024=yMap['2024']||23700, y2025=yMap['2025']||50800;
+      var spend2025=[0,0,0,0,0,0,0,0,0,0,0,0];
+      allData.data.forEach(function(d){
+        var yr=d.date_start.split('-')[0];
+        var mo=parseInt(d.date_start.split('-')[1])-1;
+        var sar=Math.round(parseFloat(d.spend)*SAR);
+        yMap[yr]=(yMap[yr]||0)+sar;
+        if(yr==='2025') spend2025[mo]=sar;
+      });
+      // Update monthly chart with 2025 data
+      for(var i=0;i<12;i++) monthlySpend[i]=spend2025[i];
+      buildMonthlyBars();
+      // KPI values
+      var y2023=yMap['2023']||0, y2024=yMap['2024']||0, y2025=yMap['2025']||0;
       var grandTotal=y2023+y2024+y2025;
-      var maxY=Math.max(y2023,y2024,y2025);
+      var peakVal=Math.max.apply(null,spend2025.filter(function(v){return v>0;}));
+      var mNames=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+      var peakMonth=mNames[spend2025.indexOf(peakVal)];
+      var el=document.getElementById('fin-spend');
+      if(el) el.textContent=y2025.toLocaleString();
       var ft=document.getElementById('fin-total');
       if(ft) ft.textContent=grandTotal.toLocaleString();
+      var badge=document.getElementById('fin-badge');
+      if(badge) badge.textContent=y2025.toLocaleString()+' ريال';
+      var pk=document.getElementById('fin-peak');
+      if(pk){pk.textContent=peakVal.toLocaleString();pk.nextElementSibling.textContent='↑ '+peakMonth+' 2025';}
       var fg=document.getElementById('fin-growth');
       if(fg&&y2024>0) fg.textContent='+'+(Math.round((y2025-y2024)/y2024*100))+'%';
-      // Update yearly bars
+      // Yearly bars
+      var maxY=Math.max(y2023,y2024,y2025);
       var bars=document.getElementById('fin-yearly-bars');
-      if(bars){
-        bars.innerHTML=[
-          {y:'2023',v:y2023,c:'#6c63ff'},
-          {y:'2024',v:y2024,c:'#ffd166'},
-          {y:'2025',v:y2025,c:'#00d4aa'}
-        ].map(function(d){
+      if(bars&&maxY>0){
+        bars.innerHTML=[{y:'2023',v:y2023,c:'#6c63ff'},{y:'2024',v:y2024,c:'#ffd166'},{y:'2025',v:y2025,c:'#00d4aa'}].map(function(d){
           return '<div class="age-row"><div class="age-label" style="width:60px">'+d.y+'</div><div class="age-bar-track"><div class="age-bar-fill" style="width:'+Math.round(d.v/maxY*100)+'%;background:'+d.c+'"></div></div><div class="age-pct" style="width:80px">'+d.v.toLocaleString()+' ر</div></div>';
         }).join('');
       }
