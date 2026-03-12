@@ -572,13 +572,13 @@ body.light .donut svg circle:first-child{stroke:#eef2f7}
     </div>
     <div class="kpi-card">
       <div class="kpi-label">القوالب المعتمدة</div>
-      <div class="kpi-value" style="color:#00d4aa">10</div>
-      <div class="kpi-change up">✅ جميعها موافق عليها</div>
+      <div class="kpi-value" style="color:#00d4aa" id="wa-approved-count">...</div>
+      <div class="kpi-change up" id="wa-approved-label">جاري التحميل...</div>
     </div>
     <div class="kpi-card">
       <div class="kpi-label">حالة التحقق</div>
-      <div class="kpi-value" style="font-size:20px;color:#ff6b6b">⚠️ منتهية</div>
-      <div class="kpi-change down">↓ يجب التجديد من Meta</div>
+      <div class="kpi-value" style="font-size:20px;color:#ff6b6b" id="wa-verify-status">...</div>
+      <div class="kpi-change down" id="wa-verify-label">جاري التحميل...</div>
     </div>
     <div class="kpi-card">
       <div class="kpi-label">اسم الحساب</div>
@@ -592,8 +592,8 @@ body.light .donut svg circle:first-child{stroke:#eef2f7}
   </div>
   <div class="chart-card">
     <div class="card-header">
-      <div><div class="card-title">قوالب الرسائل</div><div class="card-subtitle">10 قوالب — بيانات من WhatsApp Business API</div></div>
-      <div class="badge badge-yellow">10 APPROVED ✅</div>
+      <div><div class="card-title">قوالب الرسائل</div><div class="card-subtitle" id="wa-templates-subtitle">جاري التحميل...</div></div>
+      <div class="badge badge-yellow" id="wa-templates-badge">...</div>
     </div>
     <div class="template-grid" id="waTemplates"></div>
   </div>
@@ -959,35 +959,62 @@ buildAlerts();
 initCompare();
 buildGoals();
 
-// ===== WHATSAPP TEMPLATES =====
-var waTemplates=[
-  {name:'ramdan2025',      cat:'MARKETING'},
-  {name:'tasees',          cat:'MARKETING'},
-  {name:'999/cancellation',cat:'UTILITY'},
-  {name:'payment_link',    cat:'UTILITY'},
-  {name:'teacher_s_day',   cat:'MARKETING'},
-  {name:'10hours',         cat:'MARKETING'},
-  {name:'confirm_reservation_2', cat:'UTILITY'},
-  {name:'offers2024_5',    cat:'MARKETING'},
-  {name:'ffffffffffff',    cat:'MARKETING'},
-  {name:'offersssss',      cat:'MARKETING'},
-];
-function buildWaTemplates(){
-  var grid=document.getElementById('waTemplates');
-  if(!grid)return;
-  grid.innerHTML=waTemplates.map(function(t){
-    var catBg=t.cat==='UTILITY'?'rgba(108,99,255,0.15)':'rgba(0,212,170,0.1)';
-    var catColor=t.cat==='UTILITY'?'#6c63ff':'#00d4aa';
-    return '<div class="template-item">'+
-      '<div class="template-name">'+t.name+'</div>'+
-      '<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px">'+
-        '<span style="display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;font-size:12px;background:rgba(0,212,170,0.1);color:#00d4aa">✅ APPROVED</span>'+
-        '<span style="font-size:11px;color:'+catColor+';background:'+catBg+';padding:2px 8px;border-radius:10px;font-weight:600">'+t.cat+'</span>'+
-      '</div>'+
-    '</div>';
-  }).join('');
+// ===== WHATSAPP LIVE API =====
+async function fetchWaData(){
+  var WABA='143005115559630';
+  try{
+    // جلب القوالب مع pagination
+    var allT=[];
+    var url=V+'/'+WABA+'/message_templates?fields=name,status,category&limit=50&access_token='+TOKEN;
+    while(url){
+      var r=await fetch(url).then(function(x){return x.json();});
+      if(r.data) allT=allT.concat(r.data);
+      url=(r.paging&&r.paging.next)?r.paging.next:null;
+    }
+    var approved=allT.filter(function(t){return t.status==='APPROVED';});
+    var rejected=allT.filter(function(t){return t.status!=='APPROVED';});
+    // تحديث KPI
+    var countEl=document.getElementById('wa-approved-count');
+    var labelEl=document.getElementById('wa-approved-label');
+    if(countEl) countEl.textContent=approved.length;
+    if(labelEl) labelEl.textContent='✅ '+approved.length+' معتمد'+(rejected.length?' / ❌ '+rejected.length+' مرفوض':'');
+    // تحديث badge والعنوان الفرعي
+    var sub=document.getElementById('wa-templates-subtitle');
+    var badge=document.getElementById('wa-templates-badge');
+    if(sub) sub.textContent=allT.length+' قالب — بيانات من WhatsApp Business API';
+    if(badge) badge.textContent=approved.length+' APPROVED ✅';
+    // عرض القوالب
+    var grid=document.getElementById('waTemplates');
+    if(grid){
+      grid.style.maxHeight='420px';
+      grid.style.overflowY='auto';
+      grid.innerHTML=allT.map(function(t){
+        var isOk=t.status==='APPROVED';
+        var catBg=t.category==='UTILITY'?'rgba(108,99,255,0.15)':'rgba(0,212,170,0.1)';
+        var catColor=t.category==='UTILITY'?'#6c63ff':'#00d4aa';
+        return '<div class="template-item">'+
+          '<div class="template-name">'+t.name+'</div>'+
+          '<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px">'+
+            (isOk?'<span style="display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;font-size:12px;background:rgba(0,212,170,0.1);color:#00d4aa">✅ APPROVED</span>':
+                  '<span style="display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;font-size:12px;background:rgba(255,107,107,0.1);color:#ff6b6b">❌ REJECTED</span>')+
+            '<span style="font-size:11px;color:'+catColor+';background:'+catBg+';padding:2px 8px;border-radius:10px;font-weight:600">'+t.category+'</span>'+
+          '</div>'+
+        '</div>';
+      }).join('');
+    }
+    // جلب حالة الرقم
+    var ph=await fetch(V+'/'+WABA+'/phone_numbers?fields=display_phone_number,code_verification_status,quality_rating&access_token='+TOKEN).then(function(x){return x.json();});
+    if(ph.data&&ph.data[0]){
+      var p=ph.data[0];
+      var expired=p.code_verification_status==='EXPIRED';
+      var sEl=document.getElementById('wa-verify-status');
+      var slEl=document.getElementById('wa-verify-label');
+      if(sEl){sEl.textContent=expired?'⚠️ منتهية':'✅ مفعّلة';sEl.style.color=expired?'#ff6b6b':'#00d4aa';}
+      if(slEl){slEl.textContent=expired?'↓ يجب التجديد من Meta':'↑ حالة جيدة';slEl.className='kpi-change '+(expired?'down':'up');}
+    }
+  }catch(e){console.error('WA API',e);}
 }
-buildWaTemplates();
+fetchWaData();
 
 // ===== SHARED CONFIG =====
 var TOKEN='EAAUoBeSqM64BQxR5JurEoLPZAvwyaM5Y7IzIkYDUyMXzUhvPixAxDP4NsDdWFfWZAmp60QZAfr0mZAt1BiBj3ahIywxB1PCytIb6hV3JRA6qlTZAOSIT85UxPjs4u4X9sGv0ujmF2ZBtaJu0RQcs4IbG2LZASFjh7rsFePrRU89ugARaZBXYLmQLWofvbuPkqt50';
