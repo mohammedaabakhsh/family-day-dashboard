@@ -307,11 +307,12 @@ body.light .donut svg circle:first-child{stroke:#eef2f7}
 
 <!-- INSTAGRAM -->
 <div id="instagram" class="section active">
-  <div class="kpi-grid">
-    <div class="kpi-card"><div class="kpi-label">المتابعون</div><div class="kpi-value" id="ig-followers">104K</div><div class="kpi-change up">↑ +2,340 هذا الشهر</div></div>
-    <div class="kpi-card"><div class="kpi-label">مشاهدات الريلز</div><div class="kpi-value" id="ig-views">1.2M</div><div class="kpi-change up">↑ +18% عن الشهر الماضي</div></div>
-    <div class="kpi-card"><div class="kpi-label">معدل التفاعل</div><div class="kpi-value" id="ig-engage">4.8%</div><div class="kpi-change up">↑ ممتاز</div></div>
-    <div class="kpi-card"><div class="kpi-label">الوصول الأسبوعي</div><div class="kpi-value" id="ig-reach">58K</div><div class="kpi-change down">↓ -5% عن الأسبوع الماضي</div></div>
+  <div class="kpi-grid kpi-grid-5">
+    <div class="kpi-card"><div class="kpi-label">المتابعون</div><div class="kpi-value" id="ig-followers">104K</div><div class="kpi-change up" id="ig-followers-sub">↑ نمو مستمر</div></div>
+    <div class="kpi-card"><div class="kpi-label">الوصول (آخر 7 أيام)</div><div class="kpi-value" id="ig-reach-7d">—</div><div class="kpi-change up" id="ig-reach-7d-sub">↑ حساب فريد</div></div>
+    <div class="kpi-card"><div class="kpi-label">مشاهدات البروفايل</div><div class="kpi-value" id="ig-profile-views">—</div><div class="kpi-change up" id="ig-pv-sub">↑ آخر 7 أيام</div></div>
+    <div class="kpi-card"><div class="kpi-label">نقرات الموقع</div><div class="kpi-value" id="ig-website-clicks">—</div><div class="kpi-change up" id="ig-wc-sub">↑ من البايو</div></div>
+    <div class="kpi-card"><div class="kpi-label">متابعون جدد (أسبوع)</div><div class="kpi-value" id="ig-new-followers">—</div><div class="kpi-change up" id="ig-nf-sub">↑ آخر 7 أيام</div></div>
   </div>
   <div class="charts-row">
     <div class="chart-card">
@@ -383,19 +384,24 @@ body.light .donut svg circle:first-child{stroke:#eef2f7}
   </div>
   <div id="ads-meta">
     <div class="kpi-grid kpi-grid-5">
-      <div class="kpi-card"><div class="kpi-label" id="ads-spend-lbl">إجمالي الصرف</div><div class="kpi-value" id="ads-spend">50,800</div><div class="kpi-change neutral" id="ads-spend-sub">ريال — 2025</div></div>
-      <div class="kpi-card"><div class="kpi-label">إجمالي النتائج</div><div class="kpi-value" id="ads-results">312</div><div class="kpi-change up">↑ رسالة / حجز</div></div>
-      <div class="kpi-card"><div class="kpi-label">تكلفة النتيجة</div><div class="kpi-value" id="ads-cost">26.9</div><div class="kpi-change up">ريال</div></div>
-      <div class="kpi-card"><div class="kpi-label" id="ads-growth-lbl">مقارنة بالعام الماضي</div><div class="kpi-value" id="ads-growth">+31%</div><div class="kpi-change up" id="ads-growth-sub">↑ نتائج أكثر</div></div>
-      <div class="kpi-card"><div class="kpi-label">أفضل إعلان</div><div class="kpi-value" id="ads-best" style="font-size:15px">جولة الكابينة</div><div class="kpi-change up" id="ads-best-sub">↑ 89 نتيجة</div></div>
+      <div class="kpi-card"><div class="kpi-label" id="ads-spend-lbl">إجمالي الصرف</div><div class="kpi-value" id="ads-spend">50,761</div><div class="kpi-change neutral" id="ads-spend-sub">ريال — 2025</div></div>
+      <div class="kpi-card"><div class="kpi-label">المحادثات المبدوءة</div><div class="kpi-value" id="ads-results">2,719</div><div class="kpi-change up" id="ads-results-sub">↑ محادثة عبر الإعلان</div></div>
+      <div class="kpi-card"><div class="kpi-label">تكلفة المحادثة</div><div class="kpi-value" id="ads-cost">18.7</div><div class="kpi-change up" id="ads-cost-sub">↑ ريال — أفضل من 2024</div></div>
+      <div class="kpi-card"><div class="kpi-label">الوصول الفعلي</div><div class="kpi-value" id="ads-reach">1.9M</div><div class="kpi-change up" id="ads-reach-sub">↑ شخص وصلهم الإعلان</div></div>
+      <div class="kpi-card"><div class="kpi-label" id="ads-growth-lbl">نمو النتائج</div><div class="kpi-value" id="ads-growth">+501%</div><div class="kpi-change up" id="ads-growth-sub">↑ مقارنة 2024</div></div>
     </div>
-    <div class="ads-grid">
-      <div class="ad-card" style="animation-delay:0.1s;border-color:rgba(0,212,170,0.3)"><div class="ad-name">🎥 جولة الكابينة الكاملة <span class="status green">✅ كمّل</span></div><div class="ad-stats"><div class="ad-stat"><div class="ad-stat-label">الصرف</div><div class="ad-stat-value">1,800 ر</div></div><div class="ad-stat"><div class="ad-stat-label">النتائج</div><div class="ad-stat-value" style="color:#00d4aa">89</div></div><div class="ad-stat"><div class="ad-stat-label">المشاهدات</div><div class="ad-stat-value">42K</div></div><div class="ad-stat"><div class="ad-stat-label">تكلفة النتيجة</div><div class="ad-stat-value">20 ر</div></div></div></div>
-      <div class="ad-card" style="animation-delay:0.2s;border-color:rgba(0,212,170,0.3)"><div class="ad-name">📸 عرض الويكند <span class="status green">✅ كمّل</span></div><div class="ad-stats"><div class="ad-stat"><div class="ad-stat-label">الصرف</div><div class="ad-stat-value">2,200 ر</div></div><div class="ad-stat"><div class="ad-stat-label">النتائج</div><div class="ad-stat-value" style="color:#00d4aa">74</div></div><div class="ad-stat"><div class="ad-stat-label">المشاهدات</div><div class="ad-stat-value">38K</div></div><div class="ad-stat"><div class="ad-stat-label">تكلفة النتيجة</div><div class="ad-stat-value">29 ر</div></div></div></div>
-      <div class="ad-card" style="animation-delay:0.3s;border-color:rgba(255,209,102,0.3)"><div class="ad-name">🏊 إعلان المسبح <span class="status yellow">⏳ راقب</span></div><div class="ad-stats"><div class="ad-stat"><div class="ad-stat-label">الصرف</div><div class="ad-stat-value">1,400 ر</div></div><div class="ad-stat"><div class="ad-stat-label">النتائج</div><div class="ad-stat-value" style="color:#ffd166">31</div></div><div class="ad-stat"><div class="ad-stat-label">المشاهدات</div><div class="ad-stat-value">29K</div></div><div class="ad-stat"><div class="ad-stat-label">تكلفة النتيجة</div><div class="ad-stat-value">45 ر</div></div></div></div>
-      <div class="ad-card" style="animation-delay:0.4s;border-color:rgba(255,107,107,0.3)"><div class="ad-name">🎁 عرض رمضان <span class="status red">❌ وقّف</span></div><div class="ad-stats"><div class="ad-stat"><div class="ad-stat-label">الصرف</div><div class="ad-stat-value">900 ر</div></div><div class="ad-stat"><div class="ad-stat-label">النتائج</div><div class="ad-stat-value" style="color:#ff6b6b">4</div></div><div class="ad-stat"><div class="ad-stat-label">المشاهدات</div><div class="ad-stat-value">11K</div></div><div class="ad-stat"><div class="ad-stat-label">تكلفة النتيجة</div><div class="ad-stat-value">225 ر</div></div></div></div>
-      <div class="ad-card" style="animation-delay:0.5s;border-color:rgba(0,212,170,0.3)"><div class="ad-name">👨‍👩‍👧 إعلان العائلة <span class="status green">✅ كمّل</span></div><div class="ad-stats"><div class="ad-stat"><div class="ad-stat-label">الصرف</div><div class="ad-stat-value">1,200 ر</div></div><div class="ad-stat"><div class="ad-stat-label">النتائج</div><div class="ad-stat-value" style="color:#00d4aa">68</div></div><div class="ad-stat"><div class="ad-stat-label">المشاهدات</div><div class="ad-stat-value">33K</div></div><div class="ad-stat"><div class="ad-stat-label">تكلفة النتيجة</div><div class="ad-stat-value">17 ر</div></div></div></div>
-      <div class="ad-card" style="animation-delay:0.6s;border-color:rgba(255,209,102,0.3)"><div class="ad-name">🌅 إعلان الطبيعة <span class="status yellow">⏳ راقب</span></div><div class="ad-stats"><div class="ad-stat"><div class="ad-stat-label">الصرف</div><div class="ad-stat-value">900 ر</div></div><div class="ad-stat"><div class="ad-stat-label">النتائج</div><div class="ad-stat-value" style="color:#ffd166">46</div></div><div class="ad-stat"><div class="ad-stat-label">المشاهدات</div><div class="ad-stat-value">21K</div></div><div class="ad-stat"><div class="ad-stat-label">تكلفة النتيجة</div><div class="ad-stat-value">19 ر</div></div></div></div>
+    <div class="chart-card" style="margin-top:16px">
+      <div class="card-header">
+        <div><div class="card-title">تفاصيل أداء الإعلانات</div><div class="card-subtitle" id="ads-campaigns-sub">بيانات حية من Meta Ads API</div></div>
+        <div class="badge" id="ads-live-badge">📊 Live</div>
+      </div>
+      <div class="age-bars" style="margin-top:8px" id="ads-metrics-bars">
+        <div class="age-row"><div class="age-label" style="width:120px">الانطباعات</div><div class="age-bar-track"><div class="age-bar-fill" style="width:100%;background:#6c63ff" id="ads-imp-bar"></div></div><div class="age-pct" id="ads-impressions">5,451,819</div></div>
+        <div class="age-row"><div class="age-label" style="width:120px">الوصول</div><div class="age-bar-track"><div class="age-bar-fill" style="width:35%;background:#00d4aa" id="ads-reach-bar"></div></div><div class="age-pct" id="ads-reach-bar-val">1,935,887</div></div>
+        <div class="age-row"><div class="age-label" style="width:120px">النقرات</div><div class="age-bar-track"><div class="age-bar-fill" style="width:10%;background:#ffd166" id="ads-clicks-bar"></div></div><div class="age-pct" id="ads-clicks">156,001</div></div>
+        <div class="age-row"><div class="age-label" style="width:120px">مشاهدات الفيديو</div><div class="age-bar-track"><div class="age-bar-fill" style="width:45%;background:#ff6b9d" id="ads-vid-bar"></div></div><div class="age-pct" id="ads-video-views">698,490</div></div>
+        <div class="age-row"><div class="age-label" style="width:120px">نقرات الروابط</div><div class="age-bar-track"><div class="age-bar-fill" style="width:15%;background:#ffd166" id="ads-lc-bar"></div></div><div class="age-pct" id="ads-link-clicks">56,187</div></div>
+      </div>
     </div>
   </div>
 
@@ -413,30 +419,30 @@ body.light .donut svg circle:first-child{stroke:#eef2f7}
     <div class="chart-card">
       <div class="card-header"><div><div class="card-title">الجنس</div><div class="card-subtitle">توزيع المتابعين</div></div></div>
       <div class="gender-row">
-        <div class="gender-card"><div class="gender-icon">👩</div><div class="gender-pct" style="color:#ff6b9d">62%</div><div class="gender-label">بنات</div><div style="font-size:12px;color:var(--muted);margin-top:4px">64,480 متابعة</div></div>
-        <div class="gender-card"><div class="gender-icon">👨</div><div class="gender-pct" style="color:#6c63ff">38%</div><div class="gender-label">شباب</div><div style="font-size:12px;color:var(--muted);margin-top:4px">39,520 متابع</div></div>
+        <div class="gender-card"><div class="gender-icon">👩</div><div class="gender-pct" id="aud-female-pct" style="color:#ff6b9d">68%</div><div class="gender-label">بنات</div><div id="aud-female-count" style="font-size:12px;color:var(--muted);margin-top:4px">جارٍ التحميل…</div></div>
+        <div class="gender-card"><div class="gender-icon">👨</div><div class="gender-pct" id="aud-male-pct" style="color:#6c63ff">32%</div><div class="gender-label">شباب</div><div id="aud-male-count" style="font-size:12px;color:var(--muted);margin-top:4px">جارٍ التحميل…</div></div>
       </div>
     </div>
     <div class="chart-card">
       <div class="card-header"><div><div class="card-title">الفئات العمرية</div><div class="card-subtitle">توزيع المتابعين حسب العمر</div></div></div>
-      <div class="age-bars" style="margin-top:8px">
-        <div class="age-row"><div class="age-label">18-24</div><div class="age-bar-track"><div class="age-bar-fill" style="width:22%;background:#6c63ff"></div></div><div class="age-pct">22%</div></div>
-        <div class="age-row"><div class="age-label">25-34</div><div class="age-bar-track"><div class="age-bar-fill" style="width:100%;background:#00d4aa"></div></div><div class="age-pct">34%</div></div>
-        <div class="age-row"><div class="age-label">35-44</div><div class="age-bar-track"><div class="age-bar-fill" style="width:70%;background:#00d4aa"></div></div><div class="age-pct">24%</div></div>
-        <div class="age-row"><div class="age-label">45-54</div><div class="age-bar-track"><div class="age-bar-fill" style="width:38%;background:#ffd166"></div></div><div class="age-pct">13%</div></div>
-        <div class="age-row"><div class="age-label">55+</div><div class="age-bar-track"><div class="age-bar-fill" style="width:20%;background:#ff6b6b"></div></div><div class="age-pct">7%</div></div>
+      <div class="age-bars" id="age-bars-container" style="margin-top:8px">
+        <div class="age-row"><div class="age-label">18-24</div><div class="age-bar-track"><div class="age-bar-fill" style="width:18%;background:#6c63ff"></div></div><div class="age-pct">8%</div></div>
+        <div class="age-row"><div class="age-label">25-34</div><div class="age-bar-track"><div class="age-bar-fill" style="width:100%;background:#00d4aa"></div></div><div class="age-pct">43%</div></div>
+        <div class="age-row"><div class="age-label">35-44</div><div class="age-bar-track"><div class="age-bar-fill" style="width:82%;background:#00d4aa"></div></div><div class="age-pct">35%</div></div>
+        <div class="age-row"><div class="age-label">45-54</div><div class="age-bar-track"><div class="age-bar-fill" style="width:23%;background:#ffd166"></div></div><div class="age-pct">10%</div></div>
+        <div class="age-row"><div class="age-label">55+</div><div class="age-bar-track"><div class="age-bar-fill" style="width:8%;background:#ff6b6b"></div></div><div class="age-pct">4%</div></div>
       </div>
     </div>
   </div>
   <div style="margin-top:16px">
     <div class="chart-card">
       <div class="card-header"><div><div class="card-title">أعلى المدن</div><div class="card-subtitle">توزيع المتابعين جغرافياً</div></div></div>
-      <div class="age-bars" style="margin-top:8px">
-        <div class="age-row"><div class="age-label" style="width:80px">جدة</div><div class="age-bar-track"><div class="age-bar-fill" style="width:100%;background:#00d4aa"></div></div><div class="age-pct">38%</div></div>
-        <div class="age-row"><div class="age-label" style="width:80px">الرياض</div><div class="age-bar-track"><div class="age-bar-fill" style="width:79%;background:#00d4aa"></div></div><div class="age-pct">30%</div></div>
-        <div class="age-row"><div class="age-label" style="width:80px">مكة</div><div class="age-bar-track"><div class="age-bar-fill" style="width:26%;background:#6c63ff"></div></div><div class="age-pct">10%</div></div>
-        <div class="age-row"><div class="age-label" style="width:80px">المدينة</div><div class="age-bar-track"><div class="age-bar-fill" style="width:18%;background:#6c63ff"></div></div><div class="age-pct">7%</div></div>
-        <div class="age-row"><div class="age-label" style="width:80px">الدمام</div><div class="age-bar-track"><div class="age-bar-fill" style="width:13%;background:#ffd166"></div></div><div class="age-pct">5%</div></div>
+      <div class="age-bars" id="city-bars-container" style="margin-top:8px">
+        <div class="age-row"><div class="age-label" style="width:80px">جدة</div><div class="age-bar-track"><div class="age-bar-fill" style="width:100%;background:#00d4aa"></div></div><div class="age-pct">64%</div></div>
+        <div class="age-row"><div class="age-label" style="width:80px">مكة</div><div class="age-bar-track"><div class="age-bar-fill" style="width:17%;background:#00d4aa"></div></div><div class="age-pct">11%</div></div>
+        <div class="age-row"><div class="age-label" style="width:80px">الرياض</div><div class="age-bar-track"><div class="age-bar-fill" style="width:10%;background:#6c63ff"></div></div><div class="age-pct">6%</div></div>
+        <div class="age-row"><div class="age-label" style="width:80px">المدينة</div><div class="age-bar-track"><div class="age-bar-fill" style="width:4%;background:#6c63ff"></div></div><div class="age-pct">3%</div></div>
+        <div class="age-row"><div class="age-label" style="width:80px">الطائف</div><div class="age-bar-track"><div class="age-bar-fill" style="width:3%;background:#ffd166"></div></div><div class="age-pct">2%</div></div>
       </div>
     </div>
   </div>
@@ -657,10 +663,10 @@ var finGrandTotal=86755;
 
 // ===== PER-YEAR DATA: ADS / AUDIENCE / CONTENT =====
 var adsYearData={
-  2023:{spend:'2,500', results:'45',  cost:'55.6', growth:'—',    growthSub:'أول سنة',          best:'عرض الافتتاح', bestSub:'↑ 28 نتيجة', spendSub:'ريال — 2023'},
-  2024:{spend:'23,713',results:'180', cost:'31.7', growth:'+848%',growthSub:'↑ نمو كبير',        best:'عرض الكابينة', bestSub:'↑ 62 نتيجة', spendSub:'ريال — 2024'},
-  2025:{spend:'50,761',results:'312', cost:'26.9', growth:'+114%',growthSub:'↑ نتائج أكثر',      best:'جولة الكابينة',bestSub:'↑ 89 نتيجة', spendSub:'ريال — 2025'},
-  2026:{spend:'9,781', results:'85',  cost:'28.5', growth:'جزئي',growthSub:'🟡 يناير–مارس فقط', best:'عرض رمضان',   bestSub:'↑ 32 نتيجة', spendSub:'ريال — 2026 🟡'}
+  2023:{spend:'2,500',  results:'—',    cost:'—',    reach:'—',         impressions:'—',         clicks:'—',      videoViews:'—',     linkClicks:'—',    growth:'—',     growthSub:'أول سنة',             spendSub:'ريال — 2023'},
+  2024:{spend:'23,713', results:'452',  cost:'52',   reach:'914,622',   impressions:'—',         clicks:'74,532', videoViews:'311,492',linkClicks:'—',    growth:'+848%', growthSub:'↑ نمو كبير في الصرف', spendSub:'ريال — 2024'},
+  2025:{spend:'50,761', results:'2,719',cost:'18.7', reach:'1,935,887', impressions:'5,451,819', clicks:'156,001',videoViews:'698,490',linkClicks:'56,187',growth:'+501%',growthSub:'↑ نمو كبير في النتائج',spendSub:'ريال — 2025'},
+  2026:{spend:'9,781',  results:'191',  cost:'51',   reach:'156,747',   impressions:'503,159',   clicks:'20,400', videoViews:'75,424', linkClicks:'11,092',growth:'جزئي', growthSub:'🟡 يناير–مارس فقط',   spendSub:'ريال — 2026 🟡'}
 };
 var audienceYearData={
   2023:{total:'62K',   saudi:'75%', age:'25-34', ageSub:'↑ 32% من الجمهور', newF:'+1.2K', newSub:'↑ هذا الشهر'},
@@ -696,14 +702,23 @@ function animateValue(el, newText){
 function updateAdsSection(y){
   var d=adsYearData[y]; if(!d)return;
   var el=document.getElementById('ads-spend'); if(el)el.textContent=d.spend;
-  var sl=document.getElementById('ads-spend-lbl'); if(sl)sl.textContent='إجمالي الصرف';
   var ss=document.getElementById('ads-spend-sub'); if(ss)ss.textContent=d.spendSub;
   var r=document.getElementById('ads-results'); if(r)r.textContent=d.results;
+  var rs=document.getElementById('ads-results-sub'); if(rs)rs.textContent=d.results==='—'?'لا توجد بيانات':'↑ محادثة عبر الإعلان';
   var c=document.getElementById('ads-cost'); if(c)c.textContent=d.cost;
+  var cs=document.getElementById('ads-cost-sub'); if(cs)cs.textContent=d.cost==='—'?'لا توجد بيانات':'↑ ريال لكل محادثة';
+  var reach=document.getElementById('ads-reach'); if(reach)reach.textContent=d.reach;
+  var reachS=document.getElementById('ads-reach-sub'); if(reachS)reachS.textContent=d.reach==='—'?'لا توجد بيانات':'↑ شخص وصلهم الإعلان';
   var g=document.getElementById('ads-growth'); if(g)g.textContent=d.growth;
   var gs=document.getElementById('ads-growth-sub'); if(gs)gs.textContent=d.growthSub;
-  var b=document.getElementById('ads-best'); if(b)b.textContent=d.best;
-  var bs=document.getElementById('ads-best-sub'); if(bs)bs.textContent=d.bestSub;
+  // update metric bars
+  var imp=document.getElementById('ads-impressions'); if(imp)imp.textContent=d.impressions;
+  var rbv=document.getElementById('ads-reach-bar-val'); if(rbv)rbv.textContent=d.reach;
+  var clk=document.getElementById('ads-clicks'); if(clk)clk.textContent=d.clicks;
+  var vv=document.getElementById('ads-video-views'); if(vv)vv.textContent=d.videoViews;
+  var lc=document.getElementById('ads-link-clicks'); if(lc)lc.textContent=d.linkClicks;
+  // sub label
+  var sub=document.getElementById('ads-campaigns-sub'); if(sub)sub.textContent='بيانات حية من Meta Ads API — '+y;
 }
 function updateAudienceSection(y){
   var d=audienceYearData[y]; if(!d)return;
@@ -1135,6 +1150,36 @@ async function fetchIGData(){
         arcs[3].setAttribute('stroke-dasharray',ca+' '+C);arcs[3].setAttribute('stroke-dashoffset','-'+(va+ia));
       }
     }
+    // === Instagram Profile Insights (reach, profile_views, website_clicks, follower_count) ===
+    try{
+      var today7=new Date(); today7.setDate(today7.getDate()-7);
+      var since7=today7.getFullYear()+'-'+(String(today7.getMonth()+1).padStart(2,'0'))+'-'+(String(today7.getDate()).padStart(2,'0'));
+      var todayNow=new Date();
+      var until7=todayNow.getFullYear()+'-'+(String(todayNow.getMonth()+1).padStart(2,'0'))+'-'+(String(todayNow.getDate()).padStart(2,'0'));
+      var [pvRes, reachRes, nfRes] = await Promise.all([
+        fetch(V+'/'+IGID+'/insights?metric=profile_views,website_clicks,accounts_engaged&metric_type=total_value&period=day&since='+since7+'&until='+until7+'&access_token='+TOKEN).then(function(r){return r.json();}),
+        fetch(V+'/'+IGID+'/insights?metric=reach&period=day&since='+since7+'&until='+until7+'&access_token='+TOKEN).then(function(r){return r.json();}),
+        fetch(V+'/'+IGID+'/insights?metric=follower_count&period=day&since='+since7+'&until='+until7+'&access_token='+TOKEN).then(function(r){return r.json();})
+      ]);
+      // profile_views & website_clicks
+      if(pvRes.data){
+        pvRes.data.forEach(function(m){
+          if(m.name==='profile_views'){var el=document.getElementById('ig-profile-views'); if(el)el.textContent=(m.total_value&&m.total_value.value?m.total_value.value:0).toLocaleString('en-US');}
+          if(m.name==='website_clicks'){var el=document.getElementById('ig-website-clicks'); if(el)el.textContent=(m.total_value&&m.total_value.value?m.total_value.value:0).toLocaleString('en-US');}
+        });
+      }
+      // reach (sum last 7 days)
+      if(reachRes.data&&reachRes.data[0]){
+        var totalReach=reachRes.data[0].values.reduce(function(s,v){return s+v.value;},0);
+        var el=document.getElementById('ig-reach-7d'); if(el)el.textContent=totalReach.toLocaleString('en-US');
+      }
+      // new followers (sum last 7 days)
+      if(nfRes.data&&nfRes.data[0]){
+        var totalNF=nfRes.data[0].values.reduce(function(s,v){return s+v.value;},0);
+        var el=document.getElementById('ig-new-followers'); if(el)el.textContent='+'+totalNF;
+      }
+    }catch(e2){console.error('IG Insights:',e2);}
+
     var ig=document.getElementById('instagram');
     if(ig&&!ig.querySelector('.api-live-badge')){
       var b=document.createElement('div');
@@ -1203,16 +1248,163 @@ async function fetchFBData(){
   }catch(e){console.error('FB API:',e);}
 }
 
+// ===== AUDIENCE DEMOGRAPHICS LIVE API =====
+async function fetchAudienceData(){
+  var IGID='17841412382902267';
+  try{
+    var res=await Promise.all([
+      fetch(V+'/'+IGID+'/insights?metric=follower_demographics&metric_type=total_value&breakdown=gender&period=lifetime&access_token='+TOKEN).then(function(r){return r.json();}),
+      fetch(V+'/'+IGID+'/insights?metric=follower_demographics&metric_type=total_value&breakdown=age&period=lifetime&access_token='+TOKEN).then(function(r){return r.json();}),
+      fetch(V+'/'+IGID+'/insights?metric=follower_demographics&metric_type=total_value&breakdown=city&period=lifetime&access_token='+TOKEN).then(function(r){return r.json();}),
+      fetch(V+'/'+IGID+'/insights?metric=follower_demographics&metric_type=total_value&breakdown=country&period=lifetime&access_token='+TOKEN).then(function(r){return r.json();})
+    ]);
+    var gRes=res[0], aRes=res[1], cRes=res[2], coRes=res[3];
+
+    // === الجنس ===
+    if(gRes.data&&gRes.data[0]&&gRes.data[0].total_value){
+      var gbk=gRes.data[0].total_value.breakdowns[0].results;
+      var fv=0,mv=0;
+      gbk.forEach(function(r){if(r.dimension_values[0]==='F')fv=r.value;else if(r.dimension_values[0]==='M')mv=r.value;});
+      var tot=fv+mv;
+      if(tot>0){
+        var fp=Math.round(fv/tot*100), mp=100-fp;
+        var fpEl=document.getElementById('aud-female-pct'); if(fpEl)fpEl.textContent=fp+'%';
+        var mpEl=document.getElementById('aud-male-pct');   if(mpEl)mpEl.textContent=mp+'%';
+        var fcEl=document.getElementById('aud-female-count'); if(fcEl)fcEl.textContent=fv.toLocaleString('en-US')+' متابعة';
+        var mcEl=document.getElementById('aud-male-count');   if(mcEl)mcEl.textContent=mv.toLocaleString('en-US')+' متابع';
+      }
+    }
+
+    // === الفئات العمرية ===
+    if(aRes.data&&aRes.data[0]&&aRes.data[0].total_value){
+      var abk=aRes.data[0].total_value.breakdowns[0].results;
+      var am={};
+      abk.forEach(function(r){am[r.dimension_values[0]]=r.value;});
+      var groups=[
+        {label:'18-24', val:(am['18-24']||0)},
+        {label:'25-34', val:(am['25-34']||0)},
+        {label:'35-44', val:(am['35-44']||0)},
+        {label:'45-54', val:(am['45-54']||0)},
+        {label:'55+',   val:(am['55-64']||0)+(am['65+']||0)}
+      ];
+      var totalAge=groups.reduce(function(s,g){return s+g.val;},0);
+      var maxAge=Math.max.apply(null,groups.map(function(g){return g.val;}));
+      var topAge=groups.reduce(function(a,b){return a.val>b.val?a:b;});
+      var ageEl=document.getElementById('aud-age'); if(ageEl)ageEl.textContent=topAge.label;
+      var ageSubEl=document.getElementById('aud-age-sub'); if(ageSubEl)ageSubEl.textContent='↑ '+Math.round(topAge.val/totalAge*100)+'% من الجمهور';
+      var colors=['#6c63ff','#00d4aa','#00d4aa','#ffd166','#ff6b6b'];
+      var ageCont=document.getElementById('age-bars-container');
+      if(ageCont){
+        ageCont.innerHTML=groups.map(function(g,i){
+          var pct=Math.round(g.val/totalAge*100);
+          var w=Math.round(g.val/maxAge*100);
+          return '<div class="age-row"><div class="age-label">'+g.label+'</div><div class="age-bar-track"><div class="age-bar-fill" style="width:'+w+'%;background:'+colors[i]+'"></div></div><div class="age-pct">'+pct+'%</div></div>';
+        }).join('');
+      }
+    }
+
+    // === الدول → نسبة السعودية ===
+    if(coRes.data&&coRes.data[0]&&coRes.data[0].total_value){
+      var cobk=coRes.data[0].total_value.breakdowns[0].results;
+      var saVal=0, totalCo=0;
+      cobk.forEach(function(r){totalCo+=r.value; if(r.dimension_values[0]==='SA')saVal=r.value;});
+      if(totalCo>0){
+        var saEl=document.getElementById('aud-saudi'); if(saEl)saEl.textContent=Math.round(saVal/totalCo*100)+'%';
+      }
+    }
+
+    // === المدن ===
+    if(cRes.data&&cRes.data[0]&&cRes.data[0].total_value){
+      var cities=cRes.data[0].total_value.breakdowns[0].results;
+      cities.sort(function(a,b){return b.value-a.value;});
+      var top5=cities.slice(0,5);
+      var maxCity=top5[0].value;
+      var totalCity=cities.reduce(function(s,c){return s+c.value;},0);
+      var cityNames={
+        'Jeddah, Makkah Region':'جدة',
+        'Mecca, Makkah Region':'مكة',
+        'Riyadh, Riyadh Region':'الرياض',
+        'Medina, Al Madinah Region':'المدينة',
+        'Taif, Makkah Region':'الطائف',
+        'Dammam, Eastern Province':'الدمام',
+        'Khobar, Eastern Province':'الخبر',
+        "Khamis Mushait, 'Asir Region":'خميس مشيط',
+        'Yanbu, Al Madinah Region':'ينبع'
+      };
+      var cityColors=['#00d4aa','#00d4aa','#6c63ff','#6c63ff','#ffd166'];
+      var cityCont=document.getElementById('city-bars-container');
+      if(cityCont){
+        cityCont.innerHTML=top5.map(function(c,i){
+          var name=cityNames[c.dimension_values[0]]||c.dimension_values[0].split(',')[0];
+          var pct=Math.round(c.value/totalCity*100);
+          var w=Math.round(c.value/maxCity*100);
+          return '<div class="age-row"><div class="age-label" style="width:80px">'+name+'</div><div class="age-bar-track"><div class="age-bar-fill" style="width:'+w+'%;background:'+cityColors[i]+'"></div></div><div class="age-pct">'+pct+'%</div></div>';
+        }).join('');
+      }
+    }
+  }catch(e){console.error('Audience API:',e);}
+}
+
+// ===== ADS ANNUAL METRICS (reach, impressions, actions) =====
+async function fetchAdsMetrics(){
+  var ACT='act_1975936919266764';
+  var SAR=3.75;
+  var today=new Date();
+  var todayStr=today.getFullYear()+'-'+(String(today.getMonth()+1).padStart(2,'0'))+'-'+(String(today.getDate()).padStart(2,'0'));
+  try{
+    var res=await Promise.all([
+      fetch(V+'/'+ACT+'/insights?fields=spend,impressions,reach,clicks,actions&time_range={"since":"2024-01-01","until":"2024-12-31"}&access_token='+TOKEN).then(function(r){return r.json();}),
+      fetch(V+'/'+ACT+'/insights?fields=spend,impressions,reach,clicks,actions&time_range={"since":"2025-01-01","until":"2025-12-31"}&access_token='+TOKEN).then(function(r){return r.json();}),
+      fetch(V+'/'+ACT+'/insights?fields=spend,impressions,reach,clicks,actions&time_range={"since":"2026-01-01","until":"'+todayStr+'"}&access_token='+TOKEN).then(function(r){return r.json();})
+    ]);
+    [{yr:2024,i:0},{yr:2025,i:1},{yr:2026,i:2}].forEach(function(obj){
+      var yr=obj.yr, i=obj.i;
+      var d=res[i];
+      if(!d.data||!d.data[0])return;
+      var ins=d.data[0];
+      var actions=ins.actions||[];
+      var getAct=function(t){var a=actions.find(function(x){return x.action_type===t;}); return a?parseInt(a.value):0;};
+      var msgs=getAct('onsite_conversion.messaging_conversation_started_7d');
+      var vidViews=getAct('video_view');
+      var linkClicks=getAct('link_click');
+      var spendSAR=Math.round(parseFloat(ins.spend)*SAR);
+      var costPerMsg=msgs>0?Math.round(spendSAR/msgs*10)/10:0;
+      var prevMsgs=yr===2024?0:(adsYearData[yr-1]?parseInt((adsYearData[yr-1].results||'0').replace(/,/g,''))||0:0);
+      var growthStr=prevMsgs>0&&msgs>0?'+'+(Math.round((msgs-prevMsgs)/prevMsgs*100))+'%':'جزئي';
+      adsYearData[yr].results=msgs>0?msgs.toLocaleString('en-US'):'—';
+      adsYearData[yr].cost=costPerMsg>0?costPerMsg.toString():'—';
+      adsYearData[yr].reach=parseInt(ins.reach).toLocaleString('en-US');
+      adsYearData[yr].impressions=parseInt(ins.impressions).toLocaleString('en-US');
+      adsYearData[yr].clicks=parseInt(ins.clicks).toLocaleString('en-US');
+      adsYearData[yr].videoViews=vidViews>0?vidViews.toLocaleString('en-US'):'—';
+      adsYearData[yr].linkClicks=linkClicks>0?linkClicks.toLocaleString('en-US'):'—';
+      if(yr!==2026)adsYearData[yr].growth=growthStr;
+    });
+    // حساب نمو 2025 بالنسبة لـ 2024
+    var m2024=parseInt((adsYearData[2024].results||'0').replace(/,/g,''))||0;
+    var m2025=parseInt((adsYearData[2025].results||'0').replace(/,/g,''))||0;
+    if(m2024>0&&m2025>0)adsYearData[2025].growth='+'+(Math.round((m2025-m2024)/m2024*100))+'%';
+    // تحديث الواجهة للسنة المحددة حالياً
+    var activeYearBtn=document.querySelector('.year-btn.active');
+    var activeY=activeYearBtn?parseInt(activeYearBtn.textContent):2025;
+    updateAdsSection(activeY);
+  }catch(e){console.error('Ads Metrics API:',e);}
+}
+
 // ===== INITIAL LOAD =====
-setTimeout(fetchAdsData, 800);
-setTimeout(fetchIGData,  500);
-setTimeout(fetchFBData, 1500);
+setTimeout(fetchAdsData,    800);
+setTimeout(fetchIGData,     500);
+setTimeout(fetchFBData,    1500);
+setTimeout(fetchAudienceData, 2000);
+setTimeout(fetchAdsMetrics,  2500);
 
 // ===== AUTO-REFRESH كل 5 دقائق =====
 setInterval(function(){
   fetchIGData();
   fetchAdsData();
   fetchFBData();
+  fetchAudienceData();
+  fetchAdsMetrics();
 }, 5 * 60 * 1000);
 </script>
 </body>
