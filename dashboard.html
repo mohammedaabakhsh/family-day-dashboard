@@ -1166,6 +1166,7 @@ const yearData={
 };
 // مخزن البيانات الحية من API (تُحفظ وتُستعاد عند العودة للسنة الحالية)
 var _liveIG={reach7d:'—',profileViews:'—',websiteClicks:'—',newFollowers:'—'};
+var _liveAudience={female:68,male:32,saudi:95,jeddah:64,mecca:11,age2544:78,topAge:'25-34'};
 const months=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
 // Real monthly spend 2025 from API (all 12 months including Dec=4175)
 const monthlySpend=[4317,3721,2945,2587,3410,6727,7500,4581,3321,4313,3164,4175];
@@ -1422,14 +1423,77 @@ function showTab(id,el){document.querySelectorAll('.section').forEach(s=>s.class
 
 function setPlatform(p,el){document.querySelectorAll('.ptab').forEach(t=>t.classList.remove('active'));el.classList.add('active');document.getElementById('ads-meta').style.display='block'}
 
-// ===== MONTHLY COMPARISON DATA (2025) =====
+// ===== MONTHLY COMPARISON DATA — ديناميكي =====
 const monthlyData={
-  followers:[1200,1400,1800,2100,1900,2400,2800,3100,2600,3400,3800,4200],
-  reach:    [28000,31000,38000,44000,41000,52000,58000,63000,54000,68000,74000,80000],
-  engage:   [4.1,4.2,4.5,4.7,4.4,4.8,5.0,5.1,4.9,5.2,5.3,5.5],
-  spend:    [800,900,1100,1400,1300,1600,1800,2100,1700,2200,0,0],
-  results:  [28,32,42,55,48,62,70,82,65,89,0,0]
+  followers:[0,0,0,0,0,0,0,0,0,0,0,0],
+  reach:    [0,0,0,0,0,0,0,0,0,0,0,0],
+  engage:   [0,0,0,0,0,0,0,0,0,0,0,0],
+  spend:    [0,0,0,0,0,0,0,0,0,0,0,0],
+  results:  [0,0,0,0,0,0,0,0,0,0,0,0]
 };
+function syncMonthlyData(){
+  var y=typeof currentYear!=='undefined'?currentYear:new Date().getFullYear();
+  // متابعون جدد — من yearData (حقيقي من API)
+  if(typeof yearData!=='undefined'&&yearData[y])
+    monthlyData.followers=yearData[y].bars.slice();
+  // صرف إعلاني — من finAllData (Meta Ads API حقيقي)
+  if(typeof finAllData!=='undefined'&&finAllData[y]&&finAllData[y].monthly&&finAllData[y].monthly.some(function(v){return v>0;}))
+    monthlyData.spend=finAllData[y].monthly.slice();
+  else if(typeof monthlySpend!=='undefined')
+    monthlyData.spend=monthlySpend.slice();
+  buildComparison();
+}
+
+// ===== GOALS — ديناميكي من API =====
+function updateGoalsDynamic(){
+  var y=typeof currentYear!=='undefined'?currentYear:new Date().getFullYear();
+  var adsD=(typeof adsYearData!=='undefined'&&adsYearData[y])?adsYearData[y]:{};
+  function n(s){return parseFloat((s||'0').toString().replace(/[^0-9.,]/g,'').replace(/,/g,''))||0;}
+
+  // متابعو Instagram — من عنصر API الحي
+  var fEl=document.getElementById('ig-followers');
+  if(fEl&&fEl.textContent&&fEl.textContent.trim()!=='—'){
+    var fTxt=fEl.textContent.trim();
+    var fNum=fTxt.includes('K')?n(fTxt)*1000:fTxt.includes('M')?n(fTxt)*1000000:n(fTxt);
+    var gF=goalsData.find(function(g){return g.title==='متابعو Instagram';});
+    if(gF&&fNum>0){gF.cur=fTxt;gF.pct=Math.min(99,Math.round(fNum/150000*100));}
+  }
+
+  // تكلفة نتيجة Meta
+  var cost=n(adsD.cost);
+  if(cost>0){
+    var gC=goalsData.find(function(g){return g.title==='تكلفة نتيجة Meta';});
+    if(gC){gC.cur=cost+' ر';gC.pct=cost<=25?100:Math.min(99,Math.round(25/cost*100));}
+  }
+
+  // ميزانية الإعلانات — من finAllData للسنة الحالية
+  var spendTotal=(typeof finAllData!=='undefined'&&finAllData[y])?finAllData[y].total||0:0;
+  if(spendTotal>0){
+    var gB=goalsData.find(function(g){return g.title==='ميزانية الإعلانات';});
+    if(gB){gB.cur=spendTotal.toLocaleString('en-US')+' ر';gB.pct=Math.min(99,Math.round(spendTotal/60000*100));}
+  }
+
+  // متابع جديد / شهر — آخر شهر فيه بيانات
+  if(typeof yearData!=='undefined'&&yearData[y]){
+    var bars=yearData[y].bars.filter(function(v){return v>0;});
+    if(bars.length){
+      var lastM=bars[bars.length-1];
+      var gN=goalsData.find(function(g){return g.title==='متابع جديد / شهر';});
+      if(gN){gN.cur=lastM.toLocaleString('en-US');gN.pct=Math.min(99,Math.round(lastM/4500*100));}
+    }
+  }
+
+  // مشاهدات الريلز — من cnt-top
+  var topEl=document.getElementById('cnt-top');
+  if(topEl&&topEl.textContent&&topEl.textContent!=='—'){
+    var rTxt=topEl.textContent.trim();
+    var rNum=rTxt.includes('M')?n(rTxt)*1000000:rTxt.includes('K')?n(rTxt)*1000:n(rTxt);
+    var gR=goalsData.find(function(g){return g.title==='مشاهدات الريلز';});
+    if(gR&&rNum>0){gR.cur=rTxt;gR.pct=Math.min(99,Math.round(rNum/2000000*100));}
+  }
+
+  buildGoals();
+}
 const cmpMetrics=[
   {label:'متابعون جدد',    key:'followers', higherBetter:true,  fmt:v=>v.toLocaleString()},
   {label:'الوصول',         key:'reach',     higherBetter:true,  fmt:v=>(v/1000).toFixed(0)+'K'},
@@ -1529,6 +1593,8 @@ buildMonthlyBars();
 buildAlerts();
 initCompare();
 buildGoals();
+setTimeout(syncMonthlyData,4000);
+setTimeout(updateGoalsDynamic,4500);
 
 // ===== SHARED CONFIG =====
 var TOKEN='EAAUoBeSqM64BQxR5JurEoLPZAvwyaM5Y7IzIkYDUyMXzUhvPixAxDP4NsDdWFfWZAmp60QZAfr0mZAt1BiBj3ahIywxB1PCytIb6hV3JRA6qlTZAOSIT85UxPjs4u4X9sGv0ujmF2ZBtaJu0RQcs4IbG2LZASFjh7rsFePrRU89ugARaZBXYLmQLWofvbuPkqt50';
@@ -1779,6 +1845,7 @@ async function fetchAudienceData(){
       var tot=fv+mv;
       if(tot>0){
         var fp=Math.round(fv/tot*100), mp=100-fp;
+        _liveAudience.female=fp; _liveAudience.male=mp;
         var fpEl=document.getElementById('aud-female-pct'); if(fpEl)fpEl.textContent=fp+'%';
         var mpEl=document.getElementById('aud-male-pct');   if(mpEl)mpEl.textContent=mp+'%';
         var fcEl=document.getElementById('aud-female-count'); if(fcEl)fcEl.textContent=fv.toLocaleString('en-US')+' متابعة';
@@ -1801,6 +1868,10 @@ async function fetchAudienceData(){
       var totalAge=groups.reduce(function(s,g){return s+g.val;},0);
       var maxAge=Math.max.apply(null,groups.map(function(g){return g.val;}));
       var topAge=groups.reduce(function(a,b){return a.val>b.val?a:b;});
+      var age2534=totalAge>0?Math.round((am['25-34']||0)/totalAge*100):0;
+      var age3544=totalAge>0?Math.round((am['35-44']||0)/totalAge*100):0;
+      _liveAudience.age2544=age2534+age3544;
+      _liveAudience.topAge=topAge.label;
       var ageEl=document.getElementById('aud-age'); if(ageEl)ageEl.textContent=topAge.label;
       var ageSubEl=document.getElementById('aud-age-sub'); if(ageSubEl)ageSubEl.textContent='↑ '+Math.round(topAge.val/totalAge*100)+'% من الجمهور';
       var colors=['#6c63ff','#00d4aa','#00d4aa','#ffd166','#ff6b6b'];
@@ -1820,7 +1891,9 @@ async function fetchAudienceData(){
       var saVal=0, totalCo=0;
       cobk.forEach(function(r){totalCo+=r.value; if(r.dimension_values[0]==='SA')saVal=r.value;});
       if(totalCo>0){
-        var saEl=document.getElementById('aud-saudi'); if(saEl)saEl.textContent=Math.round(saVal/totalCo*100)+'%';
+        var saP=Math.round(saVal/totalCo*100);
+        _liveAudience.saudi=saP;
+        var saEl=document.getElementById('aud-saudi'); if(saEl)saEl.textContent=saP+'%';
       }
     }
 
@@ -1842,6 +1915,13 @@ async function fetchAudienceData(){
         "Khamis Mushait, 'Asir Region":'خميس مشيط',
         'Yanbu, Al Madinah Region':'ينبع'
       };
+      // حفظ نسب المدن في _liveAudience
+      top5.forEach(function(c){
+        var raw=c.dimension_values[0];
+        var pct=Math.round(c.value/totalCity*100);
+        if(raw.includes('Jeddah'))_liveAudience.jeddah=pct;
+        else if(raw.includes('Mecca')||raw.includes('Makkah')&&!raw.includes('Region')||raw.includes('Mecca'))_liveAudience.mecca=pct;
+      });
       var cityColors=['#00d4aa','#00d4aa','#6c63ff','#6c63ff','#ffd166'];
       var cityCont=document.getElementById('city-bars-container');
       if(cityCont){
@@ -2145,9 +2225,21 @@ setTimeout(fetchTopContent,3000);
 
 // Hook into existing data loaders to update last-update time and global KPIs
 var _origFetchAdsData=fetchAdsData;
-fetchAdsData=async function(){await _origFetchAdsData.apply(this,arguments);updateLastUpdateTime();setTimeout(updateGlobalKPIs,500);setTimeout(buildExpertInsights,800);};
+fetchAdsData=async function(){
+  await _origFetchAdsData.apply(this,arguments);
+  updateLastUpdateTime();
+  setTimeout(updateGlobalKPIs,500);
+  setTimeout(buildExpertInsights,800);
+  setTimeout(syncMonthlyData,600);
+  setTimeout(updateGoalsDynamic,700);
+};
 var _origFetchIGData=fetchIGData;
-fetchIGData=async function(){await _origFetchIGData.apply(this,arguments);setTimeout(updateGlobalKPIs,500);};
+fetchIGData=async function(){
+  await _origFetchIGData.apply(this,arguments);
+  setTimeout(updateGlobalKPIs,500);
+  setTimeout(updateGoalsDynamic,600);
+  setTimeout(syncMonthlyData,700);
+};
 
 // ===== EXPERT INSIGHTS — ديناميكي حسب البيانات =====
 function buildExpertInsights(){
@@ -2170,11 +2262,21 @@ function buildExpertInsights(){
   var linkCl    = n(adsD.linkClicks);
   var clicks    = n(adsD.clicks);
 
-  // ثوابت الجمهور والمحتوى
-  var jeddah=64, mecca=11, female=68, age2544=78, saudiPct=95;
-  var avgReels=186000, avgPhotos=48000;
-  var reelsBetter = Math.round((avgReels-avgPhotos)/avgPhotos*100);
-  var followers = parseFloat((document.getElementById('ig-followers')?.textContent||'104K').replace(/[^0-9.]/g,''))||104;
+  // قراءة بيانات الجمهور من API (لا ثوابت يدوية)
+  var jeddah  = _liveAudience.jeddah  || 64;
+  var mecca   = _liveAudience.mecca   || 11;
+  var female  = _liveAudience.female  || 68;
+  var age2544 = _liveAudience.age2544 || 78;
+  var saudiPct= _liveAudience.saudi   || 95;
+  // قراءة أرقام المحتوى من DOM
+  var avgReelsEl=document.getElementById('cnt-avg-reels');
+  var avgPhotosEl=document.getElementById('cnt-avg-photos');
+  var avgReels=avgReelsEl&&avgReelsEl.textContent!=='—'?(parseFloat(avgReelsEl.textContent.replace('K',''))*1000||186000):186000;
+  var avgPhotos=avgPhotosEl&&avgPhotosEl.textContent!=='—'?(parseFloat(avgPhotosEl.textContent.replace('K',''))*1000||48000):48000;
+  var reelsBetter = avgPhotos>0?Math.round((avgReels-avgPhotos)/avgPhotos*100):86;
+  var fEl=document.getElementById('ig-followers');
+  var fTxt=fEl?fEl.textContent.trim():'104K';
+  var followers = fTxt.includes('K')?parseFloat(fTxt)*1:parseFloat(fTxt)/1000||104;
 
   function note(color,text){ return `<div class="expert-note"><div class="expert-note-dot" style="background:${color}"></div>${text}</div>`; }
 
