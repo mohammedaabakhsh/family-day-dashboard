@@ -2118,11 +2118,13 @@ async function fetchTopContent(){
     var reelsEngRate=avgReelsReach>0?((avg(reels,'eng')/avgReelsReach)*100).toFixed(1)+'%':'—';
     var photosEngRate=avgPhotosReach>0?((avgPhotosEng/avgPhotosReach)*100).toFixed(1)+'%':'—';
 
-    // ━━━ الترتيب بالـ reach (مؤكد من API) ━━━
+    // ━━━ الترتيب: بالتفاعل (likes+comments+saved+shares) ━━━
+    var reelsByEng=reels.slice().sort(function(a,b){return b.eng-a.eng;});
+    var photosByEng=photos.slice().sort(function(a,b){return b.eng-a.eng;});
     var reelsByReach=reels.slice().sort(function(a,b){return b.reach-a.reach;});
     var photosByReach=photos.slice().sort(function(a,b){return b.reach-a.reach;});
-    var topReel=reelsByReach[0];
-    var topPhoto=photosByReach[0];
+    var topReel=reelsByEng[0];
+    var topPhoto=photosByEng[0];
 
     // ━━━ KPIs الرئيسية ━━━
     var el;
@@ -2132,8 +2134,8 @@ async function fetchTopContent(){
     el=document.getElementById('cnt-avg-photos');if(el)el.textContent=fmt(avgPhotosReach);
 
     if(topReel){
-      el=document.getElementById('cnt-top');     if(el)el.textContent=fmt(topReel.reach);
-      el=document.getElementById('cnt-top-sub'); if(el)el.textContent='↑ وصول · '+topReel.caption.substring(0,20);
+      el=document.getElementById('cnt-top');     if(el)el.textContent=fmt(topReel.eng);
+      el=document.getElementById('cnt-top-sub'); if(el)el.textContent='🔥 تفاعل · '+topReel.caption.substring(0,20);
     }
 
     // ━━━ المنشورات حسب السنة — يحدّث contentYearData بالأرقام الحقيقية ━━━
@@ -2264,41 +2266,42 @@ async function fetchTopContent(){
       }).join('');
     }
 
-    // ━━━ أفضل 10 ريلز + أفضل 10 صور — مرتبة بالـ reach الفعلي من API ━━━
+    // ━━━ أفضل 10 ريلز + أفضل 10 صور — مرتبة بالتفاعل (likes+comments+saved+shares) ━━━
     var medals=['🥇','🥈','🥉'];
     function buildTopTable(sortedArr,elId,subId,totalCount,typeLabel){
       var top=sortedArr.slice(0,10);
       var tblEl=document.getElementById(elId);
       if(tblEl){
-        var h='<tr><th>#</th><th>المنشور</th><th>التاريخ</th><th>الوصول</th><th>اللايكات</th><th>حُفظ</th></tr>';
+        var h='<tr><th>#</th><th>المنشور</th><th>التاريخ</th><th style="color:#ff6b9d">❤️ لايكات</th><th>💬 تعليق</th><th>🔖 حُفظ</th><th>الوصول</th></tr>';
         var r=top.map(function(p,i){
           var rank=medals[i]||(i+1);
-          var reachTxt=p.reach>0?'<span style="color:#00d4aa;font-weight:700">'+fmt(p.reach)+'</span>':'—';
-          return '<tr><td class="rank">'+rank+'</td><td>'+p.caption+'</td><td style="color:var(--muted);font-size:11px">'+p.date+'</td><td>'+reachTxt+'</td><td style="color:#ff6b9d">'+p.likes.toLocaleString('en-US')+'</td><td>'+p.saved+'</td></tr>';
+          var likeTxt='<span style="color:#ff6b9d;font-weight:700;font-size:15px">'+p.likes.toLocaleString('en-US')+'</span>';
+          var reachTxt=p.reach>0?'<span style="color:#00d4aa;font-size:12px">'+fmt(p.reach)+'</span>':'—';
+          return '<tr><td class="rank">'+rank+'</td><td>'+p.caption+'</td><td style="color:var(--muted);font-size:11px">'+p.date+'</td><td>'+likeTxt+'</td><td>'+p.comments+'</td><td>'+p.saved+'</td><td>'+reachTxt+'</td></tr>';
         }).join('');
         tblEl.innerHTML=h+r;
       }
       var subEl=document.getElementById(subId);
-      if(subEl)subEl.textContent='أعلى 10 من '+totalCount+' '+typeLabel+' — مرتبة بالوصول الفعلي';
+      if(subEl)subEl.textContent='أعلى 10 من '+totalCount+' '+typeLabel+' — مرتبة بالتفاعل (لايكات + تعليقات + حفظ)';
     }
-    buildTopTable(reelsByReach,'cnt-top-reels-table','cnt-reels-sub',reels.length,'ريلز');
-    buildTopTable(photosByReach,'cnt-top-photos-table','cnt-photos-sub',photos.length,'صورة');
+    buildTopTable(reelsByEng,'cnt-top-reels-table','cnt-reels-sub',reels.length,'ريلز');
+    buildTopTable(photosByEng,'cnt-top-photos-table','cnt-photos-sub',photos.length,'صورة');
 
-    // ━━━ Expert section table ━━━
-    var allByReach=posts.slice().sort(function(a,b){return b.reach-a.reach;});
+    // ━━━ Expert section table — مرتبة بالتفاعل ━━━
+    var allByEng=posts.slice().sort(function(a,b){return b.eng-a.eng;});
     var tbl=document.getElementById('top-content-table');
     if(tbl){
-      var hEx='<tr><th>#</th><th>النوع</th><th>المنشور</th><th>الوصول</th><th>اللايكات</th><th>التعليقات</th><th>الحفظ</th><th>الأداء</th></tr>';
-      var rEx=allByReach.slice(0,10).map(function(p,i){
+      var hEx='<tr><th>#</th><th>النوع</th><th>المنشور</th><th style="color:#ff6b9d">❤️ لايكات</th><th>تفاعل كلي</th><th>الوصول</th><th>الحفظ</th><th>الأداء</th></tr>';
+      var rEx=allByEng.slice(0,10).map(function(p,i){
         var ico=p.type==='VIDEO'?'🎥':p.type==='CAROUSEL_ALBUM'?'📽️':'📸';
         var engN=parseFloat(p.engRate)||0;
         var st=engN>=5?'<span class="status green">🔥 ممتاز</span>':engN>=2?'<span class="status green">✅ جيد</span>':engN>0?'<span class="status yellow">⏳ عادي</span>':'<span class="status red">↓ ضعيف</span>';
-        return '<tr><td class="rank">'+(medals[i]||(i+1))+'</td><td>'+ico+'</td><td>'+p.caption+'</td><td style="color:#00d4aa;font-weight:700">'+fmt(p.reach)+'</td><td style="color:#ff6b9d">'+p.likes.toLocaleString('en-US')+'</td><td>'+p.comments+'</td><td>'+p.saved+'</td><td>'+st+'</td></tr>';
+        return '<tr><td class="rank">'+(medals[i]||(i+1))+'</td><td>'+ico+'</td><td>'+p.caption+'</td><td style="color:#ff6b9d;font-weight:700;font-size:15px">'+p.likes.toLocaleString('en-US')+'</td><td style="color:#6c63ff;font-weight:700">'+fmt(p.eng)+'</td><td style="color:#00d4aa;font-size:12px">'+fmt(p.reach)+'</td><td>'+p.saved+'</td><td>'+st+'</td></tr>';
       }).join('');
       tbl.innerHTML=hEx+rEx;
     }
     var sub=document.getElementById('top-content-sub');
-    if(sub)sub.textContent='جميع المنشورات ('+total+') — مرتبة من الأعلى وصولاً';
+    if(sub)sub.textContent='جميع المنشورات ('+total+') — مرتبة من الأعلى تفاعلاً (لايكات + تعليقات + حفظ)';
     var badge=document.getElementById('top-content-badge');
     if(badge)badge.textContent='📊 '+total+' منشور';
 
