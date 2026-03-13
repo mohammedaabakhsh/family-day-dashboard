@@ -2136,7 +2136,7 @@ async function fetchTopContent(){
       el=document.getElementById('cnt-top-sub'); if(el)el.textContent='↑ وصول · '+topReel.caption.substring(0,20);
     }
 
-    // ━━━ المنشورات حسب السنة ━━━
+    // ━━━ المنشورات حسب السنة — يحدّث contentYearData بالأرقام الحقيقية ━━━
     var years={};
     posts.forEach(function(p){
       if(!p.year)return;
@@ -2146,6 +2146,30 @@ async function fetchTopContent(){
       else if(p.type==='IMAGE')years[p.year].photos++;
       else years[p.year].albums++;
     });
+
+    // حدّث contentYearData بالبيانات الحقيقية من API
+    Object.keys(years).forEach(function(y){
+      var yd=years[y];
+      var yReels=reels.filter(function(p){return p.year==y;});
+      var yPhotos=photos.filter(function(p){return p.year==y;});
+      var yAvgReels=avg(yReels,'reach');
+      var yAvgPhotos=avg(yPhotos,'reach');
+      var yTopReel=yReels.slice().sort(function(a,b){return b.reach-a.reach;})[0];
+      contentYearData[parseInt(y)]={
+        posts:String(yd.total),
+        postsSub:'منشور في '+y+' — 🎥'+yd.reels+' 📸'+yd.photos+(yd.albums?' 📽️'+yd.albums:''),
+        top:yTopReel?fmt(yTopReel.reach):'—',
+        topSub:yTopReel?'↑ وصول · '+yTopReel.caption.substring(0,18):'—',
+        avgReels:fmt(yAvgReels),
+        avgPhotos:fmt(yAvgPhotos)
+      };
+    });
+
+    // أعد تطبيق السنة الحالية بعد تحديث البيانات
+    var cy=typeof currentYear!=='undefined'?currentYear:new Date().getFullYear();
+    if(typeof updateContentSection==='function')updateContentSection(cy);
+
+    // عرض بطاقات السنوات
     var yearEl=document.getElementById('cnt-years-grid');
     if(yearEl){
       var sortedYears=Object.keys(years).sort(function(a,b){return b-a;});
