@@ -626,6 +626,7 @@ html,body{overflow-x:hidden;max-width:100vw}
   <div class="tab" onclick="showTab('facebook',this)">📘 فيسبوك</div>
   <div class="tab" onclick="showTab('expert',this)">🧠 Expert Insights</div>
   <div class="tab" onclick="showTab('reviews',this)">⭐ تقييمات قوقل</div>
+  <div class="tab" onclick="showTab('snapchat',this)">👻 سناب شات</div>
 </div>
 
 <div class="content">
@@ -1158,6 +1159,45 @@ html,body{overflow-x:hidden;max-width:100vw}
   <div style="text-align:center;color:var(--muted);font-size:12px;padding-bottom:12px">
     📌 البيانات من Outscraper · Place ID: ChIJkfXGX69nwRURYJSW6ifyHqY · آخر جلب: مارس 2026
   </div>
+
+</div>
+
+<!-- SNAPCHAT -->
+<div id="snapchat" class="section">
+
+  <!-- حالة الاتصال -->
+  <div id="snap-auth-banner" style="display:none;margin:24px 0;background:rgba(255,252,0,0.06);border:1px solid rgba(255,252,0,0.2);border-radius:16px;padding:28px;text-align:center">
+    <div style="font-size:48px;margin-bottom:16px">👻</div>
+    <div style="font-size:18px;font-weight:700;color:white;margin-bottom:8px">ربط سناب شات</div>
+    <div style="font-size:14px;color:var(--muted);margin-bottom:24px">اضغط الزر لتسجيل الدخول وربط حساب الإعلانات تلقائياً</div>
+    <button onclick="snapLogin()" style="background:linear-gradient(135deg,#FFFC00,#ffed4a);color:#000;border:none;border-radius:12px;padding:14px 32px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Tajawal',sans-serif">🔗 ربط مع Snapchat Ads</button>
+  </div>
+
+  <!-- KPIs -->
+  <div class="kpi-grid kpi-grid-5" id="snap-kpis" style="display:none">
+    <div class="kpi-card"><div class="kpi-label">إجمالي الإنفاق</div><div class="kpi-value" id="snap-spend">—</div><div class="kpi-change neutral" id="snap-spend-sub">ريال سعودي</div></div>
+    <div class="kpi-card"><div class="kpi-label">مرات الظهور</div><div class="kpi-value" id="snap-impr">—</div><div class="kpi-change up" id="snap-impr-sub">↑ Impressions</div></div>
+    <div class="kpi-card"><div class="kpi-label">Swipe-Ups</div><div class="kpi-value" id="snap-swipes">—</div><div class="kpi-change up" id="snap-swipes-sub">↑ نقرات</div></div>
+    <div class="kpi-card"><div class="kpi-label">تكلفة لكل Swipe</div><div class="kpi-value" id="snap-cpswipe">—</div><div class="kpi-change neutral">ريال</div></div>
+    <div class="kpi-card"><div class="kpi-label">الحملات النشطة</div><div class="kpi-value" id="snap-camps">—</div><div class="kpi-change neutral" id="snap-camps-sub">حملة</div></div>
+  </div>
+
+  <!-- جدول الحملات -->
+  <div class="chart-card" id="snap-table-card" style="display:none;margin-top:16px">
+    <div class="card-header">
+      <div><div class="card-title">👻 حملات سناب شات — Live</div><div class="card-subtitle" id="snap-table-sub">بيانات حية من Snapchat Ads API</div></div>
+      <button onclick="snapRefresh()" style="background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:6px 14px;color:var(--muted);cursor:pointer;font-family:'Tajawal',sans-serif;font-size:13px">🔄 تحديث</button>
+    </div>
+    <div style="overflow-x:auto">
+      <table class="data-table" id="snap-camps-table">
+        <thead><tr><th>الحملة</th><th>الإنفاق</th><th>الظهور</th><th>Swipe-Ups</th><th>CPM</th><th>الحالة</th></tr></thead>
+        <tbody id="snap-camps-body"><tr><td colspan="6" style="text-align:center;color:var(--muted)">جاري التحميل...</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- رسالة خطأ -->
+  <div id="snap-error" style="display:none;margin-top:16px;background:rgba(255,107,107,0.08);border:1px solid rgba(255,107,107,0.25);border-radius:12px;padding:16px;font-size:13px;color:var(--accent2)"></div>
 
 </div>
 
@@ -2183,6 +2223,170 @@ function buildExpertInsights(){
   var eW=document.getElementById('exp-watch');     if(eW) eW.innerHTML=w.join('');
 }
 setTimeout(buildExpertInsights, 1000);
+
+// ===== SNAPCHAT ADS =====
+var SNAP_CLIENT_ID   = '79b8bf12-f7f1-4d2e-a941-f820844e3d29';
+var SNAP_CLIENT_SEC  = 'd9a97aec9e9538512905';
+var SNAP_AD_ACCOUNT  = '2f6662b3-3ffb-4da8-bccc-c945e2dbdb71';
+var SNAP_REDIRECT    = 'https://mohammedaabakhsh.github.io/family-day-dashboard/';
+
+function snapLogin(){
+  var url='https://accounts.snapchat.com/accounts/oauth2/auth'
+    +'?client_id='+SNAP_CLIENT_ID
+    +'&redirect_uri='+encodeURIComponent(SNAP_REDIRECT)
+    +'&response_type=code'
+    +'&scope=snapchat-marketing-api';
+  window.location.href=url;
+}
+
+async function snapExchangeCode(code){
+  try{
+    var r=await fetch('https://accounts.snapchat.com/login/oauth2/access_token',{
+      method:'POST',
+      headers:{'Content-Type':'application/x-www-form-urlencoded'},
+      body:'grant_type=authorization_code'
+        +'&code='+encodeURIComponent(code)
+        +'&client_id='+SNAP_CLIENT_ID
+        +'&client_secret='+SNAP_CLIENT_SEC
+        +'&redirect_uri='+encodeURIComponent(SNAP_REDIRECT)
+    });
+    var d=await r.json();
+    if(d.access_token){
+      localStorage.setItem('snap_token',d.access_token);
+      if(d.refresh_token) localStorage.setItem('snap_refresh',d.refresh_token);
+      window.history.replaceState({},'',SNAP_REDIRECT);
+      snapLoadData(d.access_token);
+    } else {
+      snapShowError('فشل الحصول على التوكن: '+(d.message||JSON.stringify(d)));
+    }
+  }catch(e){
+    snapShowError('خطأ في الاتصال: '+e.message);
+  }
+}
+
+async function snapRefreshToken(){
+  var refresh=localStorage.getItem('snap_refresh');
+  if(!refresh) return null;
+  try{
+    var r=await fetch('https://accounts.snapchat.com/login/oauth2/access_token',{
+      method:'POST',
+      headers:{'Content-Type':'application/x-www-form-urlencoded'},
+      body:'grant_type=refresh_token'
+        +'&refresh_token='+encodeURIComponent(refresh)
+        +'&client_id='+SNAP_CLIENT_ID
+        +'&client_secret='+SNAP_CLIENT_SEC
+    });
+    var d=await r.json();
+    if(d.access_token){
+      localStorage.setItem('snap_token',d.access_token);
+      if(d.refresh_token) localStorage.setItem('snap_refresh',d.refresh_token);
+      return d.access_token;
+    }
+  }catch(e){}
+  return null;
+}
+
+function fmt2(n){if(!n&&n!==0)return'—';if(n>=1000000)return(n/1000000).toFixed(1)+'M';if(n>=1000)return(n/1000).toFixed(1)+'K';return n.toString();}
+
+async function snapLoadData(token){
+  document.getElementById('snap-auth-banner').style.display='none';
+  document.getElementById('snap-kpis').style.display='grid';
+  document.getElementById('snap-table-card').style.display='block';
+
+  var end=new Date().toISOString().split('T')[0];
+  var start=new Date(new Date().getFullYear(),0,1).toISOString().split('T')[0];
+
+  try{
+    // جلب الحملات
+    var r=await fetch('https://adsapi.snapchat.com/v1/adaccounts/'+SNAP_AD_ACCOUNT+'/campaigns',{
+      headers:{'Authorization':'Bearer '+token}
+    });
+    if(r.status===401){
+      var newToken=await snapRefreshToken();
+      if(newToken){snapLoadData(newToken);return;}
+      localStorage.removeItem('snap_token');
+      snapShowConnect();
+      return;
+    }
+    var camps=await r.json();
+    var campList=camps.campaigns||[];
+    document.getElementById('snap-camps').textContent=campList.length;
+    document.getElementById('snap-camps-sub').textContent=campList.filter(c=>c.campaign&&c.campaign.status==='ACTIVE').length+' نشطة';
+
+    // جلب إحصائيات الحساب
+    var sr=await fetch('https://adsapi.snapchat.com/v1/adaccounts/'+SNAP_AD_ACCOUNT+'/stats?granularity=TOTAL&start_time='+start+'T00:00:00.000Z&end_time='+end+'T23:59:59.999Z&fields=impressions,swipes,spend',{
+      headers:{'Authorization':'Bearer '+token}
+    });
+    var sd=await sr.json();
+    var stats=(sd.total_stats&&sd.total_stats[0]&&sd.total_stats[0].total_stat&&sd.total_stats[0].total_stat.stats)||{};
+    var spend=((stats.spend||0)/1000000).toFixed(0);
+    var impr=stats.impressions||0;
+    var swipes=stats.swipes||0;
+    var cpSwipe=swipes>0?((stats.spend||0)/1000000/swipes).toFixed(2):'—';
+
+    document.getElementById('snap-spend').textContent=Number(spend).toLocaleString()+' ر.س';
+    document.getElementById('snap-impr').textContent=fmt2(impr);
+    document.getElementById('snap-swipes').textContent=fmt2(swipes);
+    document.getElementById('snap-cpswipe').textContent=cpSwipe+' ر.س';
+    document.getElementById('snap-table-sub').textContent='بيانات '+start+' → '+end+' · مباشر';
+
+    // جدول الحملات
+    var tbody=document.getElementById('snap-camps-body');
+    tbody.innerHTML='';
+    if(campList.length===0){tbody.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--muted)">لا توجد حملات</td></tr>';return;}
+
+    for(var i=0;i<campList.length;i++){
+      var c=campList[i].campaign||{};
+      var cid=c.id;
+      var cr=await fetch('https://adsapi.snapchat.com/v1/campaigns/'+cid+'/stats?granularity=TOTAL&start_time='+start+'T00:00:00.000Z&end_time='+end+'T23:59:59.999Z&fields=impressions,swipes,spend',{
+        headers:{'Authorization':'Bearer '+token}
+      });
+      var cd=await cr.json();
+      var cs=(cd.total_stats&&cd.total_stats[0]&&cd.total_stats[0].total_stat&&cd.total_stats[0].total_stat.stats)||{};
+      var cSpend=((cs.spend||0)/1000000).toFixed(0);
+      var cImpr=cs.impressions||0;
+      var cSwipes=cs.swipes||0;
+      var cpm=cImpr>0?(((cs.spend||0)/1000000)/cImpr*1000).toFixed(2):'—';
+      var status=c.status==='ACTIVE'?'<span style="color:var(--accent)">● نشطة</span>':'<span style="color:var(--muted)">● موقوفة</span>';
+      tbody.innerHTML+='<tr>'
+        +'<td style="font-weight:600">'+(c.name||cid)+'</td>'
+        +'<td>'+Number(cSpend).toLocaleString()+' ر.س</td>'
+        +'<td>'+fmt2(cImpr)+'</td>'
+        +'<td>'+fmt2(cSwipes)+'</td>'
+        +'<td>'+cpm+'</td>'
+        +'<td>'+status+'</td>'
+        +'</tr>';
+    }
+  }catch(e){
+    snapShowError('خطأ في جلب البيانات: '+e.message);
+  }
+}
+
+function snapShowConnect(){
+  document.getElementById('snap-auth-banner').style.display='block';
+  document.getElementById('snap-kpis').style.display='none';
+  document.getElementById('snap-table-card').style.display='none';
+}
+
+function snapShowError(msg){
+  var el=document.getElementById('snap-error');
+  if(el){el.style.display='block';el.textContent='⚠️ '+msg;}
+}
+
+function snapRefresh(){
+  var t=localStorage.getItem('snap_token');
+  if(t) snapLoadData(t);
+}
+
+// تشغيل عند فتح الصفحة
+(function snapInit(){
+  var params=new URLSearchParams(window.location.search);
+  var code=params.get('code');
+  if(code){ snapExchangeCode(code); return; }
+  var token=localStorage.getItem('snap_token');
+  if(token){ snapLoadData(token); }
+  else{ snapShowConnect(); }
+})();
 </script>
 </body>
 </html>
